@@ -1,4 +1,12 @@
 # CSE 437 group 11
+## Code structure
+```
+└── apps
+    ├── client
+    └── server
+```
+Client code lives in `apps/client`, and server code lives in `apps/server`.
+
 ## Setup
 Use [pnpm](https://pnpm.io/)
 
