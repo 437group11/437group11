@@ -27,7 +27,7 @@ CREATE TABLE `Post` (
 CREATE TABLE `Review` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `content` VARCHAR(191) NOT NULL,
-    `rating` INTEGER NOT NULL,
+    `rating` FLOAT NOT NULL,
     `authorId` INTEGER NOT NULL,
 
     PRIMARY KEY (`id`)
