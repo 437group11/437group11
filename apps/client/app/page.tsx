@@ -4,7 +4,7 @@ import metadata from "./layout"
 export default function Home() {
     return (
         <>
-            <main className="max-w-2xl p-8">
+            <main className="max-w-4xl p-8">
                 <h1 className='text-6xl my-4'>
                     Welcome to group11_website!
                 </h1>
