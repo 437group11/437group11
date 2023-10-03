@@ -8,7 +8,7 @@ export default function CreateAnAccount() {
                     <label className="block">
                         Username:
                     </label>
-                    <input className="rounded-sm border-gray-300 border-2" type="text" required />
+                    <input className="rounded-sm border-gray-300 border-2" type="text" required autoFocus />
                 </div>
 
                 <div className="my-4">
