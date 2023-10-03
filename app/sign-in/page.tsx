@@ -20,7 +20,7 @@ export default function SignIn() {
                     <input className="rounded-sm border-gray-300 border-2" type="password" required />
                 </div>
                 <ButtonLink href="/feed">
-                    Log in
+                    Sign in
                 </ButtonLink>
             </form>
         </>
