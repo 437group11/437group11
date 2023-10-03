@@ -25,7 +25,7 @@ export default function CreateAnAccount() {
                     <input className="rounded-sm border-gray-300 border-2" type="password" required />
                 </div>
 
-                <button type="submit" className="p-4 bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300">Create</button>
+                <button type="submit" className="p-4 bg-accent-brown text-white py-2 rounded-md hover:bg-accent-brown-darker focus:outline-none focus:ring-4 focus:ring-accent-blue">Create</button>
             </form>
         </>
     )
