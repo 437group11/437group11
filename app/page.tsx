@@ -14,7 +14,7 @@ export default function Home() {
                 <ButtonLink href="/create-an-account">
                     Create an account
                 </ButtonLink>
-                <ButtonLink href="#">
+                <ButtonLink href="/sign-in">
                     Sign in
                 </ButtonLink>
             </div>
