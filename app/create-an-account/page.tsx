@@ -1,7 +1,7 @@
 export default function CreateAnAccount() {
     return (
         <>
-            <h1>Create an account</h1>
+            <h1 className="text-4xl my-4">Create an account</h1>
 
             <form className="mt-8">
                 <div className="mb-4">
