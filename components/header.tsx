@@ -1,9 +1,11 @@
+import Link from "next/link";
+
 export default function header() {
     return (
         <header className="bg-gray-400 p-8">
-            <span>
+            <Link href="/">
                 group11_website
-            </span>
+            </Link>
         </header>
     )
 }
