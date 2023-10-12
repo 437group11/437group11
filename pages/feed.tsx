@@ -13,22 +13,25 @@ interface Album {
 
     export default function Feed() {
         const albums: any[] = [];
+        let albumCheck = '';
         let searchReturn: { [albumId: string]: string } = {};
         const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
             const searchData = document.getElementById("search").value;
             requestSearch(searchData)
             .then((data) => {
-                for(const album in data.items)
-                {
-                    let name = album.name;
-                    let id = album.id;
-                    console.log(id, ' ', name);
-                    searchReturn[id] = [name];
-                }
+                console.log(data);
+                // for(const album in data.items)
+                // {
+                //     //let name = album.name;
+                //     //let id = album.id;
+                //     albumCheck = album;
+                //     //searchReturn[id] = [name];
+                // }
             })
             .catch((error) => {
-                console.error('Error searching')
+                console.error('Error searching', error);
             })
+            console.log(albumCheck);
     }
 
     return (
