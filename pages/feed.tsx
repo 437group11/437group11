@@ -1,6 +1,9 @@
-import AlbumCard from "components/album-card"
+import AlbumCard from "components/album-card";
 import { getToken } from "utils/tokenManager";
 import { getShelf } from "./api/get-shelf";
+import {useState} from "react";
+import {requestSearch} from "./api/request-search";
+
 
 interface Album {
     id: number;
@@ -8,15 +11,38 @@ interface Album {
     image: string;
   }
 
-export default function Feed() {
-    const albums: any[] = [];
-
-    
+    export default function Feed() {
+        const albums: any[] = [];
+        let searchReturn: { [albumId: string]: string } = {};
+        const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+            const searchData = document.getElementById("search").value;
+            requestSearch(searchData)
+            .then((data) => {
+                for(const album in data.items)
+                {
+                    let name = album.name;
+                    let id = album.id;
+                    console.log(id, ' ', name);
+                    searchReturn[id] = [name];
+                }
+            })
+            .catch((error) => {
+                console.error('Error searching')
+            })
+    }
 
     return (
         <>
             <div className="bg min-h-screen text-white">
                 <div className="flex flex-row overflow-x-auto">
+                    <div>
+                        <input
+                        name="search"
+                        id = "search"
+                        onChange={handleChange}
+                        type = "text"
+                        />
+                    </div>
                     {albums.map((album) => (
                         <AlbumCard key="{album.id}" album={album}/>
                     ))}

@@ -7,13 +7,12 @@ export async function requestAlbum(albumId:string): Promise<any> {
     const apiUrl = 'https://api.spotify.com/v1/albums/' + albumId;
     try {
         const data = new URLSearchParams();
-        data.append('Authorization', 'Bearer ${accessToken}');
 
-        const url = '${apiUrl}?${data.toString()}';
-
+        const url = `${apiUrl}`;
         const response = await fetch(url, {
             method: 'GET',
             headers: {
+                'Authorization', `Bearer ${accessToken}`,
                 'Content-Type': 'application/json',
             },
         });
