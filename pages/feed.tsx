@@ -1,4 +1,6 @@
 import AlbumCard from "components/album-card"
+import { getToken } from "utils/tokenManager";
+import { getShelf } from "./api/get-shelf";
 
 interface Album {
     id: number;
@@ -7,11 +9,10 @@ interface Album {
   }
 
 export default function Feed() {
-    const albums: Album[] = [
-        {id: 1, title: 'Album 1', image: 'app/assets/example.png'},
-        { id: 2, title: 'Album 2', image: 'app/assets/example.png'},
-        { id: 3, title: 'Album 3', image: 'app/assets/example.png'},
-    ]
+    const albums: any[] = [];
+
+    
+
     return (
         <>
             <div className="bg min-h-screen text-white">

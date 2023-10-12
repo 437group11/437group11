@@ -33,6 +33,7 @@ model Post {
 
 model Review {
   id      Int      @id @default(autoincrement())
+  albumId String 
   content String
   rating  Int
   author  User     @relation(fields: [authorId], references: [id])

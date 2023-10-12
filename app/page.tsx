@@ -11,7 +11,7 @@ export default function Home() {
                 To get started, create an account or sign in:
             </p>
             <div className="my-8">
-                <ButtonLink href="/create-an-account">
+                <ButtonLink href="/register">
                     Create an account
                 </ButtonLink>
                 <ButtonLink href="/sign-in">
