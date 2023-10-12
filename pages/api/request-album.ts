@@ -1,13 +1,12 @@
 import { getToken } from "utils/tokenManager";
 
-const accessToken = getToken();
 
 
 export async function requestAlbum(albumId:string): Promise<any> {
     const apiUrl = 'https://api.spotify.com/v1/albums/' + albumId;
     try {
         const data = new URLSearchParams();
-
+        const accessToken = getToken();
         const url = `${apiUrl}`;
         const response = await fetch(url, {
             method: 'GET',
