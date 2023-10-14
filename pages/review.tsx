@@ -1,17 +1,16 @@
 import { requestAlbum } from "./api/request-album";
 
 
-export default function reviewModal(id: string, name: string){
-
-
-    requestAlbum(id)
-    .then((album) => {
-        console.log(album);
-    })
-    .catch ((error) => {
-        console.error('error: ', error);
-    })
-
+export default function reviewModal(album: any){
+    // console.log(id);
+    // requestAlbum(id)
+    // .then((album) => {
+    //     console.log(album);
+    // })
+    // .catch ((error) => {
+    //     console.error('error: ', error);
+    // })
+    console.log(album);
     return (
         <>
             <div id='reviewModalOverlay'>

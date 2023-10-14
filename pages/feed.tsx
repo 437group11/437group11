@@ -8,7 +8,7 @@ import { stringify } from "querystring";
 import { constrainedMemory } from "process";
 import { requestAlbum } from "./api/request-album";
 import reviewModal from "./review";
-
+import { useRouter } from "next/router";
 
 interface Album {
     id: number;
@@ -17,6 +17,7 @@ interface Album {
   }
 
 export default function Feed() {
+    const router = useRouter();
     const albums: any[] = [];
     const searchReturn = new Map<string, string>();
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,6 +53,10 @@ export default function Feed() {
                 console.log(id, name);
                 const e = document.createElement("li");
                 const a = document.createElement("a");
+                requestAlbum(id).then((album)=>{
+                    e.addEventListener('click', function() {reviewModal(album);});
+                    e.addEventListener('click', ()=> {router.push("/review")});
+                });
                 a.textContent = name;
                 a.className = "albumSuggestion";
                 
