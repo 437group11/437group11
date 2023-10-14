@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import { requestAccessToken } from "./api/request-token";
 import { setToken, getToken } from "utils/tokenManager";
+import Button from "../components/button";
 
 export default function SignIn() {
     const router = useRouter();
@@ -82,9 +83,9 @@ export default function SignIn() {
                         required 
                     />
                 </div>
-                <button type="submit">
+                <Button type="submit">
                     Sign In
-                </button>
+                </Button>
             </form>
         </RootLayout>
     );

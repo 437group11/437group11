@@ -4,6 +4,7 @@ import ButtonLink from "../components/button-link";
 import React from "react";
 import { useState } from "react";
 import { useRouter } from "next/router";
+import Button from "../components/button";
 
 export default function Register() {
     const router = useRouter();
@@ -86,9 +87,9 @@ export default function Register() {
                         required 
                     />
                 </div>
-                <button type="submit" className="bg-blue-500 text-white rounded-md px-4 py-2">
+                <Button type="submit">
                     Sign Up
-                </button>
+                </Button>
                 </form>
         </RootLayout>
     )
