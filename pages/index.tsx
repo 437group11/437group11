@@ -1,8 +1,9 @@
+import RootLayout from "../components/root-layout";
 import ButtonLink from "../components/button-link";
 
 export default function Home() {
     return (
-        <>
+        <RootLayout>
             <h1 className='text-6xl my-8'>
                 Welcome to group11_website!
             </h1>
@@ -18,6 +19,6 @@ export default function Home() {
                     Sign in
                 </ButtonLink>
             </div>
-        </>
+        </RootLayout>
     )
 }

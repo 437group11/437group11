@@ -1,4 +1,5 @@
 'use client';
+import RootLayout from "../components/root-layout";
 import ButtonLink from "../components/button-link";
 import React from "react";
 import { useState } from "react";
@@ -40,7 +41,7 @@ export default function Register() {
         }));
     };
     return (
-        <>
+        <RootLayout>
             <h1 className="text-4xl my-4">Create an account</h1>
 
             <form className="mt-8" onSubmit={handleSubmit}>
@@ -89,6 +90,6 @@ export default function Register() {
                     Sign Up
                 </button>
                 </form>
-        </>
+        </RootLayout>
     )
 }

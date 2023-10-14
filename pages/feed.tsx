@@ -1,3 +1,4 @@
+import RootLayout from "../components/root-layout";
 import AlbumCard from "components/album-card";
 import { getToken } from "utils/tokenManager";
 import { getShelf } from "./api/get-shelf";
@@ -70,7 +71,7 @@ export default function Feed() {
     }
 
     return (
-        <>
+        <RootLayout>
             <div className="bg min-h-screen text-white">
                 <div className="flex flex-row overflow-x-auto">
                     <div>
@@ -92,6 +93,6 @@ export default function Feed() {
                 </div>
             </div>
             
-        </>
+        </RootLayout>
     )
 }

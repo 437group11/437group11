@@ -1,3 +1,4 @@
+import RootLayout from "../components/root-layout";
 import ButtonLink from "../components/button-link";
 import React from 'react';
 import { useState } from "react";
@@ -50,7 +51,7 @@ export default function SignIn() {
     };
     
     return (
-        <>
+        <RootLayout>
             <h1 className="text-4xl my-4">Sign in</h1>
 
             <form className="mt-8" onSubmit={handleSubmit}>
@@ -85,6 +86,6 @@ export default function SignIn() {
                     Sign In
                 </button>
             </form>
-        </>
+        </RootLayout>
     );
 }
