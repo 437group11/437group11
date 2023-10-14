@@ -2,12 +2,12 @@ import RootLayout from "../components/root-layout";
 import AlbumCard from "components/album-card";
 import { getToken } from "utils/tokenManager";
 import { getShelf } from "./api/get-shelf";
-import {useState} from "react";
+import React, {useState} from "react";
 import {requestSearch} from "./api/request-search";
 import { stringify } from "querystring";
 import { constrainedMemory } from "process";
 import { requestAlbum } from "./api/request-album";
-import reviewModal from "./review";
+//import reviewModal from "./review"; [DO NOT USE]
 import { useRouter } from "next/router";
 
 interface Album {
@@ -17,25 +17,21 @@ interface Album {
   }
 
 export default function Feed() {
+
+    const [formData, setFormData] = useState({
+        albumId: '',
+        content: '',
+        rating: 0,
+        authorId: 0,
+    });
+
     const router = useRouter();
     const albums: any[] = [];
     const searchReturn = new Map<string, string>();
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        
-        const exampleId = '5m2dVboM31qQtwPVch8pFv';
-        requestAlbum(exampleId)
-        .then((album) => {
-            console.log(album);
-            const ex = document.getElementById('exampleImgs');
-            const i = document.createElement("img");
-            i?.setAttribute('src', album.images[1].url);
-            ex?.appendChild(i);
-        })
-        .catch ((error) => {
-            console.error('error: ', error);
-        })
 
-        const searchData = document.getElementById("search").value;
+        const searchDataInput : any = document.getElementById("search");
+        const searchData = searchDataInput.value;
         requestSearch(searchData)
         .then((data) => { //------
             console.log(data);
@@ -54,9 +50,12 @@ export default function Feed() {
                 const e = document.createElement("li");
                 const a = document.createElement("a");
                 requestAlbum(id).then((album)=>{
-                    e.addEventListener('click', function() {reviewModal(album);});
-                    e.addEventListener('click', ()=> {router.push("/review")});
-                });
+                    a.addEventListener('click', function() {reviewModule(album)});
+                    //reviewModule in review.tsx deprecated ---
+                })
+                .catch ((error) => {
+                    console.error('error: ', error);
+                })
                 a.textContent = name;
                 a.className = "albumSuggestion";
                 
@@ -66,14 +65,69 @@ export default function Feed() {
         }) //-------
         .catch((error) => {
             console.error('Error searching', error);
+        }) 
+
+    }
+
+    const handleSubmitReview = async (e: any) => {
+        e.preventDefault();
+        const ratingInput : any = document.getElementById('score');
+        const rating: number = ratingInput.value;
+        const reviewInput : any = document.getElementById('review');
+        const review: string = reviewInput.value;
+        const albumIdInput : any = document.getElementById('review');
+        const albumId: string = albumIdInput.value;
+        const authorId: number = 14;
+        console.log(rating + " ");
+        console.log("here");
+
+        setFormData({
+            albumId: albumId,
+            content: review,
+            rating: rating,
+            authorId: authorId,
+        });
+
+        console.log(formData);
+        try {
+            const response = await fetch('/api/submit-review', {
+                method: 'POST',
+                headers: {
+                    'Content-Type' : 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+            if (response.ok){
+                console.log('Album Review Submitted');
+            }
+        } catch (error) {
+            console.error('Error submitting review: ', error);
+        }
+    };
+
+    const handleReviewChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setFormData((prevData) => ({
+            ...prevData,
+            [name]: value,
+        }));
+    }
+
+    function reviewModule(album: any){
+        console.log(album);
+        const nameP: any = document.getElementById('albumName');
+        nameP.textContent = album.name;
+        const img : any = document.getElementById('albumArt');
+        img.src = album.images[0].url;
+        let artistText = "";
+        album.artists.forEach(function(artist: any) {
+            artistText += artist.name + " ";
         })
-
-
-    }
-
-    function suggestionClick(id: string, name: string): any{
-        reviewModal(id, name);
-    }
+        const artistP : any = document.getElementById('artistName');
+        artistP.textContent = artistText;
+        const albumId: any = document.getElementById('albumId');
+        albumId.value = album.id;
+    }   
 
     return (
         <RootLayout>
@@ -91,8 +145,31 @@ export default function Feed() {
                         </ul>
                     </div>
                     <div className="flex-shrink-0 w-64 p-4">
-                        <div className="h-screen overflow-y-auto">
-    
+                        <div className="h-screen overflow-y-auto" id="reviewModal">
+                            <p id='albumName'></p>
+                            <img id='albumArt'/>
+                            <p id='artistName'></p>
+                            <form id='reviewForm' onSubmit={handleSubmitReview}>
+                                <input 
+                                    type="hidden"
+                                    id="albumId"
+                                />
+                                <input 
+                                    type="range" 
+                                    min="0" 
+                                    max="10" 
+                                    id="score"
+                                    value={formData.rating}
+                                    onChange={handleReviewChange}
+                                />
+                                <input 
+                                    type="text" 
+                                    id="review"
+                                    value={formData.content}
+                                    onChange={handleReviewChange}
+                                />
+                                <button type="submit"> Submit </button>
+                            </form>
                         </div>
                     </div>
                 </div>

@@ -14,14 +14,7 @@ export async function requestSearch(searchTerm:string): Promise<any> {
     
 
     try {
-        const exampleId = '5m2dVboM31qQtwPVch8pFv';
-        requestAlbum(exampleId)
-        .then((album) => {
-            console.log(album);
-        })
-        .catch ((error) => {
-            console.error('error: ', error);
-        })
+        
         //const url = `${apiUrl}q=${encodedSearchTerm}&type=album&limit=${limit}`;
         const response = await fetch(url, {
             method: 'GET',
