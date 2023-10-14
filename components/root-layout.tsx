@@ -1,4 +1,3 @@
-import '../styles/globals.css'
 import type { Metadata } from 'next'
 import { Lora } from 'next/font/google'
 import Header from "./header"
