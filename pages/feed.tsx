@@ -9,6 +9,7 @@ import { constrainedMemory } from "process";
 import { requestAlbum } from "./api/request-album";
 //import reviewModal from "./review"; [DO NOT USE]
 import { useRouter } from "next/router";
+import { getUserId } from "utils/userIdManager";
 
 interface Album {
     id: number;
@@ -17,14 +18,12 @@ interface Album {
   }
 
 export default function Feed() {
-
     const [formData, setFormData] = useState({
         albumId: '',
         content: '',
         rating: 0,
         authorId: 0,
     });
-
     const router = useRouter();
     const albums: any[] = [];
     const searchReturn = new Map<string, string>();
@@ -71,15 +70,15 @@ export default function Feed() {
 
     const handleSubmitReview = async (e: any) => {
         e.preventDefault();
+
         const ratingInput : any = document.getElementById('score');
         const rating: number = ratingInput.value;
         const reviewInput : any = document.getElementById('review');
         const review: string = reviewInput.value;
         const albumIdInput : any = document.getElementById('review');
         const albumId: string = albumIdInput.value;
-        const authorId: number = 14;
-        console.log(rating + " ");
-        console.log("here");
+        const authorId: number = getUserId();
+        console.log(authorId);
 
         setFormData({
             albumId: albumId,
@@ -159,13 +158,13 @@ export default function Feed() {
                                     min="0" 
                                     max="10" 
                                     id="score"
-                                    value={formData.rating}
+                                    //value={formData.rating}
                                     onChange={handleReviewChange}
                                 />
                                 <input 
                                     type="text" 
                                     id="review"
-                                    value={formData.content}
+                                    //value={formData.content}
                                     onChange={handleReviewChange}
                                 />
                                 <button type="submit"> Submit </button>
