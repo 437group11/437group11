@@ -28,7 +28,8 @@ export default function Feed() {
     const albums: any[] = [];
     const searchReturn = new Map<string, string>();
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-
+        const reviewBlock: any = document.getElementById('reviewModal');
+        reviewBlock.style.display = 'none';
         const searchDataInput : any = document.getElementById("search");
         const searchData = searchDataInput.value;
         requestSearch(searchData)
@@ -75,26 +76,27 @@ export default function Feed() {
         const rating: number = ratingInput.value;
         const reviewInput : any = document.getElementById('review');
         const review: string = reviewInput.value;
-        const albumIdInput : any = document.getElementById('review');
+        const albumIdInput : any = document.getElementById('albumId');
         const albumId: string = albumIdInput.value;
         const authorId: number = getUserId();
+
+        // setFormData({
+        //     albumId: albumId,
+        //     content: review,
+        //     rating: rating,
+        //     authorId: authorId,
+        // });
+        
         console.log(authorId);
-
-        setFormData({
-            albumId: albumId,
-            content: review,
-            rating: rating,
-            authorId: authorId,
-        });
-
-        console.log(formData);
+        console.log(review);
+        console.log(rating)
         try {
             const response = await fetch('/api/submit-review', {
                 method: 'POST',
                 headers: {
                     'Content-Type' : 'application/json',
                 },
-                body: JSON.stringify(formData),
+                body: JSON.stringify({albumId: 0, content: review, rating: rating, authorId: authorId}),
             });
             if (response.ok){
                 console.log('Album Review Submitted');
@@ -105,15 +107,12 @@ export default function Feed() {
     };
 
     const handleReviewChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setFormData((prevData) => ({
-            ...prevData,
-            [name]: value,
-        }));
     }
 
     function reviewModule(album: any){
         console.log(album);
+        const reviewBlock: any = document.getElementById('reviewModal')
+        reviewBlock.style.display = 'block';
         const nameP: any = document.getElementById('albumName');
         nameP.textContent = album.name;
         const img : any = document.getElementById('albumArt');
@@ -158,14 +157,14 @@ export default function Feed() {
                                     min="0" 
                                     max="10" 
                                     id="score"
-                                    //value={formData.rating}
-                                    onChange={handleReviewChange}
+                                    // value={formData.rating}
+                                    // onChange={handleReviewChange}
                                 />
                                 <input 
                                     type="text" 
                                     id="review"
-                                    //value={formData.content}
-                                    onChange={handleReviewChange}
+                                    // value={formData.content}
+                                    // onChange={handleReviewChange}
                                 />
                                 <button type="submit"> Submit </button>
                             </form>
