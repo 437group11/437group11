@@ -73,7 +73,7 @@ export default function Feed() {
         e.preventDefault();
 
         const ratingInput : any = document.getElementById('score');
-        const rating: number = ratingInput.value;
+        const rating: number = parseInt(ratingInput.value);
         const reviewInput : any = document.getElementById('review');
         const review: string = reviewInput.value;
         const albumIdInput : any = document.getElementById('albumId');
@@ -89,14 +89,14 @@ export default function Feed() {
         
         console.log(authorId);
         console.log(review);
-        console.log(rating)
+        console.log(rating);
         try {
             const response = await fetch('/api/submit-review', {
                 method: 'POST',
                 headers: {
                     'Content-Type' : 'application/json',
                 },
-                body: JSON.stringify({albumId: 0, content: review, rating: rating, authorId: authorId}),
+                body: JSON.stringify({albumId: albumId, content: review, rating: rating, authorId: authorId}),
             });
             if (response.ok){
                 console.log('Album Review Submitted');
