@@ -28,8 +28,6 @@ export default function Feed() {
     const albums: any[] = [];
     const searchReturn = new Map<string, string>();
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const reviewBlock: any = document.getElementById('reviewModal');
-        reviewBlock.style.display = 'none';
         const searchDataInput : any = document.getElementById("search");
         const searchData = searchDataInput.value;
         requestSearch(searchData)
@@ -143,7 +141,7 @@ export default function Feed() {
                         </ul>
                     </div>
                     <div className="flex-shrink-0 w-64 p-4">
-                        <div className="h-screen overflow-y-auto" id="reviewModal">
+                        <div className="h-screen overflow-y-auto" id="reviewModal" style={{display: "none"}}>
                             <p id='albumName'></p>
                             <img id='albumArt'/>
                             <p id='artistName'></p>

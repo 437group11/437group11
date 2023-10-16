@@ -1,4 +1,3 @@
 export interface Review {
-    id: string;
-    name: string;
+    // eventually will add interface for recieving data
 }
