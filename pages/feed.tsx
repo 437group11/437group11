@@ -148,8 +148,7 @@ export default function Feed() {
                                     // value={formData.rating}
                                     // onChange={handleReviewChange}
                                 />
-                                <input 
-                                    type="text" 
+                                <textarea
                                     id="review"
                                     // value={formData.content}
                                     // onChange={handleReviewChange}
