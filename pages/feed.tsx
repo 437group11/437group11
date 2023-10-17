@@ -125,6 +125,7 @@ export default function Feed() {
                         id = "search"
                         onChange={handleChange}
                         type = "text"
+                        placeholder="Search for an album..."
                         />
                         <ul id="results">
                             
@@ -150,6 +151,7 @@ export default function Feed() {
                                 />
                                 <textarea
                                     id="review"
+                                    placeholder="Enter your review..."
                                     // value={formData.content}
                                     // onChange={handleReviewChange}
                                 />
