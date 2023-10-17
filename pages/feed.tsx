@@ -10,6 +10,7 @@ import { requestAlbum } from "./api/request-album";
 //import reviewModal from "./review"; [DO NOT USE]
 import { useRouter } from "next/router";
 import { getUserId } from "utils/userIdManager";
+import Button from "../components/button";
 
 interface Album {
     id: number;
@@ -155,7 +156,7 @@ export default function Feed() {
                                     // value={formData.content}
                                     // onChange={handleReviewChange}
                                 />
-                                <button type="submit"> Submit </button>
+                                <Button type="submit"> Submit </Button>
                             </form>
                         </div>
                     </div>
