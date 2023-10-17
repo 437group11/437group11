@@ -16,7 +16,11 @@ interface Album {
     id: number;
     title: string;
     image: string;
-  }
+}
+
+const MIN_RATING = 0
+const MAX_RATING = 10
+const DEFAULT_RATING = (MIN_RATING + MAX_RATING) / 2
 
 export default function Feed() {
     const [formData, setFormData] = useState({
@@ -88,7 +92,9 @@ export default function Feed() {
                 body: JSON.stringify({albumId: albumId, content: review, rating: rating, authorId: authorId}),
             });
             if (response.ok){
-                console.log('Album Review Submitted');
+                alert("Your review has been saved.");
+                reviewInput.value = "";
+                ratingInput.value = DEFAULT_RATING;
             }
         } catch (error) {
             console.error('Error submitting review: ', error);
@@ -144,8 +150,11 @@ export default function Feed() {
                                 />
                                 <input 
                                     type="range" 
-                                    min="0" 
-                                    max="10" 
+                                    min={MIN_RATING}
+                                    max={MAX_RATING}
+                                    // Use defaultValue instead of value
+                                    // https://stackoverflow.com/a/36123370
+                                    defaultValue={DEFAULT_RATING}
                                     id="score"
                                     // value={formData.rating}
                                     // onChange={handleReviewChange}
