@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import { requestAccessToken } from "./api/request-token";
 import { setToken, getToken } from "utils/tokenManager";
 import Button from "../components/button";
+import {setUserId} from "../utils/userIdManager";
 
 export default function SignIn() {
     const router = useRouter();
@@ -24,8 +25,11 @@ export default function SignIn() {
                 },
                 body: JSON.stringify(formData),
             });
-            if (response.ok){
-                console.log('Signed in');
+            if (response.ok) {
+                let data = await response.json();
+                let user = data["user"];
+                console.log(`Signed in as ${user}`);
+                setUserId(user["id"])
                 requestAccessToken()
                 .then((token) => {
                     setToken(token ?? "");
