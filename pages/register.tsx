@@ -69,7 +69,7 @@ export default function Register() {
                         value={formData.email}
                         onChange={handleChange}
                         className="rounded-sm border-gray-300 border-2" 
-                        type="text" 
+                        type="email"
                         required 
                     />
                 </div>
