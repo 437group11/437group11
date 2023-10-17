@@ -1,3 +1,6 @@
+/**
+ * Manages the user id for the CLIENT. Do not use on the server.
+ */
 export {}
 
 let userId: number = 0;
