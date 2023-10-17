@@ -78,16 +78,6 @@ export default function Feed() {
         const albumId: string = albumIdInput.value;
         const authorId: number = getUserId();
 
-        // setFormData({
-        //     albumId: albumId,
-        //     content: review,
-        //     rating: rating,
-        //     authorId: authorId,
-        // });
-        
-        console.log(authorId);
-        console.log(review);
-        console.log(rating);
         try {
             const response = await fetch('/api/submit-review', {
                 method: 'POST',
