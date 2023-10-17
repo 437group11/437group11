@@ -22,7 +22,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           password: hashedPassword,
         },
       });
-
+      
       res.status(200).json({ message: 'Registration successful', user });
     } catch (error) {
       console.error('Registration error:', error);

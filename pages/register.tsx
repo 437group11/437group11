@@ -4,7 +4,11 @@ import ButtonLink from "../components/button-link";
 import React from "react";
 import { useState } from "react";
 import { useRouter } from "next/router";
+import { requestAccessToken } from "./api/request-token";
+import { setToken, getToken } from "utils/tokenManager";
 import Button from "../components/button";
+import {setUserId} from "../utils/userIdManager";
+
 
 export default function Register() {
     const router = useRouter();
@@ -25,6 +29,18 @@ export default function Register() {
                 body: JSON.stringify(formData),
             });
             if (response.ok){
+                let data = await response.json();
+                let user = data["user"];
+                console.log(`Signed in as ${user}`);
+                setUserId(user["id"])
+                requestAccessToken()
+                .then((token) => {
+                    setToken(token ?? "");
+                    console.log('token: ', token);
+                })
+                .catch((error) => {
+                    console.error('Error:', error)
+                })
                 router.push('/feed');
             }
             else {
