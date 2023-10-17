@@ -125,7 +125,7 @@ export default function Feed() {
     return (
         <RootLayout>
             <div className="bg min-h-screen text-white">
-                <div className="flex flex-row overflow-x-auto">
+                <div className="flex flex-col overflow-x-auto">
                     <div>
                         <input
                         name="search"
