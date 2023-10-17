@@ -7,7 +7,7 @@ import React from "react";
 const myFont = Lora({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'group11_website',
+  title: 'Beatbuff',
   description: 'Rate and share albums',
 }
 
