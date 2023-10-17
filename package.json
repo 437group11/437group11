@@ -13,6 +13,7 @@
     "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
     "next": "latest",
+    "next-auth": "^4.23.2",
     "react": "latest",
     "react-dom": "latest"
   },
