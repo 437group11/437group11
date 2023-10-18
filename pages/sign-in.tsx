@@ -40,9 +40,11 @@ export default function SignIn() {
                 })
                 router.push('/feed');
             } else {
+                alert("Could not sign in with those credentials.")
                 console.error('Sign-in Error:', response.statusText);
             }
-        } catch (error){
+        } catch (error) {
+            alert("Could not sign in with those credentials.")
             console.error('Sign-in Error:', error);
         }
     };

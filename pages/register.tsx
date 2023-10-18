@@ -39,14 +39,17 @@ export default function Register() {
                     console.log('token: ', token);
                 })
                 .catch((error) => {
+                    alert("Could not register with that username.")
                     console.error('Error:', error)
                 })
                 router.push('/feed');
             }
             else {
+                alert("Could not register with that username.")
                 console.error('Registration error:', response.statusText);
             }
         } catch (error) {
+            alert("Could not register with that username.")
             console.error('Registration error:', error);
         }
     };
