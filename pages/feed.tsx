@@ -11,18 +11,17 @@ import { requestAlbum } from "./api/request-album";
 import { useRouter } from "next/router";
 import { getUserId } from "utils/userIdManager";
 import Button from "../components/button";
+import { Album } from "types/Album";
+import { Artist } from "types/Artist";
 
-interface Album {
-    id: number;
-    title: string;
-    image: string;
-}
 
 const MIN_RATING = 0
 const MAX_RATING = 10
 const DEFAULT_RATING = (MIN_RATING + MAX_RATING) / 2
 
 export default function Feed() {
+    
+    console.log()
     const [formData, setFormData] = useState({
         albumId: '',
         content: '',
@@ -30,7 +29,7 @@ export default function Feed() {
         authorId: 0,
     });
     const router = useRouter();
-    const albums: any[] = [];
+    const albums: Album[] = [];
     const searchReturn = new Map<string, string>();
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const searchDataInput : any = document.getElementById("search");
@@ -54,6 +53,7 @@ export default function Feed() {
                 const a = document.createElement("a");
                 requestAlbum(id).then((album)=>{
                     a.addEventListener('click', function() {reviewModule(album)});
+                    console.log(album.name);
                     //reviewModule in review.tsx deprecated ---
                 })
                 .catch ((error) => {
@@ -104,16 +104,16 @@ export default function Feed() {
     const handleReviewChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     }
 
-    function reviewModule(album: any){
+    function reviewModule(album: Album){
         console.log(album);
         const reviewBlock: any = document.getElementById('reviewModal')
         reviewBlock.style.display = 'block';
         const nameP: any = document.getElementById('albumName');
         nameP.textContent = album.name;
         const img : any = document.getElementById('albumArt');
-        img.src = album.images[0].url;
+        img.src = album.image;
         let artistText = "";
-        album.artists.forEach(function(artist: any) {
+        album.artists.forEach(function(artist: Artist) {
             artistText += artist.name + " ";
         })
         const artistP : any = document.getElementById('artistName');

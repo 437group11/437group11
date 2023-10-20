@@ -7,6 +7,7 @@ import { requestAccessToken } from "./api/request-token";
 import { setToken, getToken } from "utils/tokenManager";
 import Button from "../components/button";
 import {setUserId} from "../utils/userIdManager";
+import { User } from "@prisma/client";
 
 export default function SignIn() {
     const router = useRouter();
@@ -14,6 +15,7 @@ export default function SignIn() {
         username: '',
         password: '',
     });
+
     const handleSubmit = async(e: any) => { //change e type later
         e.preventDefault();
 
@@ -27,7 +29,7 @@ export default function SignIn() {
             });
             if (response.ok) {
                 let data = await response.json();
-                let user = data["user"];
+                let user : User = data["user"];
                 console.log(`Signed in as ${user}`);
                 setUserId(user["id"])
                 requestAccessToken()

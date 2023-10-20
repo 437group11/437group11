@@ -7,9 +7,5 @@ export interface Album {
     artists: Artist[];
     release_date?: string;
     type?: string;
-    image : {
-        url: string;
-        height: number;
-        width: number;
-    }
+    image : string;
 }

@@ -7,9 +7,7 @@ const prisma = new PrismaClient();
 export default async function handler(req: NextApiRequest, res: NextApiResponse){
     if (req.method === 'POST'){
         const {username, password} = req.body
-
         try {
-
             const user = await prisma.user.findUnique({where: {username}});
             if (!user){
                 console.error('Invalid Username or Password');
@@ -29,3 +27,5 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         res.status(405).json({ message: 'Method not allowed' });
     }
 }
+
+
