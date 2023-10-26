@@ -26,8 +26,8 @@ model Post {
   title          String
   content        String
   published      Boolean @default(false)
-  author         User    @relation(fields: [authorUsername], references: [username])
   authorUsername String
+  author         User    @relation(fields: [authorUsername], references: [username])
 }
 
 // For saving albums that have been reviewed.
@@ -48,6 +48,6 @@ model Review {
   image          String?
   content        String
   rating         Int
-  author         User    @relation(fields: [authorUsername], references: [username])
   authorUsername String
+  author         User    @relation(fields: [authorUsername], references: [username])
 }
