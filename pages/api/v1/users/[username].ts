@@ -12,7 +12,7 @@ async function getUserPublicData(username: string) {
         },
         select: {
             username: true,
-            id: true
+            dateRegistered: true
         }
     })
 }
