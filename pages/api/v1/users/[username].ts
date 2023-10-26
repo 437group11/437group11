@@ -1,3 +1,6 @@
+/**
+ * This route returns the publicly accessible information for a user.
+ */
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { Prisma } from "@prisma/client"
 import prisma from "../../../../utils/db"
@@ -13,7 +16,11 @@ async function getUserPublicData(username: string) {
         }
     })
 }
-type UserPublicData = Prisma.PromiseReturnType<typeof getUserPublicData>
+
+/**
+ * The return type of the publicly accessible information.
+ */
+export type UserPublicData = Prisma.PromiseReturnType<typeof getUserPublicData>
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { username } = req.query
