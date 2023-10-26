@@ -8,7 +8,7 @@ import { constrainedMemory } from "process";
 import { requestAlbum } from "./api/request-album";
 //import reviewModal from "./review"; [DO NOT USE]
 import { useRouter } from "next/router";
-import { getUserId } from "utils/userIdManager";
+import { getUsername } from "utils/userIdManager";
 import Button from "../components/button";
 import { Album } from "types/Album";
 import { Artist } from "types/Artist";
@@ -80,7 +80,7 @@ export default function Feed() {
         const review: string = reviewInput.value;
         const albumIdInput : any = document.getElementById('albumId');
         const albumId: string = albumIdInput.value;
-        const authorId: number = getUserId();
+        const authorUsername: string = getUsername();
 
         try {
             const response = await fetch('/api/submit-review', {
@@ -88,7 +88,7 @@ export default function Feed() {
                 headers: {
                     'Content-Type' : 'application/json',
                 },
-                body: JSON.stringify({albumId: albumId, content: review, rating: rating, authorId: authorId}),
+                body: JSON.stringify({albumId: albumId, content: review, rating: rating, authorUsername: authorUsername}),
             });
             if (response.ok){
                 alert("Your review has been saved.");

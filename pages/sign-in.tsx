@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import { requestAccessToken } from "./api/request-token";
 import { setToken, getToken } from "utils/tokenManager";
 import Button from "../components/button";
-import {setUserId} from "../utils/userIdManager";
+import {setUsername} from "../utils/userIdManager";
 import { User } from "@prisma/client";
 
 export default function SignIn() {
@@ -31,7 +31,7 @@ export default function SignIn() {
                 let data = await response.json();
                 let user : User = data["user"];
                 console.log(`Signed in as ${user}`);
-                setUserId(user["id"])
+                setUsername(user["username"])
                 requestAccessToken()
                 .then((token) => {
                     setToken(token ?? "");

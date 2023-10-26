@@ -7,14 +7,14 @@ const prisma = new PrismaClient();
 export default async function handler(req: NextApiRequest, res: NextApiResponse){
     console.log('got to handler');
     if (req.method === 'POST'){
-        const {albumId, content, rating, authorId} = req.body;
+        const {albumId, content, rating, authorUsername} = req.body;
         try {
             const review = await prisma.review.create({
                 data: {
                     albumId,
                     content,
                     rating,
-                    authorId,
+                    authorUsername,
                 },
             });
             res.status(200).json({message: 'Review Submitted', review});

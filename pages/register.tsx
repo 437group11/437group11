@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import { requestAccessToken } from "./api/request-token";
 import { setToken, getToken } from "utils/tokenManager";
 import Button from "../components/button";
-import {setUserId} from "../utils/userIdManager";
+import {setUsername} from "../utils/userIdManager";
 
 
 export default function Register() {
@@ -32,7 +32,7 @@ export default function Register() {
                 let data = await response.json();
                 let user = data["user"];
                 console.log(`Signed in as ${user}`);
-                setUserId(user["id"])
+                setUsername(user["username"])
                 requestAccessToken()
                 .then((token) => {
                     setToken(token ?? "");
