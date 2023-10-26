@@ -12,9 +12,8 @@ datasource db {
 
 // Schemas below
 model User {
-  id Int @id @default(autoincrement())
+  username String @unique @id
   email String @unique
-  username String @unique
   password String
   friendCount Int @default(0)
   dateRegistered DateTime @default(now())
@@ -27,8 +26,8 @@ model Post {
   title      String
   content    String
   published  Boolean    @default(false)
-  author     User       @relation(fields: [authorId], references: [id])
-  authorId   Int
+  author     User       @relation(fields: [authorUsername], references: [username])
+  authorUsername   String
 }
 
 model Review {
@@ -37,6 +36,6 @@ model Review {
   image String?
   content String
   rating  Int
-  author  User     @relation(fields: [authorId], references: [id])
-  authorId Int
+  author  User     @relation(fields: [authorUsername], references: [username])
+  authorUsername String
 }
