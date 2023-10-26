@@ -30,9 +30,21 @@ model Post {
   authorUsername String
 }
 
+// For saving albums that have been reviewed.
+// Allows us to not have to call the Spotify API again for these albums.
+model Album {
+  spotifyId String   @id
+  name      String
+  genres    Json // A list of genres (MySQL doesn't support lists, so we use JSON)
+  artists   Json
+  imageUrl  String
+  Review    Review[]
+}
+
 model Review {
   id             Int     @id @default(autoincrement())
   albumId        String
+  album          Album   @relation(fields: [albumId], references: [spotifyId])
   image          String?
   content        String
   rating         Int
