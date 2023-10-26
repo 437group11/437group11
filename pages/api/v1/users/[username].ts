@@ -49,7 +49,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     }
                 })
                 return
+            } else if ("message" in error) {
+                res.status(500).json({
+                    "status": "fail",
+                    "data": {
+                        "title": error.message
+                    }
+                })
+                return
+            } else {
+                res.status(500).json({
+                    "status": "fail",
+                    "data": {
+                        "title": "An unknown error occurred."
+                    }
+                })
+                return
             }
+            
         })
 
     res.status(200).json({
