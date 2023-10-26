@@ -12,30 +12,30 @@ datasource db {
 
 // Schemas below
 model User {
-  username String @unique @id
-  email String @unique
-  password String
-  friendCount Int @default(0)
+  username       String   @id @unique
+  email          String   @unique
+  password       String
+  friendCount    Int      @default(0)
   dateRegistered DateTime @default(now())
-  posts Post[] // One-to-many with Post
-  reviews Review[] // One-to-many with Review
+  posts          Post[] // One-to-many with Post
+  reviews        Review[] // One-to-many with Review
 }
 
 model Post {
-  id         Int        @id @default(autoincrement())
-  title      String
-  content    String
-  published  Boolean    @default(false)
-  author     User       @relation(fields: [authorUsername], references: [username])
-  authorUsername   String
+  id             Int     @id @default(autoincrement())
+  title          String
+  content        String
+  published      Boolean @default(false)
+  author         User    @relation(fields: [authorUsername], references: [username])
+  authorUsername String
 }
 
 model Review {
-  id      Int      @id @default(autoincrement())
-  albumId String 
-  image String?
-  content String
-  rating  Int
-  author  User     @relation(fields: [authorUsername], references: [username])
+  id             Int     @id @default(autoincrement())
+  albumId        String
+  image          String?
+  content        String
+  rating         Int
+  author         User    @relation(fields: [authorUsername], references: [username])
   authorUsername String
 }
