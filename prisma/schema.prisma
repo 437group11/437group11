@@ -22,12 +22,13 @@ model User {
 }
 
 model Post {
-  id             Int     @id @default(autoincrement())
+  id             Int      @id @default(autoincrement())
   title          String
   content        String
-  published      Boolean @default(false)
+  published      Boolean  @default(false)
   authorUsername String
-  author         User    @relation(fields: [authorUsername], references: [username])
+  author         User     @relation(fields: [authorUsername], references: [username])
+  datePublished  DateTime @default(now())
 }
 
 // For saving albums that have been reviewed.
@@ -42,11 +43,12 @@ model Album {
 }
 
 model Review {
-  id             Int     @id @default(autoincrement())
+  id             Int      @id @default(autoincrement())
   albumId        String
-  album          Album   @relation(fields: [albumId], references: [spotifyId])
+  album          Album    @relation(fields: [albumId], references: [spotifyId])
   content        String
   rating         Int
   authorUsername String
-  author         User    @relation(fields: [authorUsername], references: [username])
+  author         User     @relation(fields: [authorUsername], references: [username])
+  datePublished  DateTime @default(now())
 }
