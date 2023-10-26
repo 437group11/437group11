@@ -45,7 +45,6 @@ model Review {
   id             Int     @id @default(autoincrement())
   albumId        String
   album          Album   @relation(fields: [albumId], references: [spotifyId])
-  image          String?
   content        String
   rating         Int
   authorUsername String
