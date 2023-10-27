@@ -43,9 +43,26 @@ const ProfilePage: React.FC = () => {
       if (response.ok){
         const data = await response.json();
         console.log(data.data);
+        let results = document.getElementById("results");
+        results!.innerHTML = "";
+        const usersReturned: User[] = []
+        for (let i = 0; i < data.data.users.length; i++)
+        {
+          usersReturned.push(data.data.users[i])
+        }
+        if(searchData == "")
+        {
+        usersReturned.length = 0;
+        }
+        usersReturned.forEach((user: User) => {
+          const e = document.createElement("li");
+          const a = document.createElement("a");
+          a.textContent = user.username;
+          e.appendChild(a);
+          results?.appendChild(e);
+        })
       }
-
-    }
+  }
       
   return (
     <div className="container mx-auto mt-8">
