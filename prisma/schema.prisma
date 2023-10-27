@@ -12,24 +12,37 @@ datasource db {
 
 // Schemas below
 model User {
-  username       String   @id @unique
-  email          String   @unique
+  username       String          @id @unique
+  email          String          @unique
   password       String
-  dateRegistered DateTime @default(now())
+  dateRegistered DateTime        @default(now())
   posts          Post[] // One-to-many with Post
+  postComments   PostComment[]
   reviews        Review[] // One-to-many with Review
+  reviewComments ReviewComment[]
   // Use a many-to-many self relation for following (both following and followedBy are necessary)
   // https://www.prisma.io/docs/concepts/components/prisma-schema/relations/self-relations#many-to-many-self-relations
-  following      User[]   @relation("UserFollows")
-  followedBy     User[]   @relation("UserFollows")
+  following      User[]          @relation("UserFollows")
+  followedBy     User[]          @relation("UserFollows")
 }
 
 model Post {
+  id             Int           @id @default(autoincrement())
+  content        String
+  authorUsername String
+  author         User          @relation(fields: [authorUsername], references: [username])
+  datePublished  DateTime      @default(now())
+  comments       PostComment[]
+}
+
+model PostComment {
   id             Int      @id @default(autoincrement())
   content        String
   authorUsername String
   author         User     @relation(fields: [authorUsername], references: [username])
   datePublished  DateTime @default(now())
+  postId         Int
+  post           Post     @relation(fields: [postId], references: [id])
 }
 
 // For saving albums that have been reviewed.
@@ -44,12 +57,23 @@ model Album {
 }
 
 model Review {
-  id             Int      @id @default(autoincrement())
+  id             Int             @id @default(autoincrement())
   albumId        String
-  album          Album    @relation(fields: [albumId], references: [spotifyId])
+  album          Album           @relation(fields: [albumId], references: [spotifyId])
   content        String
   rating         Int
   authorUsername String
+  author         User            @relation(fields: [authorUsername], references: [username])
+  datePublished  DateTime        @default(now())
+  comments       ReviewComment[]
+}
+
+model ReviewComment {
+  id             Int      @id @default(autoincrement())
+  content        String
+  authorUsername String
   author         User     @relation(fields: [authorUsername], references: [username])
   datePublished  DateTime @default(now())
+  reviewId       Int
+  review         Review   @relation(fields: [reviewId], references: [id])
 }
