@@ -3,7 +3,7 @@ import { PrismaClient } from "@prisma/client";
 const clientId:string = 'e9958b663f6d4e00ad901f43105a18a7';
 const clientSecret:string = '330b0fa1d1b948b48b3c8714452f360a';
 
-export async function requestAccessToken(): Promise<string | undefined> {
+export async function requestAccessToken(): Promise<string> {
     const tokenEndpoint = 'https://accounts.spotify.com/api/token';
 
     const data = new URLSearchParams();
@@ -29,5 +29,5 @@ export async function requestAccessToken(): Promise<string | undefined> {
     } else {
         console.error('request invalid');
     }
-    return undefined;
+    return Promise.reject();
 }
