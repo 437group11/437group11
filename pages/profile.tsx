@@ -33,17 +33,16 @@ const ProfilePage: React.FC = () => {
       console.log('handled that change babbyby');
       const searchDataInput : any = document.getElementById("search");
       const searchData = searchDataInput.value;
-      const response = await fetch('/api/request-users', {
+      const response = await fetch(`/api/v1/users?username=${searchData}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(searchData),
       });
 
       if (response.ok){
         const data = await response.json();
-        console.log(data);
+        console.log(data.data);
       }
 
     }
