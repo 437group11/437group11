@@ -3,6 +3,8 @@
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { requestAccessToken } from './request-token';
+import { setToken } from 'utils/tokenManager';
 
 const prisma = new PrismaClient();
 
@@ -22,7 +24,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           password: hashedPassword,
         },
       });
-      
+      let token = await requestAccessToken()
+      setToken(token ?? "")
       res.status(200).json({ message: 'Registration successful', user });
     } catch (error) {
       console.error('Registration error:', error);

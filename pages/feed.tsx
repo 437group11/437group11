@@ -83,12 +83,12 @@ export default function Feed() {
         const authorUsername: string = getUsername();
 
         try {
-            const response = await fetch('/api/submit-review', {
+            const response = await fetch(`/api/v1/albums/${albumId}/reviews`, {
                 method: 'POST',
                 headers: {
                     'Content-Type' : 'application/json',
                 },
-                body: JSON.stringify({albumId: albumId, content: review, rating: rating, authorUsername: authorUsername}),
+                body: JSON.stringify({content: review, rating: rating, authorUsername: authorUsername}),
             });
             if (response.ok){
                 alert("Your review has been saved.");
