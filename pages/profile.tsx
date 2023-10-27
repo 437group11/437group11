@@ -1,27 +1,22 @@
 import React, { useEffect, useState } from "react";
 import AlbumCard from "../components/album-card";
+import {UserReviews} from "./api/v1/users/[username]/reviews";
 
-interface AlbumReview {
-    id: number;
-    albumId: string;
-    image: string;
-    content: string;
-    rating: number;
-}
+let username = "fisher"
 
 const ProfilePage: React.FC = () => {
 
-    const [albums, setAlbums] = useState<AlbumReview[]>([]);
+    const [albums, setAlbums] = useState<UserReviews>([]);
     useEffect(() => {
         async function fetchAlbumData() {
           try {
-            const response = await fetch('/api/get-shelf');
+            const response = await fetch(`/api/v1/users/${username}/reviews`);
             if (response.ok){
               const data = await response.json();
               console.log(data);
-              if (data.message === 'Success') {
+              if (data.status === 'success') {
                 console.log("here");
-                setAlbums(data.reviews);
+                setAlbums(data.data.reviews);
               }
             } else {
               console.log("data retrieval failed");
@@ -68,13 +63,13 @@ const ProfilePage: React.FC = () => {
           </ul>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {albums.map((album, index) => (
+        {albums.map((review, index) => (
           <AlbumCard
             key={index}
-            image={album.image}
-            title={album.albumId}
-            description={album.content}
-            rating={album.rating}
+            image={review.album.imageUrl}
+            title={review.album.name}
+            description={review.content}
+            rating={review.rating}
           />
         ))}
       </div>
