@@ -53,7 +53,7 @@ model Album {
   genres    Json // A list of genres (MySQL doesn't support lists, so we use JSON)
   artists   Json
   imageUrl  String
-  Review    Review[]
+  reviews   Review[]
 }
 
 model Review {
