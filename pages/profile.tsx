@@ -1,3 +1,4 @@
+import RootLayout from "../components/root-layout";
 import React, { useEffect, useState } from "react";
 import AlbumCard from "../components/album-card";
 import {UserReviews} from "./api/v1/users/[username]/reviews";
@@ -65,6 +66,8 @@ const ProfilePage: React.FC = () => {
   }
       
   return (
+    <RootLayout>
+    <div className="bg min-h-screen text-white">
     <div className="container mx-auto mt-8">
       <div>
         <input
@@ -90,6 +93,9 @@ const ProfilePage: React.FC = () => {
         ))}
       </div>
     </div>
+    </div>
+            
+    </RootLayout>
   );
 };
 
