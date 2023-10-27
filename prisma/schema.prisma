@@ -18,6 +18,10 @@ model User {
   dateRegistered DateTime @default(now())
   posts          Post[] // One-to-many with Post
   reviews        Review[] // One-to-many with Review
+  // Use a many-to-many self relation for following (both following and followedBy are necessary)
+  // https://www.prisma.io/docs/concepts/components/prisma-schema/relations/self-relations#many-to-many-self-relations
+  following User[] @relation("UserFollows")
+  followedBy User[]  @relation("UserFollows")
 }
 
 model Post {
