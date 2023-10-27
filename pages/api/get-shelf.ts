@@ -1,20 +1,18 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Review } from "@prisma/client";
 import { requestAlbum } from "./request-album";
 import { Album } from "types/Album";
+import { getUserId } from "utils/userIdManager";
+import { NextApiRequest, NextApiResponse } from "next";
 
-export async function getShelf() {
-    const albums: any[] = [];
-    const sunnyBoyId:string = '5m2dVboM31qQtwPVch8pFv?si=jRDOOj-xTQCUHWxbt-CYnw';
-    let albumIds:string[] = ['sunnyBoyId'];
-    for (const id in albumIds){
-        requestAlbum(id)
-        .then((album) => {
-            console.log('Album:', album);
-            albums.push(album);
-        })
-        .catch((error) => {
-            console.error('Error retrieving album: ', id, ' Error:', error);
-        })
+const prisma = new PrismaClient();
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+    const userId: number = 1;
+    const reviews: Review[] = await prisma.review.findMany({where: {authorId: userId}})
+    console.log(userId);
+    if (!reviews){
+        console.error('Bad response');
+        res.status(500).json({ message: 'Bad Server'});
     }
-    return albums;
+    res.status(200).json({message: 'Success', userId, reviews});
 }

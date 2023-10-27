@@ -1,23 +1,20 @@
-import React from 'react';
+import React from "react";
 
-interface AlbumCardInterface {
-    album: {
-      id: number;
-      title: string;
-      image: string;
-    };
-  }
+interface AlbumCardProps {
+  image: string;
+  title: string;
+  description: string;
+  rating: number;
+}
 
-const AlbumCard: React.FC<AlbumCardInterface> = ({ album }) => {
+const AlbumCard: React.FC<AlbumCardProps> = ({ image, title, description, rating }) => {
   return (
-    <div className="flex-shrink-0 w-64">
-      <div className="bg-gray-800 p-4 rounded-lg">
-        <img
-          src={album.image}
-          alt={album.title}
-          className="w-full h-64 object-cover rounded-lg"
-        />
-        <h2 className="text-xl mt-4">{album.title}</h2>
+    <div className="border border-gray-200 rounded-lg overflow-hidden">
+      <img src={image} alt={title} className="w-full" />
+      <div className="p-4">
+        <h2 className="text-lg font-semibold">{title}</h2>
+        <p>{description}</p>
+        <p className="text-sm text-gray-600">Rating: {rating}</p>
       </div>
     </div>
   );

@@ -1,7 +1,6 @@
 import RootLayout from "../components/root-layout";
 import AlbumCard from "components/album-card";
 import { getToken } from "utils/tokenManager";
-import { getShelf } from "./api/get-shelf";
 import React, {useState} from "react";
 import {requestSearch} from "./api/request-search";
 import { stringify } from "querystring";
@@ -125,6 +124,7 @@ export default function Feed() {
     return (
         <RootLayout>
             <div className="bg min-h-screen text-white">
+                <a href="/profile">Profile</a>
                 <div className="flex flex-col overflow-x-auto lg:flex-row">
                     <div>
                         <input
