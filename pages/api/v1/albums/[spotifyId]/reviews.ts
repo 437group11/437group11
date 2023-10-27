@@ -7,6 +7,7 @@ import prisma from "utils/db"
 import axios, { HttpStatusCode } from 'axios'
 import { getToken } from "utils/tokenManager"
 import { jsendError } from 'utils/jsend'
+import {requestAccessToken} from "../../../request-token";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { spotifyId } = req.query
@@ -77,12 +78,12 @@ async function post(spotifyId: string, req: NextApiRequest, res: NextApiResponse
         // We have not added this album to the database.
         // Call spotify API to get info and add it.
         let url = `https://api.spotify.com/v1/albums/${spotifyId}`
-
+        let token = await requestAccessToken()
         let response;
         try {
             response = await axios.get(url, {
                 headers: {
-                    'Authorization': `Bearer ${getToken()}`,
+                    'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json',
                 }
             })
