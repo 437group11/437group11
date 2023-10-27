@@ -15,7 +15,6 @@ model User {
   username       String   @id @unique
   email          String   @unique
   password       String
-  friendCount    Int      @default(0)
   dateRegistered DateTime @default(now())
   posts          Post[] // One-to-many with Post
   reviews        Review[] // One-to-many with Review
@@ -23,9 +22,7 @@ model User {
 
 model Post {
   id             Int      @id @default(autoincrement())
-  title          String
   content        String
-  published      Boolean  @default(false)
   authorUsername String
   author         User     @relation(fields: [authorUsername], references: [username])
   datePublished  DateTime @default(now())
