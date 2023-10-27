@@ -56,7 +56,7 @@ async function get(spotifyId: string, req: NextApiRequest, res: NextApiResponse)
     res.status(200).json({
         "status": "success",
         "data": {
-            "reviews": JSON.stringify(reviews)
+            "reviews": reviews
         }
     })
     return
@@ -77,13 +77,21 @@ async function post(spotifyId: string, req: NextApiRequest, res: NextApiResponse
         // We have not added this album to the database.
         // Call spotify API to get info and add it.
         let url = `https://api.spotify.com/v1/albums/${spotifyId}`
-        let res = await axios.get(url, {
-            headers: {
-                'Authorization': `Bearer ${getToken()}`,
-                'Content-Type': 'application/json',
-            }
-        })
-        let data = await res.data
+
+        let response;
+        try {
+            response = await axios.get(url, {
+                headers: {
+                    'Authorization': `Bearer ${getToken()}`,
+                    'Content-Type': 'application/json',
+                }
+            })
+        } catch {
+            jsendError(res, HttpStatusCode.InternalServerError, "Could not query Spotify API")
+            return
+        }
+
+        let data = await response.data
         await prisma.album.create({
             data: {
                 spotifyId: spotifyId,

@@ -54,6 +54,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     res.status(HttpStatusCode.Ok).json({
         "status": "success",
-        "reviews": JSON.stringify(reviews)
+        "reviews": reviews
     })
 }
