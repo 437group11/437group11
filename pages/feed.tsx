@@ -19,7 +19,6 @@ const MAX_RATING = 10
 const DEFAULT_RATING = (MIN_RATING + MAX_RATING) / 2
 
 export default function Feed() {
-    
     console.log()
     const [formData, setFormData] = useState({
         albumId: '',
@@ -124,7 +123,6 @@ export default function Feed() {
     return (
         <RootLayout>
             <div className="bg min-h-screen text-white">
-                <a href="/profile">Profile</a>
                 <div className="flex flex-col overflow-x-auto lg:flex-row">
                     <div>
                         <input
