@@ -2,12 +2,13 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { getUsername } from "utils/userManager";
 
+const sessionUser = "example";
 
 export default function header() {
     const router = useRouter();
     const { pathname } = router;
     console.log(pathname);
-    const username = getUsername();
+    const username = sessionUser;
     let headerContent;
     if (pathname === "/feed") {
         if (username) {

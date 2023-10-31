@@ -1,7 +1,7 @@
 import RootLayout from "../components/root-layout";
 import AlbumCard from "components/album-card";
 import { getToken } from "utils/tokenManager";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {requestSearch} from "./api/request-search";
 import { stringify } from "querystring";
 import { constrainedMemory } from "process";
@@ -12,8 +12,9 @@ import { getUsername } from "utils/userManager";
 import Button from "../components/button";
 import { Album } from "types/Album";
 import { Artist } from "types/Artist";
+import { UserReviews } from "./api/v1/users/[username]/reviews";
 
-
+const sessionUser = "example"
 const MIN_RATING = 0
 const MAX_RATING = 10
 const DEFAULT_RATING = (MIN_RATING + MAX_RATING) / 2
@@ -26,8 +27,11 @@ export default function Feed() {
         rating: 0,
         authorId: 0,
     });
+    const [followers, setFollowers] = useState<string[]>();
+    const [reviews, setReviews] = useState<UserReviews>([]);
+
     const router = useRouter();
-    const albums: Album[] = [];
+    
     const searchReturn = new Map<string, string>();
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const searchDataInput : any = document.getElementById("search");
@@ -118,7 +122,74 @@ export default function Feed() {
         artistP.textContent = artistText;
         const albumId: any = document.getElementById('albumId');
         albumId.value = album.id;
-    }   
+    }
+
+    const getFollowers = async () => {
+        const followers : string[] = [];
+        try {
+        const response = await fetch(`/api/v1/users/${sessionUser}/following`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        if (response.ok){
+            const data = await response.json()
+            data.data.following.forEach((follower: { username: string; }) => {
+                followers.push(follower.username);
+            })
+            setFollowers(followers);
+            return followers;
+        }
+        } catch (error) {
+        console.error("Error: ", error);
+        }
+        setFollowers(followers);
+        return followers;
+    }
+    
+    const getFeed = async () => {
+        const reviews: UserReviews = [];
+    
+        if (followers) {
+            for (const follower of followers) {
+                try {
+                    const response = await fetch(`/api/v1/users/${follower}/reviews`);
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data.status === 'success') {
+                            reviews.push(...data.data.reviews);
+                        }
+                    } else {
+                        console.log("Data retrieval failed");
+                    }
+                } catch (error) {
+                    console.error('Error fetching data:', error);
+                }
+            }
+        }
+    
+        return reviews;
+    };
+   
+    useEffect(() => {
+        getFeed()
+            .then((reviews) => {
+                setReviews(reviews);
+            })
+            .catch();
+    }, [followers]);
+
+    useEffect(() => {
+        getFollowers()
+        .then((followers) => {
+            console.log("get followers");
+            console.log(followers);
+        })
+        .catch();
+    }, []);
+
+    
 
     return (
         <RootLayout>
@@ -167,6 +238,17 @@ export default function Feed() {
                             </form>
                         </div>
                     </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {reviews.map((review, index) => (
+                            <AlbumCard
+                                key={index}
+                                image={review.album.imageUrl}
+                                title={review.album.name}
+                                description={review.content}
+                                rating={review.rating}
+                            />
+                        ))}
                 </div>
             </div>
             
