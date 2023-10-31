@@ -8,7 +8,7 @@ import { constrainedMemory } from "process";
 import { requestAlbum } from "./api/request-album";
 //import reviewModal from "./review"; [DO NOT USE]
 import { useRouter } from "next/router";
-import { getUsername } from "utils/userIdManager";
+import { getUsername } from "utils/userManager";
 import Button from "../components/button";
 import { Album } from "types/Album";
 import { Artist } from "types/Artist";

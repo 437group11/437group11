@@ -1,16 +1,28 @@
-import RootLayout from "../components/root-layout";
+import RootLayout from "../../components/root-layout";
 import React, { useEffect, useState } from "react";
-import AlbumCard from "../components/album-card";
-import {UserReviews} from "./api/v1/users/[username]/reviews";
+import AlbumCard from "../../components/album-card";
+import {UserReviews} from ".././api/v1/users/[username]/reviews";
+import { User } from "@prisma/client";
+import { useRouter } from "next/router";
+import { Button } from "@chakra-ui/react";
 
-let username = "fisher"
+const sessionUser = "example";
 
 const ProfilePage: React.FC = () => {
-
+    
+    const router = useRouter();
+    
+    const { username } = router.query;
+    console.log(username);
+    
+    //
     const [albums, setAlbums] = useState<UserReviews>([]);
     useEffect(() => {
         async function fetchAlbumData() {
-          try {
+          if(username)
+          {
+            try {
+            console.log(username + "a")
             const response = await fetch(`/api/v1/users/${username}/reviews`);
             if (response.ok){
               const data = await response.json();
@@ -26,9 +38,9 @@ const ProfilePage: React.FC = () => {
             console.error('Error fetching data:', error);
           }
         }
-    
+        }
         fetchAlbumData();
-      }, []);
+      }, [username]);
 
     const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
       console.log('handled that change babbyby');
@@ -59,17 +71,45 @@ const ProfilePage: React.FC = () => {
           const e = document.createElement("li");
           const a = document.createElement("a");
           a.textContent = user.username;
+          const userSelected = user.username;
+          a.href = `/profile/${userSelected}`;
           e.appendChild(a);
           results?.appendChild(e);
         })
       }
-  }
+    }
+
+    const handleFollow = async(e: React.FormEvent) => { 
+        e.preventDefault();
+        const followData = `{"op":"add", "value":${username}}`;
+
+        try {
+            const response = await fetch(`/api/v1/users/${sessionUser}/following`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(followData),
+            });
+            if (response.ok){
+                console.log("" + sessionUser + " follows: " + username);
+            }
+        } catch (error) {
+            console.log("Error: ", error);
+        }
+    }
       
   return (
     <RootLayout>
     <div className="bg min-h-screen text-white">
     <div className="container mx-auto mt-8">
       <div>
+        <p>{username}</p>
+        <form className="mt-8" onSubmit={handleFollow}>
+            <Button type="submit">
+                Follow
+            </Button>
+        </form>
         <input
           name="search"
           id = "search"

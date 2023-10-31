@@ -1,28 +1,37 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { getUsername } from "utils/userManager";
 
 
 export default function header() {
     const router = useRouter();
     const { pathname } = router;
-
+    console.log(pathname);
+    const username = getUsername();
     let headerContent;
-    
-    if (pathname === "/feed")
-    {
-        headerContent = (
-            <header className="bg-bg-darker p-8">
-                <Link href="/feed">
-                    Beatbuff
-                </Link>
-                <Link href="/profile" className="float-right">
-                    Profile
-                </Link>
-            </header>
-        );
-    }
-    
-    else if (pathname === "/profile")
+    if (pathname === "/feed") {
+        if (username) {
+            headerContent = (
+                <header className="bg-bg-darker p-8">
+                    <Link href="/feed">
+                        Beatbuff
+                    </Link>
+                    <Link href={`/profile/${username}`} className="float-right">
+                        {username} 
+                    </Link>
+                </header>
+            );
+        } else {
+            headerContent = (
+                <header className="bg-bg-darker p-8">
+                    <Link href="/feed">
+                        Beatbuff
+                    </Link>
+                    <p className="float-right">{username}</p>
+                </header>
+            );
+        }
+    } else if (pathname === "/profile/[username]")
     {
         headerContent = (
         <header className="bg-bg-darker p-8">

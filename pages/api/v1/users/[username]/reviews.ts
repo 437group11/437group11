@@ -5,6 +5,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { Prisma } from "@prisma/client"
 import prisma from "utils/db"
 import { HttpStatusCode } from 'axios'
+import { useRouter } from 'next/router'
 
 async function getUserReviews(username: string) {
     return await prisma.review.findMany({
@@ -23,8 +24,8 @@ async function getUserReviews(username: string) {
 export type UserReviews = Prisma.PromiseReturnType<typeof getUserReviews>
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    const { username } = req.query
-
+    const { username } = req.query //note
+    
     function isString(s: string | string[] | undefined): s is string {
         return typeof s === "string";
     }

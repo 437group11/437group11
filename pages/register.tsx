@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import { requestAccessToken } from "./api/request-token";
 import { setToken, getToken } from "utils/tokenManager";
 import Button from "../components/button";
-import {setUsername} from "../utils/userIdManager";
+import {setUsername} from "../utils/userManager";
 
 
 export default function Register() {
