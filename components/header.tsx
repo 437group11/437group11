@@ -4,7 +4,7 @@ import { getUsername } from "utils/userManager";
 
 const sessionUser = "example";
 
-export default function header() {
+export default function Header() {
     const router = useRouter();
     const { pathname } = router;
     console.log(pathname);
