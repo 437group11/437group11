@@ -4,7 +4,7 @@ import AlbumCard from "../../components/album-card";
 import {UserReviews} from "../api/v2/users/[id]/reviews";
 import { User } from "@prisma/client";
 import { useRouter } from "next/router";
-import { Button } from "@chakra-ui/react";
+import { Button, Heading } from "@chakra-ui/react";
 import { useSession, signIn, signOut } from "next-auth/react";
 
 const ProfilePage: React.FC = () => {
@@ -160,7 +160,7 @@ const ProfilePage: React.FC = () => {
     <div className="bg min-h-screen text-white">
     <div className="container mx-auto mt-8">
       <div>
-        <p>{id}</p>
+        <Heading>{session?.user?.name}</Heading>
         {isUser ? (
             <>
               <input
