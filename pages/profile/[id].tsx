@@ -4,18 +4,43 @@ import AlbumCard from "../../components/album-card";
 import {UserReviews} from "../api/v2/users/[id]/reviews";
 import { User } from "@prisma/client";
 import { useRouter } from "next/router";
-import { Button, Heading } from "@chakra-ui/react";
+import { Button, Heading, Progress } from "@chakra-ui/react";
 import { useSession, signIn, signOut } from "next-auth/react";
+import { UserPublicData } from "../api/v2/users/[id]";
 
 const ProfilePage: React.FC = () => {
     const { data: session, status } = useSession();
     const router = useRouter();
     
     const { id } = router.query;
-    
-    //
+
+    const [isLoading, setIsLoading] = useState(true);
+    const [user, setUser] = useState<UserPublicData>(null);
     const [albums, setAlbums] = useState<UserReviews>([]);
     const [followsUser, setFollowsUser] = useState<boolean>(false);
+
+    useEffect(() => {
+      if (id) {
+          fetch(`/api/v2/users/${id}`)
+              .then((response) => {
+                  if (!response.ok) {
+                      return Promise.reject();
+                  }
+                  return response.json();
+              })
+              .then((json) => {
+                  let data = json.data;
+                  const userData = data.user;
+                  setUser(userData);
+              })
+              .catch((error) => {
+                  console.error('Error fetching user data:', error);
+              })
+              .finally(() => {
+                  setIsLoading(false);
+              });
+      }
+  }, [id]);
 
     useEffect(() => {
         async function fetchAlbumData() {
@@ -153,13 +178,22 @@ const ProfilePage: React.FC = () => {
     }, [id]);
       
     console.log(followsUser);
-    
+  
+  if (isLoading) {
+    return <RootLayout><Progress size='lg' isIndeterminate /></RootLayout>
+  }
+
+  if (!user) {
+    return <RootLayout>User not found</RootLayout>;
+  }
+
+
   return (
     <RootLayout>
     <div className="bg min-h-screen text-white">
     <div className="container mx-auto mt-8">
       <div>
-        <Heading>{session?.user?.name}</Heading>
+        <Heading>{user.name}</Heading>
         {isUser ? (
             <>
               <input
