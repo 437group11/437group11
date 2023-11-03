@@ -23,7 +23,14 @@ export const authOptions = {
             clientId: process.env.GITHUB_CLIENT_ID!,
             clientSecret: process.env.GITHUB_CLIENT_SECRET!,
         }),
-    ]
+    ],
+    callbacks: {
+        // https://github.com/t3-oss/create-t3-app/issues/176
+        async session({ session, user }: {session: any, user: any}) {
+          session.user.id = user.id;
+          return Promise.resolve(session);
+        },
+      }
 }
 
 export default NextAuth(authOptions)
