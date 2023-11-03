@@ -5,9 +5,9 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { Prisma, Album } from "@prisma/client"
 import prisma from "utils/db"
 import axios, { HttpStatusCode } from 'axios'
-import { getToken } from "utils/tokenManager"
 import { jsendError } from 'utils/jsend'
-import {requestAccessToken} from "../../../request-token";
+import { getServerSession } from "next-auth"
+import { authOptions } from "pages/api/auth/[...nextauth]"
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { spotifyId } = req.query
@@ -16,7 +16,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return typeof s === "string";
     }
     if (!isString(spotifyId)) {
-        res.status(400).json({
+        res.status(HttpStatusCode.BadRequest).json({
             "status": "fail",
             "data": {
                 "title": "Spotify ID must be a string"
@@ -68,6 +68,18 @@ async function get(spotifyId: string, req: NextApiRequest, res: NextApiResponse)
  * @param spotifyId The Spotify ID of the album, e.g. 5Z9iiGl2FcIfa3BMiv6OIw.
  */
 async function post(spotifyId: string, req: NextApiRequest, res: NextApiResponse) {
+    const session = await getServerSession(req, res, authOptions)
+
+    if (!session) {
+        res.status(HttpStatusCode.Unauthorized).json({
+            "status": "fail",
+            "data": {
+                "title": "You must be logged in to post a review"
+            }
+        })
+        return
+    }
+
     let album = await prisma.album.findUnique({
         where: {
             spotifyId: spotifyId
@@ -78,7 +90,7 @@ async function post(spotifyId: string, req: NextApiRequest, res: NextApiResponse
         // We have not added this album to the database.
         // Call spotify API to get info and add it.
         let url = `https://api.spotify.com/v1/albums/${spotifyId}`
-        let token = await requestAccessToken()
+        let token = await session.spotifyToken
         let response;
         try {
             response = await axios.get(url, {
@@ -109,7 +121,7 @@ async function post(spotifyId: string, req: NextApiRequest, res: NextApiResponse
             albumId: spotifyId,
             content: req.body["content"],
             rating: req.body["rating"],
-            authorUsername: req.body["authorUsername"]
+            authorId: session.user.id
         }
     })
 

@@ -5,12 +5,11 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { Prisma } from "@prisma/client"
 import prisma from "utils/db"
 import { HttpStatusCode } from 'axios'
-import { useRouter } from 'next/router'
 
-async function getUserReviews(username: string) {
+async function getUserReviews(id: string) {
     return await prisma.review.findMany({
         where: {
-            authorUsername: username
+            authorId: id
         },
         include: {
             album: true
@@ -24,29 +23,29 @@ async function getUserReviews(username: string) {
 export type UserReviews = Prisma.PromiseReturnType<typeof getUserReviews>
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    const { username } = req.query //note
+    const { id } = req.query //note
     
     function isString(s: string | string[] | undefined): s is string {
         return typeof s === "string";
     }
-    if (!isString(username)) {
+    if (!isString(id)) {
         res.status(HttpStatusCode.BadRequest).json({
             "status": "fail",
             "data": {
-                "title": "Username must be a string"
+                "title": "ID must be a string"
             }
         })
         return
     }
 
-    const reviews = await getUserReviews(username)
+    const reviews = await getUserReviews(id)
         .catch((error) => {
             if (error.code === "P2025") {
                 // User not found
                 res.status(HttpStatusCode.NotFound).json({
                     "status": "fail",
                     "data": {
-                        "title": "User not found with that username"
+                        "title": "User not found with that ID"
                     }
                 })
                 return

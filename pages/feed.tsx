@@ -1,6 +1,5 @@
 import RootLayout from "../components/root-layout";
 import AlbumCard from "components/album-card";
-import { getToken } from "utils/tokenManager";
 import React, {useEffect, useState} from "react";
 import {requestSearch} from "./api/request-search";
 import { stringify } from "querystring";
@@ -8,18 +7,19 @@ import { constrainedMemory } from "process";
 import { requestAlbum } from "./api/request-album";
 //import reviewModal from "./review"; [DO NOT USE]
 import { useRouter } from "next/router";
-import { getUsername } from "utils/userManager";
 import Button from "../components/button";
 import { Album } from "types/Album";
 import { Artist } from "types/Artist";
-import { UserReviews } from "./api/v1/users/[username]/reviews";
+import { UserReviews } from "./api/v2/users/[id]/reviews";
+import { useSession, signIn, signOut } from "next-auth/react";
 
-const sessionUser = "example"
 const MIN_RATING = 0
 const MAX_RATING = 10
 const DEFAULT_RATING = (MIN_RATING + MAX_RATING) / 2
 
 export default function Feed() {
+    const { data: session, status } = useSession();
+
     console.log()
     const [formData, setFormData] = useState({
         albumId: '',
@@ -30,13 +30,13 @@ export default function Feed() {
     const [followers, setFollowers] = useState<string[]>();
     const [reviews, setReviews] = useState<UserReviews>([]);
 
-    const router = useRouter();
+    
     
     const searchReturn = new Map<string, string>();
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const searchDataInput : any = document.getElementById("search");
         const searchData = searchDataInput.value;
-        requestSearch(searchData)
+        requestSearch(searchData, session!.spotifyToken!)
         .then((data) => { //------
             console.log(data);
             searchReturn.clear();
@@ -53,7 +53,7 @@ export default function Feed() {
                 console.log(id, name);
                 const e = document.createElement("li");
                 const a = document.createElement("a");
-                requestAlbum(id).then((album)=>{
+                requestAlbum(id, session!.spotifyToken!).then((album)=>{
                     a.addEventListener('click', function() {reviewModule(album)});
                     console.log(album.name);
                     //reviewModule in review.tsx deprecated ---
@@ -83,15 +83,14 @@ export default function Feed() {
         const review: string = reviewInput.value;
         const albumIdInput : any = document.getElementById('albumId');
         const albumId: string = albumIdInput.value;
-        const authorUsername: string = getUsername();
 
         try {
-            const response = await fetch(`/api/v1/albums/${albumId}/reviews`, {
+            const response = await fetch(`/api/v2/albums/${albumId}/reviews`, {
                 method: 'POST',
                 headers: {
                     'Content-Type' : 'application/json',
                 },
-                body: JSON.stringify({content: review, rating: rating, authorUsername: authorUsername}),
+                body: JSON.stringify({content: review, rating: rating}),
             });
             if (response.ok){
                 alert("Your review has been saved.");
@@ -127,7 +126,7 @@ export default function Feed() {
     const getFollowers = async () => {
         const followers : string[] = [];
         try {
-        const response = await fetch(`/api/v1/users/${sessionUser}/following`, {
+        const response = await fetch(`/api/v2/users/${session?.user?.id}/following`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -154,7 +153,7 @@ export default function Feed() {
         if (followers) {
             for (const follower of followers) {
                 try {
-                    const response = await fetch(`/api/v1/users/${follower}/reviews`);
+                    const response = await fetch(`/api/v2/users/${follower}/reviews`);
                     if (response.ok) {
                         const data = await response.json();
                         if (data.status === 'success') {
@@ -188,9 +187,7 @@ export default function Feed() {
         })
         .catch();
     }, []);
-
     
-
     return (
         <RootLayout>
             <div className="bg min-h-screen text-white">

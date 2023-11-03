@@ -1,56 +1,52 @@
 /**
- * This route returns the publicly accessible information for a user.
+ * This route allows searching for a user by passing the GET parameter ?name=
  */
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { Prisma } from "@prisma/client"
-import prisma from "../../../../utils/db"
+import prisma from "utils/db"
+import { HttpStatusCode } from 'axios'
 
-async function getUserPublicData(username: string) {
-    return await prisma.user.findUniqueOrThrow({
+async function searchUserPublicData(name: string) {
+    return await prisma.user.findMany({
         where: {
-            username: username
+            name: {
+                contains: name
+            }
         },
         select: {
-            username: true,
-            dateRegistered: true
-        }
+            id: true,
+            name: true,
+            image: true
+        },
+        take: 10
     })
 }
 
 /**
  * The return type of the publicly accessible information.
  */
-export type UserPublicData = Prisma.PromiseReturnType<typeof getUserPublicData>
+export type UserPublicDataArray = Prisma.PromiseReturnType<typeof searchUserPublicData>
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    const { username } = req.query
+    const { name } = req.query
 
     function isString(s: string | string[] | undefined): s is string {
         return typeof s === "string";
     }
-    if (!isString(username)) {
+    if (!isString(name)) {
         res.status(400).json({
             "status": "fail",
             "data": {
-                "title": "Username must be a string"
+                "title": "Name query must be a string"
             }
         })
         return
     }
 
-    const user = await getUserPublicData(username)
+    const users = await searchUserPublicData(name)
         .catch((error) => {
-            if (error.code === "P2025") {
-                // User not found
-                res.status(404).json({
-                    "status": "fail",
-                    "data": {
-                        "title": "User not found with that username"
-                    }
-                })
-                return
-            } else if ("message" in error) {
-                res.status(500).json({
+            if ("message" in error) {
+                res.status(HttpStatusCode.InternalServerError).json({
                     "status": "fail",
                     "data": {
                         "title": error.message
@@ -58,7 +54,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 })
                 return
             } else {
-                res.status(500).json({
+                res.status(HttpStatusCode.InternalServerError).json({
                     "status": "fail",
                     "data": {
                         "title": "An unknown error occurred."
@@ -66,12 +62,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 })
                 return
             }
+            
         })
 
-    res.status(200).json({
+    res.status(HttpStatusCode.Ok).json({
         "status": "success",
         "data": {
-            "user": user
+            "users": users
         }
     })
 }

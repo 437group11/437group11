@@ -1,50 +1,57 @@
 /**
- * This route allows searching for a user by passing the GET parameter ?username=
+ * This route returns the publicly accessible information for a user.
  */
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { Prisma } from "@prisma/client"
 import prisma from "utils/db"
-import { HttpStatusCode } from 'axios'
+import { HttpStatusCode } from "axios"
 
-async function searchUserPublicData(username: string) {
-    return await prisma.user.findMany({
+async function getUserPublicData(id: string) {
+    return await prisma.user.findUniqueOrThrow({
         where: {
-            username: {
-                contains: username
-            }
+            id: id
         },
         select: {
-            username: true,
-            dateRegistered: true
-        },
-        take: 10
+            id: true,
+            name: true,
+            image: true,
+        }
     })
 }
 
 /**
  * The return type of the publicly accessible information.
  */
-export type UserPublicDataArray = Prisma.PromiseReturnType<typeof searchUserPublicData>
+export type UserPublicData = Prisma.PromiseReturnType<typeof getUserPublicData>
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    const { username } = req.query
+    const { id } = req.query
 
     function isString(s: string | string[] | undefined): s is string {
         return typeof s === "string";
     }
-    if (!isString(username)) {
-        res.status(400).json({
+    if (!isString(id)) {
+        res.status(HttpStatusCode.BadRequest).json({
             "status": "fail",
             "data": {
-                "title": "Username query must be a string"
+                "title": "ID must be a string"
             }
         })
         return
     }
 
-    const users = await searchUserPublicData(username)
+    const user = await getUserPublicData(id)
         .catch((error) => {
-            if ("message" in error) {
+            if (error.code === "P2025") {
+                // User not found
+                res.status(HttpStatusCode.NotFound).json({
+                    "status": "fail",
+                    "data": {
+                        "title": "User not found with that id"
+                    }
+                })
+                return
+            } else if ("message" in error) {
                 res.status(HttpStatusCode.InternalServerError).json({
                     "status": "fail",
                     "data": {
@@ -61,13 +68,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 })
                 return
             }
-            
         })
 
     res.status(HttpStatusCode.Ok).json({
         "status": "success",
         "data": {
-            "users": users
+            "user": user
         }
     })
 }

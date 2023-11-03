@@ -1,6 +1,3 @@
-import { requestAlbum } from "./api/request-album";
-import { useRouter } from "next/router";
-
 export default function reviewModal(album: any){
 
     let img: string = "";

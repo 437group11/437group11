@@ -6,24 +6,21 @@
  */
 
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { Prisma, Album } from "@prisma/client"
 import prisma from "utils/db"
-import axios, { HttpStatusCode } from 'axios'
-import { getToken } from "utils/tokenManager"
+import { HttpStatusCode } from 'axios'
 import { jsendError } from 'utils/jsend'
-import { requestAccessToken } from "../../../request-token";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    const { username } = req.query
+    const { id } = req.query
 
     function isString(s: string | string[] | undefined): s is string {
         return typeof s === "string";
     }
-    if (!isString(username)) {
+    if (!isString(id)) {
         res.status(HttpStatusCode.BadRequest).json({
             "status": "fail",
             "data": {
-                "title": "Username must be a string"
+                "title": "ID must be a string"
             }
         })
         return
@@ -31,9 +28,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     switch (req.method) {
         case "GET":
-            return getFollowing(req, res, username)
+            return getFollowing(req, res, id)
         case "PATCH":
-            return patchFollowing(req, res, username, req.body)
+            return patchFollowing(req, res, id, req.body)
         default:
             res.status(HttpStatusCode.MethodNotAllowed).json({
                 "status": "fail",
@@ -45,15 +42,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 }
 
-function getFollowing(req: NextApiRequest, res: NextApiResponse, username: string) {
+function getFollowing(req: NextApiRequest, res: NextApiResponse, id: string) {
     prisma.user.findUniqueOrThrow({
         where: {
-            username: username
+            id: id
         },
         select: {
             following: {
                 select: {
-                    username: true
+                    id: true
                 }
             }
         },
@@ -70,7 +67,7 @@ function getFollowing(req: NextApiRequest, res: NextApiResponse, username: strin
             res.status(HttpStatusCode.NotFound).json({
                 "status": "fail",
                 "data": {
-                    "title": "User not found with that username"
+                    "title": "User not found with that ID"
                 }
             })
             return
@@ -82,17 +79,17 @@ function getFollowing(req: NextApiRequest, res: NextApiResponse, username: strin
     })
 }
 
-async function patchFollowing(req: NextApiRequest, res: NextApiResponse, username: string, body: any) {
+async function patchFollowing(req: NextApiRequest, res: NextApiResponse, id: string, body: any) {
     // The data format expected is a bastardization of RFC 6902.
     // "op" must be "add" or "remove".
-    // "value" is the username to follow or unfollow.
+    // "value" is the id of the user to follow or unfollow.
     let op = body["op"]
 
     switch (op) {
         case "add":
-            let userToFollow = body["value"]
+            let userToFollowId = body["value"]
             try {
-                await followUser(username, userToFollow)
+                await followUser(id, userToFollowId)
             } catch {
                 return jsendError(res, HttpStatusCode.InternalServerError, "Could not follow user")
             }
@@ -100,9 +97,9 @@ async function patchFollowing(req: NextApiRequest, res: NextApiResponse, usernam
                 "status": "success"
             })
         case "remove":
-            let userToUnfollow = body["value"]
+            let userToUnfollowId = body["value"]
             try {
-                await unfollowUser(username, userToUnfollow)
+                await unfollowUser(id, userToUnfollowId)
             } catch {
                 return jsendError(res, HttpStatusCode.InternalServerError, "Could not follow user")
             }
@@ -119,50 +116,50 @@ async function patchFollowing(req: NextApiRequest, res: NextApiResponse, usernam
     }
 }
 
-async function followUser(followerUsername: string, followingUsername: string) {
+async function followUser(followerId: string, followingId: string) {
     const follower = await prisma.user.findUnique({
         where: {
-            username: followerUsername,
+            id: followerId,
         },
     });
 
     const following = await prisma.user.findUnique({
         where: {
-            username: followingUsername,
+            id: followingId,
         },
     });
 
     if (!follower || !following) {
         return Promise.reject(new Error('User not found'));
     }
-    if (follower.username == following.username) {
+    if (follower.id == following.id) {
         return Promise.reject(new Error('Cannot follow self'));
     }
 
     return prisma.user.update({
         where: {
-            username: followerUsername,
+            id: followerId,
         },
         data: {
             following: {
                 connect: {
-                    username: followingUsername,
+                    id: followingId,
                 },
             },
         },
     });
 }
 
-async function unfollowUser(followerUsername: string, followingUsername: string) {
+async function unfollowUser(followerId: string, followingId: string) {
     const follower = await prisma.user.findUnique({
         where: {
-            username: followerUsername,
+            id: followerId,
         },
     });
 
     const following = await prisma.user.findUnique({
         where: {
-            username: followingUsername,
+            id: followingId,
         },
     });
 
@@ -172,12 +169,12 @@ async function unfollowUser(followerUsername: string, followingUsername: string)
 
     return await prisma.user.update({
         where: {
-            username: followerUsername,
+            id: followerId,
         },
         data: {
             following: {
                 disconnect: {
-                    username: followingUsername,
+                    id: followingId,
                 },
             },
         },
