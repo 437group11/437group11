@@ -21,10 +21,6 @@ const DEFAULT_RATING = (MIN_RATING + MAX_RATING) / 2
 
 export default function Feed() {
     const { data: session, status } = useSession();
-    const router = useRouter();
-    if (!session) {
-        router.push("index");
-    }
 
     console.log()
     const [formData, setFormData] = useState({
