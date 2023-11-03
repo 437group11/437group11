@@ -1,19 +1,17 @@
 import RootLayout from "../../components/root-layout";
 import React, { useEffect, useState } from "react";
 import AlbumCard from "../../components/album-card";
-import {UserReviews} from ".././api/v1/users/[username]/reviews";
+import {UserReviews} from "../api/v2/users/[id]/reviews";
 import { User } from "@prisma/client";
 import { useRouter } from "next/router";
 import { Button } from "@chakra-ui/react";
-
-const sessionUser = "example";
+import { useSession, signIn, signOut } from "next-auth/react";
 
 const ProfilePage: React.FC = () => {
-    
+    const { data: session, status } = useSession();
     const router = useRouter();
     
-    const { username } = router.query;
-    console.log(username);
+    const { id } = router.query;
     
     //
     const [albums, setAlbums] = useState<UserReviews>([]);
@@ -21,11 +19,10 @@ const ProfilePage: React.FC = () => {
 
     useEffect(() => {
         async function fetchAlbumData() {
-          if(username)
+          if(id)
           {
             try {
-            console.log(username + "a")
-            const response = await fetch(`/api/v1/users/${username}/reviews`);
+            const response = await fetch(`/api/v2/users/${id}/reviews`);
             if (response.ok){
               const data = await response.json();
               console.log(data);
@@ -42,12 +39,16 @@ const ProfilePage: React.FC = () => {
         }
       }
       fetchAlbumData();
-    }, [username]);
+    }, [id]);
 
     const checkIfFollows = async () : Promise<boolean> => {
-      const checkData = JSON.stringify({where: {username: username}});
+      if (!session) {
+        return false
+      }
+
+      const checkData = JSON.stringify({where: {id: id}});
       try {
-        const response = await fetch(`/api/v1/users/${sessionUser}/following?username=${username}`, {
+        const response = await fetch(`/api/v2/users/${session?.user?.id}/following`, {
           method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -55,8 +56,8 @@ const ProfilePage: React.FC = () => {
         });
         if (response.ok){
           const data = await response.json()
-          if (data.data.following[0].username == username){
-            console.log(sessionUser + "Follows: " + username);
+          if (data.data.following.includes(id)){
+            console.log(session?.user?.id + "Follows: " + id);
             return true;
           }
         }
@@ -70,7 +71,7 @@ const ProfilePage: React.FC = () => {
       console.log('handled that change babbyby');
       const searchDataInput : any = document.getElementById("search");
       const searchData = searchDataInput.value;
-      const response = await fetch(`/api/v1/users?username=${searchData}`, {
+      const response = await fetch(`/api/v2/users?name=${searchData}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -94,8 +95,8 @@ const ProfilePage: React.FC = () => {
         usersReturned.forEach((user: User) => {
           const e = document.createElement("li");
           const a = document.createElement("a");
-          a.textContent = user.username;
-          const userSelected = user.username;
+          a.textContent = user.name;
+          const userSelected = user.name;
           a.href = `/profile/${userSelected}`;
           e.appendChild(a);
           results?.appendChild(e);
@@ -105,9 +106,9 @@ const ProfilePage: React.FC = () => {
 
     const handleFollow = async(e: React.FormEvent) => { 
         e.preventDefault();
-        const followData = JSON.stringify({op: "add", value: username});
+        const followData = JSON.stringify({op: "add", value: id});
         try {
-            const response = await fetch(`/api/v1/users/${sessionUser}/following`, {
+            const response = await fetch(`/api/v2/users/${session?.user?.id}/following`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -115,7 +116,7 @@ const ProfilePage: React.FC = () => {
                 body: followData,
             });
             if (response.ok){
-                console.log("" + sessionUser + " follows: " + username);
+                console.log("" + session?.user?.id + " follows: " + id);
                 setFollowsUser(true);
             }
         } catch (error) {
@@ -124,9 +125,9 @@ const ProfilePage: React.FC = () => {
     }
     const handleUnfollow = async(e: React.FormEvent) => { 
       e.preventDefault();
-        const followData = JSON.stringify({op: "remove", value: username});
+        const followData = JSON.stringify({op: "remove", value: id});
         try {
-            const response = await fetch(`/api/v1/users/${sessionUser}/following`, {
+            const response = await fetch(`/api/v2/users/${session?.user?.id}/following`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -134,7 +135,7 @@ const ProfilePage: React.FC = () => {
                 body: followData,
             });
             if (response.ok){
-                console.log("" + sessionUser + " unfollowed: " + username);
+                console.log("" + session?.user?.id + " unfollowed: " + id);
                 setFollowsUser(false);
             }
         } catch (error) {
@@ -142,7 +143,7 @@ const ProfilePage: React.FC = () => {
         }
     }
 
-    const isUser = sessionUser === username;
+    const isUser = session?.user?.id === id;
 
     useEffect(() => {
       checkIfFollows()
@@ -150,7 +151,7 @@ const ProfilePage: React.FC = () => {
           setFollowsUser(follows);
         })
         .catch();
-    }, [username]);
+    }, [id]);
       
     console.log(followsUser);
     
@@ -159,7 +160,7 @@ const ProfilePage: React.FC = () => {
     <div className="bg min-h-screen text-white">
     <div className="container mx-auto mt-8">
       <div>
-        <p>{username}</p>
+        <p>{id}</p>
         {isUser ? (
             <>
               <input
@@ -173,7 +174,7 @@ const ProfilePage: React.FC = () => {
             </>
           ) : (
             <>
-              <a href={`/profile/${sessionUser}`}>{sessionUser}</a>
+              <a href={`/profile/${session?.user?.id}`}>{session?.user?.id}</a>
               {followsUser ? (
                 <form className="mt-8" onSubmit={handleUnfollow}>
                   <Button id="unfollow" type="submit">
