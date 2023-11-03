@@ -1,5 +1,7 @@
 import RootLayout from "../components/root-layout";
 import ButtonLink from "../components/button-link";
+import { signIn } from "next-auth/react";
+import { Button, ButtonGroup } from '@chakra-ui/react'
 
 export default function Home() {
     return (
@@ -12,12 +14,7 @@ export default function Home() {
                 To get started, create an account or sign in:
             </p>
             <div className="my-8">
-                <ButtonLink href="/register">
-                    Create an account
-                </ButtonLink>
-                <ButtonLink href="/sign-in">
-                    Sign in
-                </ButtonLink>
+                <Button onClick={() => signIn()}>Sign in</Button>
             </div>
         </RootLayout>
     )
