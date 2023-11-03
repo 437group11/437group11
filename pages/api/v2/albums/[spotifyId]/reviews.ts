@@ -5,9 +5,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { Prisma, Album } from "@prisma/client"
 import prisma from "utils/db"
 import axios, { HttpStatusCode } from 'axios'
-import { getToken } from "utils/tokenManager"
 import { jsendError } from 'utils/jsend'
-import {requestAccessToken} from "../../../request-token";
 import { getServerSession } from "next-auth"
 import { authOptions } from "pages/api/auth/[...nextauth]"
 
@@ -92,7 +90,7 @@ async function post(spotifyId: string, req: NextApiRequest, res: NextApiResponse
         // We have not added this album to the database.
         // Call spotify API to get info and add it.
         let url = `https://api.spotify.com/v1/albums/${spotifyId}`
-        let token = await requestAccessToken()
+        let token = await session.spotifyToken
         let response;
         try {
             response = await axios.get(url, {

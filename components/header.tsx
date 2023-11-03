@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { getUsername } from "utils/userManager";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { Button, Heading } from "@chakra-ui/react";
 

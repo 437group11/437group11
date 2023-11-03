@@ -1,4 +1,5 @@
 import type { DefaultUser } from 'next-auth';
+import type { DefaultSession } from "next-auth";
 
 // https://stackoverflow.com/a/75466129
 declare module 'next-auth' {
@@ -6,5 +7,6 @@ declare module 'next-auth' {
     user?: DefaultUser & {
       id: string;
     };
+    spotifyToken: string;
   }
 }

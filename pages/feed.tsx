@@ -1,6 +1,5 @@
 import RootLayout from "../components/root-layout";
 import AlbumCard from "components/album-card";
-import { getToken } from "utils/tokenManager";
 import React, {useEffect, useState} from "react";
 import {requestSearch} from "./api/request-search";
 import { stringify } from "querystring";
@@ -8,7 +7,6 @@ import { constrainedMemory } from "process";
 import { requestAlbum } from "./api/request-album";
 //import reviewModal from "./review"; [DO NOT USE]
 import { useRouter } from "next/router";
-import { getUsername } from "utils/userManager";
 import Button from "../components/button";
 import { Album } from "types/Album";
 import { Artist } from "types/Artist";
@@ -38,7 +36,7 @@ export default function Feed() {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const searchDataInput : any = document.getElementById("search");
         const searchData = searchDataInput.value;
-        requestSearch(searchData)
+        requestSearch(searchData, session!.spotifyToken!)
         .then((data) => { //------
             console.log(data);
             searchReturn.clear();
@@ -55,7 +53,7 @@ export default function Feed() {
                 console.log(id, name);
                 const e = document.createElement("li");
                 const a = document.createElement("a");
-                requestAlbum(id).then((album)=>{
+                requestAlbum(id, session!.spotifyToken!).then((album)=>{
                     a.addEventListener('click', function() {reviewModule(album)});
                     console.log(album.name);
                     //reviewModule in review.tsx deprecated ---
@@ -85,7 +83,6 @@ export default function Feed() {
         const review: string = reviewInput.value;
         const albumIdInput : any = document.getElementById('albumId');
         const albumId: string = albumIdInput.value;
-        const authorUsername: string = getUsername();
 
         try {
             const response = await fetch(`/api/v2/albums/${albumId}/reviews`, {

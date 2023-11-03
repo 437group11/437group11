@@ -1,8 +1,5 @@
-import { getToken } from "utils/tokenManager";
-import { requestAlbum } from "./request-album";
-
-export async function requestSearch(searchTerm:string): Promise<any> {
-    const accessToken = getToken();
+export async function requestSearch(searchTerm:string, token: string): Promise<any> {
+    const accessToken = token;
     const apiUrl = 'https://api.spotify.com/v1/search?';
     const limit = '10';
     const encodedSearchTerm = encodeURIComponent(searchTerm);
