@@ -1,59 +1,54 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { getUsername } from "utils/userManager";
-
-const sessionUser = "example";
+import { useSession, signIn, signOut } from "next-auth/react";
+import { Button } from "@chakra-ui/react";
 
 export default function Header() {
+    const { data: session, status } = useSession();
     const router = useRouter();
     const { pathname } = router;
-    console.log(pathname);
-    const username = sessionUser;
-    let headerContent;
-    if (pathname === "/feed") {
-        if (username) {
-            headerContent = (
-                <header className="bg-bg-darker p-8">
-                    <Link href="/feed">
-                        Beatbuff
+
+    function headerContents(): JSX.Element {
+        if (!session) {
+            // Not signed in: return basic header
+            return (
+                <>
+                    <Link href="/">
+                            Beatbuff
                     </Link>
-                    <Link href={`/profile/${username}`} className="float-right">
-                        {username} 
-                    </Link>
-                </header>
-            );
-        } else {
-            headerContent = (
-                <header className="bg-bg-darker p-8">
-                    <Link href="/feed">
-                        Beatbuff
-                    </Link>
-                    <p className="float-right">{username}</p>
-                </header>
-            );
+                </>
+            )
         }
-    } else if (pathname === "/profile/[username]")
-    {
-        headerContent = (
-        <header className="bg-bg-darker p-8">
-            <Link href="/feed">
-                Beatbuff
-            </Link>
-            <Link href="/" className="float-right">
-                Log Out
-            </Link>
-        </header>
-        );
-    }
-    else
-    {
-        headerContent = (
-        <header className="bg-bg-darker p-8">
-            <Link href="/">
+        
+        if (pathname === `/profile/[id]`) {
+            // Signed in and profile page: add button to sign out
+            return (
+                <>
+                    <Link href="/feed">
+                        Beatbuff
+                    </Link>
+                    <Button onClick={() => signOut()} colorScheme="red">Sign out</Button>
+                </>
+            )
+        }
+        // Otherwise, add link to profile
+        return (
+            <>
+                <Link href="/feed">
                     Beatbuff
-            </Link>
-        </header>
-        );
+                </Link>
+
+                <Button onClick={() => router.push(`/profile/${session.user?.id}`)}>Profile</Button>
+            </>
+        )
     }
-    return headerContent;
+    
+    let contents = headerContents()
+
+    return (
+        <header className="bg-bg-darker p-8 flex justify-between">
+            {contents}
+        </header>
+    )
 }

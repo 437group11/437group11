@@ -12,14 +12,20 @@ import { getUsername } from "utils/userManager";
 import Button from "../components/button";
 import { Album } from "types/Album";
 import { Artist } from "types/Artist";
-import { UserReviews } from "./api/v1/users/[username]/reviews";
+import { UserReviews } from "./api/v2/users/[id]/reviews";
+import { useSession, signIn, signOut } from "next-auth/react";
 
-const sessionUser = "example"
 const MIN_RATING = 0
 const MAX_RATING = 10
 const DEFAULT_RATING = (MIN_RATING + MAX_RATING) / 2
 
 export default function Feed() {
+    const { data: session, status } = useSession();
+    const router = useRouter();
+    if (!session) {
+        router.push("index");
+    }
+
     console.log()
     const [formData, setFormData] = useState({
         albumId: '',
@@ -30,7 +36,7 @@ export default function Feed() {
     const [followers, setFollowers] = useState<string[]>();
     const [reviews, setReviews] = useState<UserReviews>([]);
 
-    const router = useRouter();
+    
     
     const searchReturn = new Map<string, string>();
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -86,12 +92,12 @@ export default function Feed() {
         const authorUsername: string = getUsername();
 
         try {
-            const response = await fetch(`/api/v1/albums/${albumId}/reviews`, {
+            const response = await fetch(`/api/v2/albums/${albumId}/reviews`, {
                 method: 'POST',
                 headers: {
                     'Content-Type' : 'application/json',
                 },
-                body: JSON.stringify({content: review, rating: rating, authorUsername: authorUsername}),
+                body: JSON.stringify({content: review, rating: rating}),
             });
             if (response.ok){
                 alert("Your review has been saved.");
@@ -127,7 +133,7 @@ export default function Feed() {
     const getFollowers = async () => {
         const followers : string[] = [];
         try {
-        const response = await fetch(`/api/v1/users/${sessionUser}/following`, {
+        const response = await fetch(`/api/v2/users/${session?.user?.id}/following`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -154,7 +160,7 @@ export default function Feed() {
         if (followers) {
             for (const follower of followers) {
                 try {
-                    const response = await fetch(`/api/v1/users/${follower}/reviews`);
+                    const response = await fetch(`/api/v2/users/${follower}/reviews`);
                     if (response.ok) {
                         const data = await response.json();
                         if (data.status === 'success') {
@@ -188,9 +194,7 @@ export default function Feed() {
         })
         .catch();
     }, []);
-
     
-
     return (
         <RootLayout>
             <div className="bg min-h-screen text-white">

@@ -1,9 +1,16 @@
 import RootLayout from "../components/root-layout";
 import ButtonLink from "../components/button-link";
-import { signIn } from "next-auth/react";
 import { Button, ButtonGroup } from '@chakra-ui/react'
+import { useSession, signIn, signOut } from "next-auth/react"
+import { useRouter } from "next/router";
 
 export default function Home() {
+    const { data: session } = useSession()
+    const router = useRouter()
+    if (session) {
+        router.push("/feed")
+    }
+
     return (
         <RootLayout>
             <h1 className='text-6xl my-8'>
