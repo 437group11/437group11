@@ -39,7 +39,7 @@ model Session {
 
 model User {
   id             String          @id @default(cuid())
-  username       String          @unique
+  name           String?
   email          String?         @unique
   emailVerified  DateTime?
   image          String?
@@ -64,22 +64,22 @@ model VerificationToken {
 }
 
 model Post {
-  id             Int           @id @default(autoincrement())
-  content        String
-  authorUsername String
-  author         User          @relation(fields: [authorUsername], references: [username])
-  datePublished  DateTime      @default(now())
-  comments       PostComment[]
+  id            Int           @id @default(autoincrement())
+  content       String
+  authorId      String
+  author        User          @relation(fields: [authorId], references: [id])
+  datePublished DateTime      @default(now())
+  comments      PostComment[]
 }
 
 model PostComment {
-  id             Int      @id @default(autoincrement())
-  content        String
-  authorUsername String
-  author         User     @relation(fields: [authorUsername], references: [username])
-  datePublished  DateTime @default(now())
-  postId         Int
-  post           Post     @relation(fields: [postId], references: [id])
+  id            Int      @id @default(autoincrement())
+  content       String
+  authorId      String
+  author        User     @relation(fields: [authorId], references: [id])
+  datePublished DateTime @default(now())
+  postId        Int
+  post          Post     @relation(fields: [postId], references: [id])
 }
 
 // For saving albums that have been reviewed.
@@ -94,23 +94,23 @@ model Album {
 }
 
 model Review {
-  id             Int             @id @default(autoincrement())
-  albumId        String
-  album          Album           @relation(fields: [albumId], references: [spotifyId])
-  content        String
-  rating         Int
-  authorUsername String
-  author         User            @relation(fields: [authorUsername], references: [username])
-  datePublished  DateTime        @default(now())
-  comments       ReviewComment[]
+  id            Int             @id @default(autoincrement())
+  albumId       String
+  album         Album           @relation(fields: [albumId], references: [spotifyId])
+  content       String
+  rating        Int
+  authorId      String
+  author        User            @relation(fields: [authorId], references: [id])
+  datePublished DateTime        @default(now())
+  comments      ReviewComment[]
 }
 
 model ReviewComment {
-  id             Int      @id @default(autoincrement())
-  content        String
-  authorUsername String
-  author         User     @relation(fields: [authorUsername], references: [username])
-  datePublished  DateTime @default(now())
-  reviewId       Int
-  review         Review   @relation(fields: [reviewId], references: [id])
+  id            Int      @id @default(autoincrement())
+  content       String
+  authorId      String
+  author        User     @relation(fields: [authorId], references: [id])
+  datePublished DateTime @default(now())
+  reviewId      Int
+  review        Review   @relation(fields: [reviewId], references: [id])
 }
