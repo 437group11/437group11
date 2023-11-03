@@ -96,8 +96,7 @@ const ProfilePage: React.FC = () => {
           const e = document.createElement("li");
           const a = document.createElement("a");
           a.textContent = user.name;
-          const userSelected = user.name;
-          a.href = `/profile/${userSelected}`;
+          a.href = `/profile/${user.id}`;
           e.appendChild(a);
           results?.appendChild(e);
         })
