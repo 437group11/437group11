@@ -225,9 +225,9 @@ const ProfilePage: React.FC = () => {
             </>
           )}
       </Container>
-      <SimpleGrid p={4}>
-        <GridItem maxW={"400px"}>
+      <SimpleGrid color={"white"} spacing='20px' columns = {4} p={5}>
         {albums.map((review, index) => (
+          <Box>
           <AlbumCard
             key={index}
             image={review.album.imageUrl}
@@ -235,8 +235,8 @@ const ProfilePage: React.FC = () => {
             description={review.content}
             rating={review.rating}
           />
+          </Box>
         ))}
-        </GridItem>
       </SimpleGrid>
     </Box>
     </Box>

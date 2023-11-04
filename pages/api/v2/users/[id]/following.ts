@@ -50,7 +50,9 @@ function getFollowing(req: NextApiRequest, res: NextApiResponse, id: string) {
         select: {
             following: {
                 select: {
-                    id: true
+                    id: true,
+                    name: true,
+                    image: true
                 }
             }
         },

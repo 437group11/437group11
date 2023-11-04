@@ -38,6 +38,7 @@ export default function Feed() {
     const [reviews, setReviews] = useState<UserReviews>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [usernames, setUsernames] = useState(new Map<string, string>());
+    const [followerImages, setFollowerImages] = useState(new Map<string, string>());
 
     const [searchReturn, setSearchReturn] = useState(new Map<string, string>());
     const [searchImages, setSearchImages] = useState(new Map<string, string>());
@@ -111,14 +112,21 @@ export default function Feed() {
             });
             if (response.ok){
                 const currUsernames = new Map<string, string>();
+                const currImages = new Map<string, string>();
                 const data = await response.json();
                 const followerIds = data.data.following.map((follower: { id: number }) => follower.id);
-                const followerUsernames = data.data.following.map((follower: { username: string}) => follower.username);
+                const followerUsernames = data.data.following.map((follower: { name: string}) => follower.name);
+                const followerImages = data.data.following.map((follower: {image: string}) => follower.image);
+                console.log("next")
+                console.log(data.data.following)
                 for (let i=0; i < followerIds.length; i++){
                     currUsernames.set(followerIds[i], followerUsernames[i]);
+                    currImages.set(followerIds[i],followerImages[i]);
                 }
+                console.log(currUsernames);
                 setFollowers(followerIds);
                 setUsernames(currUsernames);
+                setFollowerImages(currImages);
                 return followerIds;
             }
         } catch (error) {
@@ -254,21 +262,23 @@ export default function Feed() {
           </ModalBody>
         </ModalContent>
       </Modal>
-            <SimpleGrid minChildWidth='120px' spacing='40px'>
-                <GridItem
-                maxW={"400px"}>
-                    {reviews.map((review, index) => (
-                        <AlbumCard
-                            key={index}
-                            author={usernames.get(review.authorId)}
-                            image={review.album.imageUrl}
-                            title={review.album.name}
-                            description={review.content}
-                            rating={review.rating}
-                        />
-                    ))}
-                </GridItem>
-            </SimpleGrid>
-        </RootLayout>
+        
+        <SimpleGrid color={"white"} spacing='20px' columns = {4} p={5}> 
+            {reviews.map((review, index) => (
+                <Box>
+                    <AlbumCard
+                        key={index}
+                        authorImage={followerImages.get(review.authorId)}
+                        author={usernames.get(review.authorId)}
+                        image={review.album.imageUrl}
+                        title={review.album.name}
+                        description={review.content}
+                        rating={review.rating}
+                    />
+                </Box>
+            ))}
+        </SimpleGrid>
+     
+    </RootLayout>
     )
 }
