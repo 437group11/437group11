@@ -233,7 +233,7 @@ const ProfilePage: React.FC = () => {
             image={review.album.imageUrl}
             title={review.album.name}
             description={review.content}
-            rating={(review.rating/10)}
+            rating={review.rating}
           />
         ))}
         </GridItem>

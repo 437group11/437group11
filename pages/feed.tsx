@@ -16,7 +16,7 @@ import {
     Input, Box, UnorderedList, ListItem, Link, Container, SimpleGrid,
     Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton,
     ModalFooter, Img, Text, Center, Slider, SliderTrack, SliderFilledTrack,
-    SliderThumb, ModalHeader, Textarea, Button
+    SliderThumb, ModalHeader, Textarea, Button, GridItem
 } from "@chakra-ui/react";
 
 const MIN_RATING = 0
@@ -34,10 +34,11 @@ export default function Feed() {
         authorId: 0,
     });
 
-    const [followers, setFollowers] = useState<number[]>();
+    const [followers, setFollowers] = useState<string[]>();
     const [reviews, setReviews] = useState<UserReviews>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    
+    const [usernames, setUsernames] = useState(new Map<string, string>());
+
     const [searchReturn, setSearchReturn] = useState(new Map<string, string>());
     const [searchImages, setSearchImages] = useState(new Map<string, string>());
 
@@ -109,9 +110,15 @@ export default function Feed() {
                 },
             });
             if (response.ok){
+                const currUsernames = new Map<string, string>();
                 const data = await response.json();
                 const followerIds = data.data.following.map((follower: { id: number }) => follower.id);
+                const followerUsernames = data.data.following.map((follower: { username: string}) => follower.username);
+                for (let i=0; i < followerIds.length; i++){
+                    currUsernames.set(followerIds[i], followerUsernames[i]);
+                }
                 setFollowers(followerIds);
+                setUsernames(currUsernames);
                 return followerIds;
             }
         } catch (error) {
@@ -161,7 +168,7 @@ export default function Feed() {
     
     return (
         <RootLayout>
-            <Container color={"white"} centerContent>
+            <Container color={"white"} centerContent mt={5}>
                 <Input
                     name="search"
                     id = "search"
@@ -179,15 +186,24 @@ export default function Feed() {
                     width="full"
                     listStyleType={"none"}
                     ml={0}
-                    alignItems="center"
-                    textAlign="center"
                     borderRadius="10px"
                     zIndex="99">
                     {Array.from(searchReturn).map(([id, name]) => (
-                        <ListItem key={id} cursor="pointer" textDecoration="none">
-                            <Button _hover={{bg: "blue", color: "white"}} borderRadius="0" bgColor={"white"} width="full" onClick={() => reviewModule(id)}>
+                        <ListItem 
+                        bgColor={"white"} 
+                        color={"black"}
+                        _hover={{bg: "blue", color: "white"}} 
+                        display="flex" 
+                        key={id} 
+                        p={2}
+                        alignItems="center"
+                        cursor="pointer" 
+                        textDecoration="none"
+                        onClick={() => reviewModule(id)}>
+                            <Img id="albumArt" flex="1" borderRadius="5px" maxW="60px" src={searchImages.get(id)}/>
+                            <Text fontSize="l" fontWeight="bold" flex="2" borderRadius="0" ml={5} justifyContent="center">
                                 {name}
-                            </Button>
+                            </Text>
                         </ListItem>
                     ))}
                 </UnorderedList>
@@ -239,15 +255,19 @@ export default function Feed() {
         </ModalContent>
       </Modal>
             <SimpleGrid minChildWidth='120px' spacing='40px'>
+                <GridItem
+                maxW={"400px"}>
                     {reviews.map((review, index) => (
                         <AlbumCard
                             key={index}
+                            author={usernames.get(review.authorId)}
                             image={review.album.imageUrl}
                             title={review.album.name}
                             description={review.content}
                             rating={review.rating}
                         />
                     ))}
+                </GridItem>
             </SimpleGrid>
         </RootLayout>
     )
