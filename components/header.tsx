@@ -16,17 +16,17 @@ export default function Header() {
         
         if (pathname === `/profile/[id]`) {
             // Signed in and profile page: add button to sign out
-            return <Button onClick={() => signOut()} colorScheme="red">Sign out</Button>
+            return <Button onClick={() => signOut()} bgColor={"white"}>Sign out</Button>
         }
         
         // Otherwise, add link to profile
-        return <Button onClick={() => router.push(`/profile/${session.user?.id}`)}>Profile</Button>
+        return <Button bgColor={"white"} onClick={() => router.push(`/profile/${session.user?.id}`)}>Profile</Button>
     }
     
     let contents = headerContents()
 
     return (
-        <header className="bg-bg-darker p-8 flex justify-between">
+        <header className="bg-header p-8 flex justify-between">
             <Heading>
                 <Link href="/">
                     Beatbuff

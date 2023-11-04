@@ -4,7 +4,7 @@ import AlbumCard from "../../components/album-card";
 import {UserReviews} from "../api/v2/users/[id]/reviews";
 import { User } from "@prisma/client";
 import { useRouter } from "next/router";
-import { Button, Heading, Progress } from "@chakra-ui/react";
+import { Box, Button, Card, Container, GridItem, Heading, Input, Progress, SimpleGrid } from "@chakra-ui/react";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { UserPublicData } from "../api/v2/users/[id]";
 
@@ -190,13 +190,14 @@ const ProfilePage: React.FC = () => {
 
   return (
     <RootLayout>
-    <div className="bg min-h-screen text-white">
-    <div className="container mx-auto mt-8">
-      <div>
-        <Heading>{user.name}</Heading>
+    <Box color={"white"}>
+    <Box className="container mx-auto mt-8">
+      <Container>
+        <Heading p={5}>{user.name}</Heading>
         {isUser ? (
             <>
-              <input
+              <Input
+                p={5}
                 name="search"
                 id="search"
                 onChange={handleChange}
@@ -223,20 +224,22 @@ const ProfilePage: React.FC = () => {
               )}
             </>
           )}
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      </Container>
+      <SimpleGrid p={4}>
+        <GridItem maxW={"400px"}>
         {albums.map((review, index) => (
           <AlbumCard
             key={index}
             image={review.album.imageUrl}
             title={review.album.name}
             description={review.content}
-            rating={review.rating}
+            rating={(review.rating/10)}
           />
         ))}
-      </div>
-    </div>
-    </div>
+        </GridItem>
+      </SimpleGrid>
+    </Box>
+    </Box>
             
     </RootLayout>
   );
