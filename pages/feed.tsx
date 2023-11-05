@@ -16,12 +16,13 @@ import {
     Input, Box, UnorderedList, ListItem, Link, Container, SimpleGrid,
     Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton,
     ModalFooter, Img, Text, Center, Slider, SliderTrack, SliderFilledTrack,
-    SliderThumb, ModalHeader, Textarea, Button, GridItem, Header, Heading
+    SliderThumb, ModalHeader, Textarea, Button, GridItem, Header, Heading, useToast
 } from "@chakra-ui/react";
 
 const MIN_RATING = 0
 const MAX_RATING = 10
 const DEFAULT_RATING = (MIN_RATING + MAX_RATING) / 2
+
 
 export default function Feed() {
     const { data: session, status } = useSession();
@@ -83,7 +84,6 @@ export default function Feed() {
                 }),
             });
             if (response.ok){
-                alert("Your review has been saved.");
                 setFormData({ ...formData, content: "", rating : DEFAULT_RATING});
             }
         } catch (error) {
@@ -198,7 +198,7 @@ export default function Feed() {
                 ))}
             </SimpleGrid>
         )
-    
+    const toast = useToast()
     return (
         <RootLayout>
             <Container color={"white"} centerContent mt={0} p={5}>
@@ -264,7 +264,7 @@ export default function Feed() {
                 mb={4}
               >
                 <SliderTrack>
-                  <SliderFilledTrack />
+                  <SliderFilledTrack/>
                 </SliderTrack>
                 <SliderThumb fontSize="sm" boxSize={6}>
                   {formData.rating}
@@ -278,7 +278,16 @@ export default function Feed() {
                 onChange={(e) => setFormData({ ...formData, content: e.target.value })}
               />
               <Center>
-                <Button type="submit">
+                <Button type="submit"
+                onClick={() =>
+                    toast({
+                      title: 'Review Submitted.',
+                      description: "Your reviews are stored in your profile.",
+                      status: 'success',
+                      duration: 900,
+                      isClosable: true,
+                    })
+                  }>
                     Submit
                 </Button>
               </Center>
