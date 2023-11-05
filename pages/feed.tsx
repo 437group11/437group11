@@ -176,13 +176,14 @@ export default function Feed() {
 
     let feedContent = reviews.length == 0
         ? (
-            <Text>
+            <Text p={5} fontSize={"lg"}>
                 Your feed is looking a little empty...
                 Follow some users, and their reviews will show up here.
             </Text>
         )
         : (
-            reviews.map((review, index) => (
+            <SimpleGrid spacing='20px' columns = {4} p={5}>
+                {reviews.map((review, index) => (
                 <Box>
                     <AlbumCard
                         key={index}
@@ -194,7 +195,8 @@ export default function Feed() {
                         rating={review.rating}
                     />
                 </Box>
-            ))
+                ))}
+            </SimpleGrid>
         )
     
     return (
@@ -286,10 +288,8 @@ export default function Feed() {
         </ModalContent>
       </Modal>
         <Box className="container mx-auto" bg="#2A2525" borderRadius="10px">
-        <Heading p={5} color="white">Feed</Heading>
-        <SimpleGrid color={"white"} spacing='20px' columns = {4} p={5}> 
+            <Heading p={5} color="white">Feed</Heading>
             {feedContent}
-        </SimpleGrid>
         </Box>
      
     </RootLayout>
