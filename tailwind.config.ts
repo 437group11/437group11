@@ -16,7 +16,7 @@ const config: Config = {
     },
     colors: {
       "bg": "#191414",
-      "header": "#FF4040",
+      "header": "#2B27FC",
       "accent-brown": "#A79E9E",
       "accent-brown-darker": "#878484",
       "accent-blue": "#015FCC",

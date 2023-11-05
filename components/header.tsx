@@ -29,14 +29,14 @@ export default function Header() {
         if (pathname === `/profile/[id]`) {
             // Signed in and profile page: add button to sign out
             return (
-                <Button onClick={handleSignOut} bgColor={"white"}>
+                <Button onClick={handleSignOut}>
                   Sign out
                 </Button>
               );
         }
         
         // Otherwise, add link to profile
-        return <Button bgColor={"white"} onClick={() => router.push(`/profile/${session.user?.id}`)}>Profile</Button>
+        return <Button onClick={() => router.push(`/profile/${session.user?.id}`)}>Profile</Button>
     }
     
     let contents = headerContents()
