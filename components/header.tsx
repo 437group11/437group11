@@ -8,6 +8,18 @@ export default function Header() {
     const router = useRouter();
     const { pathname } = router;
 
+    const handleSignOut = () => {
+        console.log("g");
+        signOut()
+          .then(() => {
+            window.location.href = '/';
+        })
+          .catch((error) => {
+            console.error('Sign out error:', error);
+          });
+      };
+    
+
     function headerContents(): JSX.Element {
         if (!session) {
             // Not signed in: return basic header
@@ -16,7 +28,11 @@ export default function Header() {
 
         if (pathname === `/profile/[id]`) {
             // Signed in and profile page: add button to sign out
-            return <Button onClick={() => signOut()} bgColor={"white"}>Sign out</Button>
+            return (
+                <Button onClick={handleSignOut} bgColor={"white"}>
+                  Sign out
+                </Button>
+              );
         }
         
         // Otherwise, add link to profile
