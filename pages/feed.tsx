@@ -223,8 +223,7 @@ export default function Feed() {
                     zIndex="99">
                     {Array.from(searchReturn).map(([id, name]) => (
                         <ListItem 
-                        bgColor={"white"} 
-                        color={"black"}
+                        bgColor={"whiteAlpha.300"}
                         _hover={{bg: "blue", color: "white"}} 
                         display="flex" 
                         key={id} 

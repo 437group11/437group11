@@ -256,8 +256,7 @@ const ProfilePage: React.FC = () => {
                     zIndex="99">
                     {usersReturned.map((user: User) => (
                         <ListItem 
-                        bgColor={"white"} 
-                        color={"black"}
+                        bgColor={"whiteAlpha.300"} 
                         _hover={{bg: "blue", color: "white"}} 
                         display="flex" 
                         key={user.id} 
@@ -307,8 +306,6 @@ const ProfilePage: React.FC = () => {
                     zIndex="99">
                     {Array.from(followingUsernames).map(([id, name]) => (
                         <ListItem 
-                        bgColor={"white"} 
-                        color={"black"}
                         _hover={{bg: "blue", color: "white"}} 
                         display="flex" 
                         key={id} 
