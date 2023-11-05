@@ -13,10 +13,10 @@ export default function Header() {
             // Not signed in: return basic header
             return <></>
         }
-        
+
         if (pathname === `/profile/[id]`) {
             // Signed in and profile page: add button to sign out
-            return <Button onClick={() => {signOut();}} bgColor={"white"}>Sign out</Button>
+            return <Button onClick={() => signOut()} bgColor={"white"}>Sign out</Button>
         }
         
         // Otherwise, add link to profile

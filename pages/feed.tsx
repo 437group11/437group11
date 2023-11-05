@@ -16,7 +16,7 @@ import {
     Input, Box, UnorderedList, ListItem, Link, Container, SimpleGrid,
     Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton,
     ModalFooter, Img, Text, Center, Slider, SliderTrack, SliderFilledTrack,
-    SliderThumb, ModalHeader, Textarea, Button, GridItem
+    SliderThumb, ModalHeader, Textarea, Button, GridItem, Header, Heading
 } from "@chakra-ui/react";
 
 const MIN_RATING = 0
@@ -176,7 +176,7 @@ export default function Feed() {
     
     return (
         <RootLayout>
-            <Container color={"white"} centerContent mt={5}>
+            <Container color={"white"} centerContent mt={0} p={5}>
                 <Input
                     name="search"
                     id = "search"
@@ -262,7 +262,8 @@ export default function Feed() {
           </ModalBody>
         </ModalContent>
       </Modal>
-        
+        <Box className="container mx-auto" bg="#2A2525" borderRadius="10px">
+        <Heading p={5} color="white">Feed</Heading>
         <SimpleGrid color={"white"} spacing='20px' columns = {4} p={5}> 
             {reviews.map((review, index) => (
                 <Box>
@@ -278,6 +279,7 @@ export default function Feed() {
                 </Box>
             ))}
         </SimpleGrid>
+        </Box>
      
     </RootLayout>
     )
