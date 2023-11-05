@@ -173,6 +173,29 @@ export default function Feed() {
         })
         .catch();
     }, []);
+
+    let feedContent = reviews.length == 0
+        ? (
+            <Text>
+                Your feed is looking a little empty...
+                Follow some users, and their reviews will show up here.
+            </Text>
+        )
+        : (
+            reviews.map((review, index) => (
+                <Box>
+                    <AlbumCard
+                        key={index}
+                        authorImage={followerImages.get(review.authorId)}
+                        author={usernames.get(review.authorId)}
+                        image={review.album.imageUrl}
+                        title={review.album.name}
+                        description={review.content}
+                        rating={review.rating}
+                    />
+                </Box>
+            ))
+        )
     
     return (
         <RootLayout>
@@ -265,19 +288,7 @@ export default function Feed() {
         <Box className="container mx-auto" bg="#2A2525" borderRadius="10px">
         <Heading p={5} color="white">Feed</Heading>
         <SimpleGrid color={"white"} spacing='20px' columns = {4} p={5}> 
-            {reviews.map((review, index) => (
-                <Box>
-                    <AlbumCard
-                        key={index}
-                        authorImage={followerImages.get(review.authorId)}
-                        author={usernames.get(review.authorId)}
-                        image={review.album.imageUrl}
-                        title={review.album.name}
-                        description={review.content}
-                        rating={review.rating}
-                    />
-                </Box>
-            ))}
+            {feedContent}
         </SimpleGrid>
         </Box>
      
