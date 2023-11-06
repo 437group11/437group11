@@ -39,11 +39,21 @@ export default function Home() {
                 <Heading fontSize='6xl'>
                     Welcome to Beatbuff!
                 </Heading>
-                <Text fontSize={"xl"}>
-                    Beatbuff is a website where users can rate music and share their recommendations.
-                    To get started, create an account or sign in:
-                </Text>
-                <Button alignSelf="flex-start" onClick={() => signIn()}>Sign in</Button>
+                <Box>
+                    <Text fontSize={"xl"}>
+                        Beatbuff is a website where users can rate music and share their recommendations.
+                    </Text>
+                    <Text fontSize={"xl"}>
+                        To get started, sign in with one of your accounts:
+                    </Text>
+                </Box>
+
+                <Flex direction={"row"} gap={5}>
+                    <Button colorScheme="blue" onClick={() => signIn("google")}>Sign in with Google</Button>
+                    <Button colorScheme="purple" onClick={() => signIn("github")}>Sign in with GitHub</Button>
+                </Flex>
+
+                
             </Flex>
         </RootLayout>
     )
