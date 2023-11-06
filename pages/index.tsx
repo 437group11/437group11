@@ -35,8 +35,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 export default function Home() {
     return (
         <RootLayout>
-            <Flex direction={"column"} gap={10} my={40} mx={10}>
-                <Heading fontSize='6xl'>
+            <Flex direction={"column"} gap={10} my="10vh" mx={10}>
+                <Heading fontSize='5xl'>
                     Welcome to Beatbuff!
                 </Heading>
                 <Box>
@@ -48,7 +48,7 @@ export default function Home() {
                     </Text>
                 </Box>
 
-                <Flex direction={"row"} gap={5}>
+                <Flex direction={"row"} gap={5} flexWrap={"wrap"}>
                     <Button colorScheme="blue" onClick={() => signIn("google")}>Sign in with Google</Button>
                     <Button colorScheme="purple" onClick={() => signIn("github")}>Sign in with GitHub</Button>
                 </Flex>
