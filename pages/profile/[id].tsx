@@ -255,7 +255,7 @@ const ProfilePage: React.FC = () => {
     <Box className="container mx-auto">
     <Button position="absolute" top={155} right={30} onClick={() => followingModal()}>View followed users</Button>
       <Container p={5}>
-        <Heading p={5}>{user.name}</Heading>
+        <Heading my={4}>{user.name}</Heading>
         {isUser ? (
             <>
               <Input
