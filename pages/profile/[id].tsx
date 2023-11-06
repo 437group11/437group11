@@ -228,6 +228,26 @@ const ProfilePage: React.FC = () => {
     return <RootLayout>User not found</RootLayout>;
   }
 
+  let followButton: JSX.Element 
+  if (!session) {
+    // Don't add follow button when the user isn't signed in
+    followButton = <></>
+  } else {
+    if (followsUser) {
+      followButton = (
+        <Button id="unfollow" onClick={handleUnfollow}>
+          Unfollow
+        </Button>
+      )
+    } else {
+      followButton = (
+        <Button id="follow" onClick={handleFollow}>
+          Follow
+        </Button>
+      )
+    }
+  }
+
 
   return (
     <RootLayout>
@@ -274,21 +294,7 @@ const ProfilePage: React.FC = () => {
                 </UnorderedList>              
             </>
           ) : (
-            <>
-              {followsUser ? (
-                <form className="mt-8" onSubmit={handleUnfollow}>
-                  <Button id="unfollow" type="submit">
-                    Unfollow
-                  </Button>
-                </form>
-              ) : (
-                <form className="mt-8" onSubmit={handleFollow}>
-                  <Button id="follow" type="submit">
-                    Follow
-                  </Button>
-                </form>
-              )}
-            </>
+            followButton
           )}
       </Container>
       <Modal isOpen={isModalOpen} onClose={handleModalClose} isCentered>
