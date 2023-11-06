@@ -285,7 +285,7 @@ const ProfilePage: React.FC = () => {
                         cursor="pointer" 
                         textDecoration="none"
                         onClick={() => {router.push(`/profile/${user.id}`); handleModalClose()}}>
-                            <Img id="userImage" flex="1" borderRadius="5px" maxW="60px" borderRadius="full" src={user.image}/>
+                            <Img id="userImage" flex="1" maxW="60px" borderRadius="full" src={user.image}/>
                             <Text fontSize="l" fontWeight="bold" flex="2" borderRadius="0" ml={5} justifyContent="center">
                                 {user.name}
                             </Text>
@@ -320,7 +320,7 @@ const ProfilePage: React.FC = () => {
                         cursor="pointer" 
                         textDecoration="none"
                         onClick={() => {router.push(`/profile/${id}`); handleModalClose()}}>
-                            <Img id="userImage" flex="1" borderRadius="5px" maxW="60px" borderRadius="full" src={followingImages.get(id)}/>
+                            <Img id="userImage" flex="1" maxW="60px" borderRadius="full" src={followingImages.get(id)}/>
                             <Text fontSize="l" fontWeight="bold" flex="2" borderRadius="0" ml={5} justifyContent="center">
                                 {name}
                             </Text>
@@ -334,7 +334,7 @@ const ProfilePage: React.FC = () => {
       <Heading p={5} color="white">Shelf</Heading>
       <SimpleGrid color={"white"} spacing='20px' columns = {4} p={5}>
         {albums.map((review, index) => (
-          <Box>
+          <Box key={index}>
           <AlbumCard
             key={index}
             image={review.album.imageUrl}

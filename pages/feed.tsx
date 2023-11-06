@@ -16,7 +16,7 @@ import {
     Input, Box, UnorderedList, ListItem, Link, Container, SimpleGrid,
     Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton,
     ModalFooter, Img, Text, Center, Slider, SliderTrack, SliderFilledTrack,
-    SliderThumb, ModalHeader, Textarea, Button, GridItem, Header, Heading, useToast
+    SliderThumb, ModalHeader, Textarea, Button, GridItem, Heading, useToast
 } from "@chakra-ui/react";
 import { getServerSession } from "next-auth"
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next"
@@ -120,7 +120,7 @@ export default function Feed({sessionProp}: InferGetServerSidePropsType<typeof g
     //     setIsModalOpen(false);
     // };
 
-    const handleSubmitReview = async (e: any) => {
+    const handleSubmitReview = async (e: any) : Promise<any> => {
         e.preventDefault();
         const intRating: number = Math.round(formData.rating * 10);
       
@@ -139,7 +139,7 @@ export default function Feed({sessionProp}: InferGetServerSidePropsType<typeof g
       
             if (response.ok) {
               setFormData({ ...formData, content: '', rating: DEFAULT_RATING });
-              resolve();
+              resolve(undefined);
             } else {
               reject(new Error('Failed to submit review')); 
             }
@@ -257,7 +257,7 @@ export default function Feed({sessionProp}: InferGetServerSidePropsType<typeof g
         : (
             <SimpleGrid spacing='20px' columns = {4} p={5}>
                 {reviews.map((review, index) => (
-                <Box>
+                <Box key={index}>
                     <AlbumCard
                         key={index}
                         authorImage={followerImages.get(review.authorId)}
