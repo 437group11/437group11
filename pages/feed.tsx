@@ -18,15 +18,39 @@ import {
     ModalFooter, Img, Text, Center, Slider, SliderTrack, SliderFilledTrack,
     SliderThumb, ModalHeader, Textarea, Button, GridItem, Header, Heading, useToast
 } from "@chakra-ui/react";
+import { getServerSession } from "next-auth"
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next"
+import { authOptions } from "./api/auth/[...nextauth]"
 
 const MIN_RATING = 0
 const MAX_RATING = 10
 const DEFAULT_RATING = (MIN_RATING + MAX_RATING) / 2
 
 
-export default function Feed() {
-    const { data: session, status } = useSession();
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+    const session = await getServerSession(
+        context.req,
+        context.res,
+        authOptions
+    )
 
+    if (!session) {
+        return {
+            redirect: {
+                destination: "/",
+                permanent: false,
+            },
+        }
+    }
+
+    return {
+        props: {
+            session,
+        },
+    }
+}
+
+export default function Feed({session}: InferGetServerSidePropsType<typeof getServerSideProps>) {
     console.log()
     const [formData, setFormData] = useState({
         albumId: '',
