@@ -339,7 +339,7 @@ export default function Feed({sessionProp}: InferGetServerSidePropsType<typeof g
                 <SliderTrack>
                   <SliderFilledTrack/>
                 </SliderTrack>
-                <SliderThumb fontSize="sm" boxSize={6}>
+                <SliderThumb fontSize="sm" boxSize={6} color={"black"}>
                   {formData.rating}
                 </SliderThumb>
               </Slider>
