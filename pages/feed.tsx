@@ -69,28 +69,60 @@ export default function Feed() {
         
     };
 
+    // const handleSubmitReview = async (e: any) => {
+    //     e.preventDefault();
+    //     const intRating : number = Math.round(formData.rating * 10);
+    //     try {
+    //         const response = await fetch(`/api/v2/albums/${formData.albumId}/reviews`, {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type' : 'application/json',
+    //             },
+    //             body: JSON.stringify({
+    //                 content: formData.content, 
+    //                 rating: intRating 
+    //             }),
+    //         });
+    //         if (response.ok){
+    //             setFormData({ ...formData, content: "", rating : DEFAULT_RATING});
+    //         }
+    //     } catch (error) {
+    //         console.error('Error submitting review: ', error);
+    //     }
+    //     setIsModalOpen(false);
+    // };
+
     const handleSubmitReview = async (e: any) => {
         e.preventDefault();
-        const intRating : number = Math.round(formData.rating * 10);
-        try {
+        const intRating: number = Math.round(formData.rating * 10);
+      
+        return new Promise(async (resolve, reject) => {
+          try {
             const response = await fetch(`/api/v2/albums/${formData.albumId}/reviews`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type' : 'application/json',
-                },
-                body: JSON.stringify({
-                    content: formData.content, 
-                    rating: intRating 
-                }),
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                content: formData.content,
+                rating: intRating,
+              }),
             });
-            if (response.ok){
-                setFormData({ ...formData, content: "", rating : DEFAULT_RATING});
+      
+            if (response.ok) {
+              setFormData({ ...formData, content: '', rating: DEFAULT_RATING });
+              resolve();
+            } else {
+              reject(new Error('Failed to submit review')); 
             }
-        } catch (error) {
+          } catch (error) {
             console.error('Error submitting review: ', error);
-        }
-        setIsModalOpen(false);
-    };
+            reject(error);
+          } finally {
+            setIsModalOpen(false);
+          }
+        });
+      };
 
     function reviewModule(id: string){
         setFormData({ ...formData, albumId: id});
@@ -157,6 +189,19 @@ export default function Feed() {
         return reviews;
     };
    
+    const handleButtonClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        try {
+          await toast.promise(handleSubmitReview(e), {
+            success: { title: 'Review Submitted', description: 'You can view your review on your profile!' },
+            error: { title: 'Error', description: 'Failed to submit review. Please try again later.' },
+            loading: { title: 'Submitting...', description: 'Please wait while your review is being submitted.' },
+          });
+        } catch (error) {
+          console.error('Error submitting review: ', error);
+        }
+      };
+
     useEffect(() => {
         getFeed()
             .then((reviews) => {
@@ -279,7 +324,7 @@ export default function Feed() {
               />
               <Center>
                 <Button type="submit"
-                onClick={() =>
+                onClick={handleButtonClick}/*() =>
                     toast({
                       title: 'Review Submitted.',
                       description: "Your reviews are stored in your profile.",
@@ -287,7 +332,7 @@ export default function Feed() {
                       duration: 900,
                       isClosable: true,
                     })
-                  }>
+                  }*/>
                     Submit
                 </Button>
               </Center>
