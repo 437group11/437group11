@@ -1,22 +1,19 @@
-import RootLayout from "../components/root-layout";
-import ButtonLink from "../components/button-link";
-import { useSession, signIn, signOut } from "next-auth/react"
-import { useRouter } from "next/router";
-import { 
-    Input, Box, UnorderedList, ListItem, Link, Container, SimpleGrid,
-    Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton,
-    ModalFooter, Img, Text, Center, Slider, SliderTrack, SliderFilledTrack,
-    SliderThumb, ModalHeader, Textarea, Button, ButtonGroup, Heading
+import {
+    Box,
+    Button,
+    Heading
 } from "@chakra-ui/react";
-import { GetServerSidePropsContext } from "next"
+import { GetServerSidePropsContext } from "next";
 import { getServerSession } from "next-auth";
+import { signIn } from "next-auth/react";
+import RootLayout from "../components/root-layout";
 import { authOptions } from "./api/auth/[...nextauth]";
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
     // Redirect to the feed page *before* page load if the user is signed in.
     // https://next-auth.js.org/configuration/nextjs#in-getserversideprops
     // https://nextjs.org/docs/pages/api-reference/functions/get-server-side-props
-    
+
     const session = await getServerSession(context.req, context.res, authOptions)
 
     if (session) {
@@ -36,7 +33,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 export default function Home() {
     return (
         <RootLayout>
-            <Box color={"white"} className="container mx-auto" height="calc(100vh - 64px)">
+            <Box className="container mx-auto">
             <Heading fontSize='6xl' p="10px">
                 Welcome to Beatbuff!
             </Heading>
