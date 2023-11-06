@@ -1,7 +1,9 @@
 import {
     Box,
     Button,
-    Heading
+    Flex,
+    Heading,
+    Text
 } from "@chakra-ui/react";
 import { GetServerSidePropsContext } from "next";
 import { getServerSession } from "next-auth";
@@ -33,18 +35,16 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 export default function Home() {
     return (
         <RootLayout>
-            <Box className="container mx-auto">
-            <Heading fontSize='6xl' p="10px">
-                Welcome to Beatbuff!
-            </Heading>
-            <p className='text-xl my-8'>
-                Beatbuff is a website where users can rate music and share their recommendations.
-                To get started, create an account or sign in:
-            </p>
-            <div className="my-8">
-                <Button onClick={() => signIn()}>Sign in</Button>
-            </div>
-            </Box>
+            <Flex direction={"column"} gap={10} my={40} mx={10}>
+                <Heading fontSize='6xl'>
+                    Welcome to Beatbuff!
+                </Heading>
+                <Text fontSize={"xl"}>
+                    Beatbuff is a website where users can rate music and share their recommendations.
+                    To get started, create an account or sign in:
+                </Text>
+                <Button alignSelf="flex-start" onClick={() => signIn()}>Sign in</Button>
+            </Flex>
         </RootLayout>
     )
 }
