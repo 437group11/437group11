@@ -42,16 +42,20 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
             },
         }
     }
-
+    
+    // Must reassign to a different variable!!
+    // https://stackoverflow.com/a/75793417
+    // https://stackoverflow.com/questions/70092844/
+    const sessionProp = session
     return {
         props: {
-            session,
+            sessionProp,
         },
     }
 }
 
-export default function Feed({session}: InferGetServerSidePropsType<typeof getServerSideProps>) {
-    console.log()
+export default function Feed({sessionProp}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+    console.log(sessionProp)
     const [formData, setFormData] = useState({
         albumId: '',
         content: '',
@@ -71,7 +75,7 @@ export default function Feed({session}: InferGetServerSidePropsType<typeof getSe
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const searchData = e.target.value;
         console.log(searchData);
-        requestSearch(searchData, session!.spotifyToken!)
+        requestSearch(searchData, sessionProp!.spotifyToken!)
         .then((data) => { //------
             const currSearchReturn = new Map<string, string>();
             const currSearchImages = new Map<string, string>();
@@ -160,7 +164,7 @@ export default function Feed({session}: InferGetServerSidePropsType<typeof getSe
 
     const getFollowers = async () => {
         try {
-            const response = await fetch(`/api/v2/users/${session?.user?.id}/following`, {
+            const response = await fetch(`/api/v2/users/${sessionProp?.user?.id}/following`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
