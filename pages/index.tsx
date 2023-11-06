@@ -8,14 +8,32 @@ import {
     ModalFooter, Img, Text, Center, Slider, SliderTrack, SliderFilledTrack,
     SliderThumb, ModalHeader, Textarea, Button, ButtonGroup, Heading
 } from "@chakra-ui/react";
+import { GetServerSidePropsContext } from "next"
+import { getServerSession } from "next-auth";
+import { authOptions } from "./api/auth/[...nextauth]";
 
-export default function Home() {
-    const { data: session } = useSession()
-    const router = useRouter()
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+    // Redirect to the feed page *before* page load if the user is signed in.
+    // https://next-auth.js.org/configuration/nextjs#in-getserversideprops
+    // https://nextjs.org/docs/pages/api-reference/functions/get-server-side-props
+    
+    const session = await getServerSession(context.req, context.res, authOptions)
+
     if (session) {
-        router.push("/feed")
+        return {
+            redirect: {
+                destination: "/feed",
+                permanent: false,
+            },
+        }
     }
 
+    return {
+        props: {
+        },
+    }
+}
+export default function Home() {
     return (
         <RootLayout>
             <Box color={"white"} className="container mx-auto" height="calc(100vh - 64px)">
