@@ -344,7 +344,7 @@ export default function Feed({sessionProp}: InferGetServerSidePropsType<typeof g
           <ModalHeader>{}</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <Text id="albumName" fontWeight="bold" fontSize="xl" mb={2} />
+            <Text id="albumName" textAlign={"center"} flexWrap={"wrap"} fontWeight="bold" fontSize="xl" mb={2}>{searchReturn.get(formData.albumId)}</Text>
             <Center>
               <Img id="albumArt" borderRadius="10px" maxW="95%" mb={2} src={searchImages.get(formData.albumId)}/>
             </Center>
