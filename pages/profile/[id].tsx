@@ -253,9 +253,15 @@ const ProfilePage: React.FC = () => {
     <RootLayout>
     <Box color={"white"}>
     <Box className="container mx-auto">
-    <Button position="absolute" top={155} right={30} onClick={() => followingModal()}>View followed users</Button>
+      <Box display="flex" flexDirection={{base: "column", sm: "column", md: "row", lg: "row"}} top={0}>
+        <Box mx={5} flex={{base: "3", md: "3", sm: "1"}}>
+          <Heading flexWrap={"wrap"} my={4}>{user.name}</Heading>
+        </Box>
+        <Box flex="1">
+          <Button minHeight={38} w={"200px"} m={5} onClick={() => followingModal()}>View followed users</Button>
+        </Box>
+      </Box>
       <Container p={5}>
-        <Heading my={4}>{user.name}</Heading>
         {isUser ? (
           <>
           <Container centerContent mt={0} p={5} position="relative">
@@ -266,6 +272,7 @@ const ProfilePage: React.FC = () => {
               top={0}
               left={0}
               pt={0}
+              borderRadius="10px"
               boxShadow="0px 0px 10px rgba(0, 0, 0, 0.5)">
                 <Input
                 p={5}
@@ -342,7 +349,7 @@ const ProfilePage: React.FC = () => {
       </Modal>
       <Box bg="#2A2525" borderRadius="10px">
       <Heading p={5} color="white">Shelf</Heading>
-      <SimpleGrid color={"white"} spacing='20px' columns = {4} p={5}>
+      <SimpleGrid color={"white"} spacing='20px' columns = {[1, 2, 3, 4]} p={5}>
         {albums.map((review, index) => (
           <Box key={index}>
           <AlbumCard

@@ -12,9 +12,9 @@ interface AlbumCardProps {
 const AlbumCard: React.FC<AlbumCardProps> = ({ author, authorImage, image, title, description, rating }) => {
   return (
     <div className="border border-gray-200 rounded-lg overflow-hidden">
-      {author && <div className="flex p-2">
-      {authorImage && <img src={authorImage} className="flex-1 rounded-full max-w-[56px]"/>}
-      {author && <p className="text-center p-4 font-semibold">{author}</p>}
+      {author && <div className="flex items-center p-2 h-[90px]">
+      {authorImage && <img src={authorImage} className="flex-initial w-[70px] h-[70px] rounded-full"/>}
+      <p className="text-center p-4 flex-1 font-semibold">{author}</p>
       </div>}
       <img src={image} alt={title} className="w-full" />
       <div className="p-4">

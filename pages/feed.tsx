@@ -267,7 +267,7 @@ export default function Feed({sessionProp}: InferGetServerSidePropsType<typeof g
             </Text>
         )
         : (
-            <SimpleGrid spacing='20px' columns = {4} p={5}>
+            <SimpleGrid spacing='20px' columns = {[1, 2, 3, 4]} p={5} mx={5}>
                 {reviews.map((review, index) => (
                 <Box key={index}>
                     <AlbumCard
@@ -286,13 +286,14 @@ export default function Feed({sessionProp}: InferGetServerSidePropsType<typeof g
     const toast = useToast()
     return (
         <RootLayout>
-            <Container centerContent mt={5} p={5} position="relative">
+            <Container centerContent my={5} p={5} position="relative">
               <Box 
                 width="full"
                 zIndex="99"
                 position="absolute"
                 top={0}
-                left={0}
+                mx={5}
+                borderRadius="10px"
                 boxShadow="0px 0px 10px rgba(0, 0, 0, 0.5)"
                 onMouseDown={handleSearchMouseDown}
                 onBlur={handleSearchBlur}>
@@ -340,7 +341,7 @@ export default function Feed({sessionProp}: InferGetServerSidePropsType<typeof g
             </Container>
             <Modal isOpen={isModalOpen} onClose={handleModalClose} isCentered>
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent m={5}>
           <ModalHeader>{}</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
@@ -373,6 +374,7 @@ export default function Feed({sessionProp}: InferGetServerSidePropsType<typeof g
                 placeholder="Enter your review..."
                 mb={4}
                 value={formData.content}
+                maxLength={191}
                 onChange={(e) => setFormData({ ...formData, content: e.target.value })}
               />
               <Center>
