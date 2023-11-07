@@ -5,7 +5,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { Prisma, Album } from "@prisma/client"
 import prisma from "utils/db"
 import axios, { HttpStatusCode } from 'axios'
-import { jsendError } from 'utils/jsend'
+import { jsendError } from 'utils/api'
 import { getServerSession } from "next-auth"
 import { authOptions } from "pages/api/auth/[...nextauth]"
 

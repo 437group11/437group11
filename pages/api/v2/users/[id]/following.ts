@@ -8,7 +8,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from "utils/db"
 import { HttpStatusCode } from 'axios'
-import { jsendError } from 'utils/jsend'
+import { jsendError } from 'utils/api'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { id } = req.query
