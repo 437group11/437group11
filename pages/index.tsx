@@ -50,6 +50,7 @@ export default function Home() {
 
                 <Flex direction={"row"} gap={5} flexWrap={"wrap"}>
                     <Button colorScheme="blue" onClick={() => signIn("google")}>Sign in with Google</Button>
+                    <Button colorScheme="green" onClick={() => signIn("spotify")}>Sign in with Spotify</Button>
                     <Button colorScheme="purple" onClick={() => signIn("github")}>Sign in with GitHub</Button>
                 </Flex>
 
