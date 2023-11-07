@@ -236,13 +236,13 @@ const ProfilePage: React.FC = () => {
   } else {
     if (followsUser) {
       followButton = (
-        <Button id="unfollow" onClick={handleUnfollow}>
+        <Button my={5} id="unfollow" onClick={handleUnfollow}>
           Unfollow
         </Button>
       )
     } else {
       followButton = (
-        <Button id="follow" onClick={handleFollow}>
+        <Button my={5} id="follow" onClick={handleFollow}>
           Follow
         </Button>
       )
@@ -254,14 +254,7 @@ const ProfilePage: React.FC = () => {
     <RootLayout>
     <Box color={"white"}>
     <Box className="container mx-auto">
-      <Box display="flex" flexDirection={{base: "column", sm: "column", md: "row", lg: "row"}} top={0}>
-        <Box flex={{base: "3", md: "3", sm: "1"}}>
-          <Heading flexWrap={"wrap"} my={4}>{user.name}</Heading>
-        </Box>
-        <Button minHeight={38} my={5} onClick={() => followingModal()} alignSelf={"flex-start"}>View followed users</Button>
-      </Box>
-      {followButton}
-      <Container p={5}>
+    <Container p={5}>
           <Container centerContent mt={0} p={5} position="relative">
             <Box 
               width="full"
@@ -308,6 +301,13 @@ const ProfilePage: React.FC = () => {
             </Box>
             </Container>
       </Container>
+      <Box display="flex" flexDirection={{base: "column", sm: "column", md: "row", lg: "row"}} top={0}>
+        <Box flex={{base: "3", md: "3", sm: "1"}}>
+          <Heading flexWrap={"wrap"} my={4}>{user.name}</Heading>
+        </Box>
+        <Button minHeight={38} my={5} onClick={() => followingModal()} alignSelf={"flex-start"}>View followed users</Button>
+      </Box>
+      {followButton}
       <Modal isOpen={isModalOpen} onClose={handleModalClose} isCentered>
         <ModalOverlay />
         <ModalContent>
