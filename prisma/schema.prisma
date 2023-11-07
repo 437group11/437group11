@@ -99,10 +99,12 @@ model Review {
   album         Album           @relation(fields: [albumId], references: [spotifyId])
   content       String
   rating        Int
-  authorId      String          @unique
+  authorId      String
   author        User            @relation(fields: [authorId], references: [id])
   datePublished DateTime        @default(now())
   comments      ReviewComment[]
+
+  @@unique([albumId, authorId]) // Each album should only one review per user
 }
 
 model ReviewComment {
