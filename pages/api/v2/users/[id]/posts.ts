@@ -43,14 +43,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             }
         case "POST":
             try {
-                return createPost(req, res, id)
+                let result = await createPost(req, res, id)
+                return res.status(HttpStatusCode.Created).json({
+                    "status": "success",
+                    "data": {
+                        "post": result
+                    }
+                })
             } catch (error) {
-                if (error instanceof ForbiddenError) {
-                    return res.status(HttpStatusCode.Forbidden).json({
+                if (error instanceof ForbiddenError || error instanceof UnauthorizedError) {
+                    return res.status(error.statusCode).json({
                         "status": "fail",
-                        "data": {
-                            "message": `Could not create post: ${error}`
-                        }
+                        "message": `Could not create post: ${error}`
                     })
                 }
                 return jsendError(res, HttpStatusCode.InternalServerError, `Could not create post: ${error}`)
@@ -77,10 +81,28 @@ class ForbiddenError extends Error {
         super("You don't have permission to perform that action")
         Object.setPrototypeOf(this, ForbiddenError.prototype)
     }
+
+    statusCode = HttpStatusCode.Forbidden
+}
+
+/**
+ * An error that corresponds to HTTP Unauthorized.
+ */
+class UnauthorizedError extends Error {
+    // https://stackoverflow.com/a/41429145
+    constructor() {
+        super("You must be signed in")
+        Object.setPrototypeOf(this, UnauthorizedError.prototype)
+    }
+
+    statusCode = HttpStatusCode.Unauthorized
 }
 
 async function createPost(req: NextApiRequest, res: NextApiResponse, id: string) {
     let session = await getServerSession(req, res, authOptions)
+    if (!session) {
+        throw new UnauthorizedError()
+    }
     if (session.user.id !== id) {
         // https://stackoverflow.com/a/42453705/
         throw new ForbiddenError()
