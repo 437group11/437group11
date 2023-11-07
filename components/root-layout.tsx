@@ -3,13 +3,9 @@ import { Lora } from 'next/font/google'
 import Header from "./header"
 import Main from "./main"
 import React from "react";
+import Head from "next/head";
 
 const myFont = Lora({ subsets: ['latin'] })
-
-export const metadata: Metadata = {
-  title: 'Beatbuff',
-  description: 'Rate and share albums',
-}
 
 export default function RootLayout({
   children,
@@ -18,6 +14,18 @@ export default function RootLayout({
 }) {
   return (
       <>
+          {/*
+          The head component allows us to append elements to <head> from the body.
+          https://nextjs.org/docs/pages/api-reference/components/head
+          */}
+          <Head>
+              <title>Beatbuff</title>
+              <meta 
+                name="description"
+                content="Rate and share albums"
+              />
+          </Head>
+
           <Header></Header>
           <Main>
               {children}
