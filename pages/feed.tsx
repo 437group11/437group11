@@ -72,6 +72,18 @@ export default function Feed({sessionProp}: InferGetServerSidePropsType<typeof g
     const [searchReturn, setSearchReturn] = useState(new Map<string, string>());
     const [searchImages, setSearchImages] = useState(new Map<string, string>());
 
+    const [isSearchFocused, setSearchFocused] = useState(false);
+
+    const handleSearchMouseDown = () => {
+      setSearchFocused(true);
+    };
+
+    const handleSearchBlur = () => {
+      setTimeout(() => {
+        setSearchFocused(false);
+      }, 300);
+    };
+
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const searchData = e.target.value;
         console.log(searchData);
@@ -274,8 +286,17 @@ export default function Feed({sessionProp}: InferGetServerSidePropsType<typeof g
     const toast = useToast()
     return (
         <RootLayout>
-            <Container color={"white"} centerContent mt={0} p={5}>
-                <Input
+            <Container centerContent mt={5} p={5} position="relative">
+              <Box 
+                width="full"
+                zIndex="99"
+                position="absolute"
+                top={0}
+                left={0}
+                boxShadow="0px 0px 10px rgba(0, 0, 0, 0.5)"
+                onMouseDown={handleSearchMouseDown}
+                onBlur={handleSearchBlur}>
+                  <Input
                     name="search"
                     id = "search"
                     onChange={handleChange}
@@ -293,14 +314,17 @@ export default function Feed({sessionProp}: InferGetServerSidePropsType<typeof g
                     listStyleType={"none"}
                     ml={0}
                     borderRadius="10px"
-                    zIndex="99">
+                    bgColor={"#555050"}
+                    style={{
+                      display: isSearchFocused ? "block" : "none"
+                    }}>
                     {Array.from(searchReturn).map(([id, name]) => (
                         <ListItem 
-                        bgColor={"whiteAlpha.300"}
                         _hover={{bg: "blue", color: "white"}} 
                         display="flex" 
                         key={id} 
                         p={2}
+                        borderRadius="10px"
                         alignItems="center"
                         cursor="pointer" 
                         textDecoration="none"
@@ -312,6 +336,7 @@ export default function Feed({sessionProp}: InferGetServerSidePropsType<typeof g
                         </ListItem>
                     ))}
                 </UnorderedList>
+              </Box>
             </Container>
             <Modal isOpen={isModalOpen} onClose={handleModalClose} isCentered>
         <ModalOverlay />
@@ -368,7 +393,7 @@ export default function Feed({sessionProp}: InferGetServerSidePropsType<typeof g
           </ModalBody>
         </ModalContent>
       </Modal>
-        <Box className="container mx-auto" bg="#2A2525" borderRadius="10px">
+        <Box className="container mx-auto" bgColor={"whiteAlpha.100"} mt={"50px"} borderRadius="15px">
             <Heading p={5} color="white">Feed</Heading>
             {feedContent}
         </Box>

@@ -13,7 +13,7 @@ const AlbumCard: React.FC<AlbumCardProps> = ({ author, authorImage, image, title
   return (
     <div className="border border-gray-200 rounded-lg overflow-hidden">
       {author && <div className="flex p-2">
-      {authorImage && <img src={authorImage} className="flex-1 rounded-full max-w-[18%]"/>}
+      {authorImage && <img src={authorImage} className="flex-1 rounded-full max-w-[56px]"/>}
       {author && <p className="text-center p-4 font-semibold">{author}</p>}
       </div>}
       <img src={image} alt={title} className="w-full" />

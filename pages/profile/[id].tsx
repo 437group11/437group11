@@ -257,26 +257,34 @@ const ProfilePage: React.FC = () => {
       <Container p={5}>
         <Heading my={4}>{user.name}</Heading>
         {isUser ? (
-            <>
-              <Input
+          <>
+          <Container centerContent mt={0} p={5} position="relative">
+            <Box 
+              width="full"
+              zIndex="99"
+              position="absolute"
+              top={0}
+              left={0}
+              pt={0}
+              boxShadow="0px 0px 10px rgba(0, 0, 0, 0.5)">
+                <Input
                 p={5}
                 name="search"
                 id="search"
                 onChange={handleChange}
                 type="text"
                 placeholder="Search for a user..."
-              />
-              {/* <ul id="results"></ul> */}
-              <UnorderedList
+                />
+                {/* <ul id="results"></ul> */}
+                <UnorderedList
                     id="results" 
                     width="full"
                     listStyleType={"none"}
                     ml={0}
                     borderRadius="10px"
-                    zIndex="99">
+                    bgColor={"#555050"}>
                     {usersReturned.map((user: User) => (
                         <ListItem 
-                        bgColor={"whiteAlpha.300"} 
                         _hover={{bg: "blue", color: "white"}} 
                         display="flex" 
                         key={user.id} 
@@ -291,7 +299,9 @@ const ProfilePage: React.FC = () => {
                             </Text>
                         </ListItem>
                     ))}
-                </UnorderedList>              
+                </UnorderedList>  
+            </Box>
+            </Container>
             </>
           ) : (
             followButton
