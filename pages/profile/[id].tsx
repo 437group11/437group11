@@ -229,8 +229,9 @@ const ProfilePage: React.FC = () => {
   }
 
   let followButton: JSX.Element 
-  if (!session) {
-    // Don't add follow button when the user isn't signed in
+  if (!session || isUser) {
+    // Don't add follow button when the user isn't signed in,
+    // or is the user whose page we're looking at
     followButton = <></>
   } else {
     if (followsUser) {
@@ -254,16 +255,13 @@ const ProfilePage: React.FC = () => {
     <Box color={"white"}>
     <Box className="container mx-auto">
       <Box display="flex" flexDirection={{base: "column", sm: "column", md: "row", lg: "row"}} top={0}>
-        <Box mx={5} flex={{base: "3", md: "3", sm: "1"}}>
+        <Box flex={{base: "3", md: "3", sm: "1"}}>
           <Heading flexWrap={"wrap"} my={4}>{user.name}</Heading>
         </Box>
-        <Box flex="1">
-          <Button minHeight={38} w={"200px"} m={5} onClick={() => followingModal()}>View followed users</Button>
-        </Box>
+        <Button minHeight={38} my={5} onClick={() => followingModal()} alignSelf={"flex-start"}>View followed users</Button>
       </Box>
+      {followButton}
       <Container p={5}>
-        {isUser ? (
-          <>
           <Container centerContent mt={0} p={5} position="relative">
             <Box 
               width="full"
@@ -309,10 +307,6 @@ const ProfilePage: React.FC = () => {
                 </UnorderedList>  
             </Box>
             </Container>
-            </>
-          ) : (
-            followButton
-          )}
       </Container>
       <Modal isOpen={isModalOpen} onClose={handleModalClose} isCentered>
         <ModalOverlay />
