@@ -8,7 +8,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from "utils/db"
 import { HttpStatusCode } from 'axios'
-import { jsendError } from 'utils/api'
+import { jsendError, methodNotAllowedError } from 'utils/api'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { id } = req.query
@@ -32,13 +32,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         case "PATCH":
             return patchFollowing(req, res, id, req.body)
         default:
-            res.status(HttpStatusCode.MethodNotAllowed).json({
-                "status": "fail",
-                "data": {
-                    "title": "This route only supports GET and PATCH"
-                }
-            })
-            return
+            return methodNotAllowedError(res, ["GET", "PATCH"])
     }
 }
 
