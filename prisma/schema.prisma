@@ -103,8 +103,6 @@ model Review {
   author        User            @relation(fields: [authorId], references: [id])
   datePublished DateTime        @default(now())
   comments      ReviewComment[]
-
-  @@unique([albumId, authorId]) // Each album should only one review per user
 }
 
 model ReviewComment {

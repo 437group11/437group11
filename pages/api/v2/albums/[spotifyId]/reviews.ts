@@ -117,24 +117,34 @@ async function post(spotifyId: string, req: NextApiRequest, res: NextApiResponse
     }
 
     // If the user already reviewed the album, update it instead of creating another review.
-    await prisma.review.upsert({
+    const existingReview = await prisma.review.findFirst({
         where: {
-            albumId_authorId: {
-                albumId: spotifyId,
-                authorId: session.user.id,
-            }
-        },
-        update: {
-            content: req.body["content"],
-            rating: req.body["rating"],
-        },
-        create: {
-            authorId: session.user.id,
             albumId: spotifyId,
-            content: req.body["content"],
-            rating: req.body["rating"],
+            authorId: session.user.id,
         },
     })
+
+    if (existingReview) {
+        // Update the existing review
+        await prisma.review.update({
+            where: { id: existingReview.id },
+            data: {
+                content: req.body["content"],
+                rating: req.body["rating"],
+            },
+        })
+    } else {
+        // Create a new review
+        await prisma.review.create({
+            data: {
+                authorId: session.user.id,
+                albumId: spotifyId,
+                content: req.body["content"],
+                rating: req.body["rating"],
+            },
+        })
+    }
+      
 
     res.status(HttpStatusCode.Created).json({
         "status": "success"
