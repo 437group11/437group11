@@ -8,7 +8,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from "utils/db"
 import { HttpStatusCode } from 'axios'
-import { jsendError, methodNotAllowedError } from 'utils/api'
+import { ForbiddenError, UnauthorizedError, jsendError, methodNotAllowedError } from 'utils/api'
 import { Prisma } from "@prisma/client"
 import { getServerSession } from "next-auth"
 import { authOptions } from "pages/api/auth/[...nextauth]"
@@ -70,32 +70,6 @@ async function getPosts(req: NextApiRequest, res: NextApiResponse, id: string) {
             authorId: id
         }
     })
-}
-
-/**
- * An error that corresponds to HTTP Forbidden.
- */
-class ForbiddenError extends Error {
-    // https://stackoverflow.com/a/41429145
-    constructor() {
-        super("You don't have permission to perform that action")
-        Object.setPrototypeOf(this, ForbiddenError.prototype)
-    }
-
-    statusCode = HttpStatusCode.Forbidden
-}
-
-/**
- * An error that corresponds to HTTP Unauthorized.
- */
-class UnauthorizedError extends Error {
-    // https://stackoverflow.com/a/41429145
-    constructor() {
-        super("You must be signed in")
-        Object.setPrototypeOf(this, UnauthorizedError.prototype)
-    }
-
-    statusCode = HttpStatusCode.Unauthorized
 }
 
 async function createPost(req: NextApiRequest, res: NextApiResponse, id: string) {

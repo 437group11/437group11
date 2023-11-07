@@ -20,3 +20,36 @@ export function methodNotAllowedError(res: NextApiResponse, allow: String[]) {
             }
         })
 }
+
+/**
+ * An error with a corresponding HTTP status code.
+ */
+export abstract class ErrorWithStatusCode extends Error {
+    abstract statusCode: HttpStatusCode
+}
+
+/**
+ * An error that corresponds to HTTP Forbidden.
+ */
+export class ForbiddenError extends ErrorWithStatusCode {
+    // https://stackoverflow.com/a/41429145
+    constructor() {
+        super("You don't have permission to perform that action")
+        Object.setPrototypeOf(this, ForbiddenError.prototype)
+    }
+
+    statusCode = HttpStatusCode.Forbidden
+}
+
+/**
+ * An error that corresponds to HTTP Unauthorized.
+ */
+export class UnauthorizedError extends ErrorWithStatusCode {
+    // https://stackoverflow.com/a/41429145
+    constructor() {
+        super("You must be signed in")
+        Object.setPrototypeOf(this, UnauthorizedError.prototype)
+    }
+
+    statusCode = HttpStatusCode.Unauthorized
+}
