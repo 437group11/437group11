@@ -99,7 +99,7 @@ model Review {
   album         Album           @relation(fields: [albumId], references: [spotifyId])
   content       String
   rating        Int
-  authorId      String
+  authorId      String          @unique
   author        User            @relation(fields: [authorId], references: [id])
   datePublished DateTime        @default(now())
   comments      ReviewComment[]
