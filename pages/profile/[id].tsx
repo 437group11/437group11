@@ -291,7 +291,7 @@ const ProfilePage: React.FC = () => {
                         cursor="pointer" 
                         textDecoration="none"
                         onClick={() => {router.push(`/profile/${user.id}`); handleModalClose()}}>
-                            <Img id="userImage" flex="1" maxW="60px" borderRadius="full" src={user.image}/>
+                            <Img id="userImage" flex="1" maxW="60px" borderRadius="full" src={user.image ?? "default-user-icon.png"}/>
                             <Text fontSize="l" fontWeight="bold" flex="2" borderRadius="0" ml={5} justifyContent="center">
                                 {user.name}
                             </Text>
