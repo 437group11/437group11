@@ -29,7 +29,7 @@ const AlbumReviews: React.FC<AlbumReviewsProps> = ({ reviews }) => {
     return (
         <VStack align="stretch">
             {reviews.map((review) => (
-                <Card maxW={"80ch"}>
+                <Card maxW={"80ch"} bgColor="whiteAlpha.200">
                     <CardHeader>
                         <Heading size="md">
                             {review.author.name} rated it {review.rating / 10}/10
@@ -43,6 +43,9 @@ const AlbumReviews: React.FC<AlbumReviewsProps> = ({ reviews }) => {
                         {review.content.length !== 0 && (
                             <Text>{review.content}</Text>
                         )}
+                    <details>
+                        <summary>Comments</summary>
+                    </details>
                     </CardBody>
                 </Card>
             ))}
