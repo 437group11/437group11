@@ -16,10 +16,13 @@ import {
     NumberInputStepper,
     NumberIncrementStepper,
     NumberDecrementStepper,
+    Flex,
+    Avatar,
 } from "@chakra-ui/react"
 import { Review } from "@prisma/client"
 import { ReviewsWithAuthors } from "../pages/api/v2/albums/[spotifyId]/reviews"
 import { FormData } from "next/dist/compiled/@edge-runtime/primitives"
+import ProfilePicture from "./profile-picture"
 
 interface AlbumReviewsProps {
     reviews: ReviewsWithAuthors
@@ -31,21 +34,32 @@ const AlbumReviews: React.FC<AlbumReviewsProps> = ({ reviews }) => {
             {reviews.map((review) => (
                 <Card maxW={"80ch"} bgColor="whiteAlpha.200">
                     <CardHeader>
-                        <Heading size="md">
-                            {review.author.name} rated it {review.rating / 10}/10
-                        </Heading>
-                        <Text>
-                            Date published:{" "}
-                            {new Date(review.datePublished).toDateString()}
-                        </Text>
+                        <Flex flex="1" gap="4" alignItems="center" flexWrap="wrap">
+                            <ProfilePicture
+                                userId={review.authorId}
+                            />
+
+                            <Box>
+                                <Heading size="md">
+                                    {review.author.name} rated it{" "}
+                                    {review.rating / 10}/10
+                                </Heading>
+                                <Text>
+                                    Date published:{" "}
+                                    {new Date(
+                                        review.datePublished
+                                    ).toDateString()}
+                                </Text>
+                            </Box>
+                        </Flex>
                     </CardHeader>
                     <CardBody>
                         {review.content.length !== 0 && (
                             <Text>{review.content}</Text>
                         )}
-                    <details>
-                        <summary>Comments</summary>
-                    </details>
+                        <details>
+                            <summary>Comments</summary>
+                        </details>
                     </CardBody>
                 </Card>
             ))}
