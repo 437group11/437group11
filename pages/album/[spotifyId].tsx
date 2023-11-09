@@ -62,12 +62,13 @@ export default function AlbumPage({sessionProp}: InferGetServerSidePropsType<typ
   return (
     <RootLayout>
         <Flex m={10} gap={10}>
-            <Box>
+            <Box minW={300}>
                 {album && <AlbumDetails album={album} />}
+                <Heading size={"md"} mt={10}>Review this album</Heading>
+                <ReviewForm />
             </Box>
             <Box minW={"50vw"}>
                 <Heading>Reviews:</Heading>
-                <ReviewForm />
                 {reviews.length > 0 && <AlbumReviews reviews={reviews} />}
             </Box>
 
