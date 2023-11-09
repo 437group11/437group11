@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { Album } from "../../types/Album";
-import { Review } from "@prisma/client"
+import { ReviewWithAuthor } from "../api/v2/albums/[spotifyId]/reviews";
 import AlbumDetails from "../../components/album-details";
 import AlbumReviews from "../../components/album-reviews";
 import { requestAlbum } from "../api/request-album"
@@ -45,7 +45,7 @@ export default function AlbumPage({sessionProp}: InferGetServerSidePropsType<typ
   const router = useRouter();
   const { spotifyId } = router.query;
   const [album, setAlbum] = useState<Album | null>(null);
-  const [reviews, setReviews] = useState<Review[]>([]);
+  const [reviews, setReviews] = useState<ReviewWithAuthor[]>([]);
 
   useEffect(() => {
     if (spotifyId) {
