@@ -29,19 +29,19 @@ const AlbumReviews: React.FC<AlbumReviewsProps> = ({ reviews }) => {
     return (
         <VStack align="stretch">
             {reviews.map((review) => (
-                <Card>
+                <Card maxW={"80ch"}>
                     <CardHeader>
                         <Heading size="md">
-                            {review.author.name} reviewed it {review.rating}
+                            {review.author.name} rated it {review.rating / 10}/10
                         </Heading>
-                    </CardHeader>
-                    <CardBody>
                         <Text>
-                            Date Published:{" "}
+                            Date published:{" "}
                             {new Date(review.datePublished).toDateString()}
                         </Text>
+                    </CardHeader>
+                    <CardBody>
                         {review.content.length !== 0 && (
-                            <Text>review.content</Text>
+                            <Text>{review.content}</Text>
                         )}
                     </CardBody>
                 </Card>
