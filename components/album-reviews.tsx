@@ -1,28 +1,16 @@
-import React from "react"
 import {
+    Avatar,
     Box,
-    Text,
     Card,
     CardBody,
     CardHeader,
-    Heading,
-    Button,
-    VStack,
-    FormControl,
-    FormLabel,
-    Textarea,
-    NumberInput,
-    NumberInputField,
-    NumberInputStepper,
-    NumberIncrementStepper,
-    NumberDecrementStepper,
     Flex,
-    Avatar,
+    Heading,
+    Text,
+    VStack
 } from "@chakra-ui/react"
-import { Review } from "@prisma/client"
+import React from "react"
 import { ReviewsWithAuthors } from "../pages/api/v2/albums/[spotifyId]/reviews"
-import { FormData } from "next/dist/compiled/@edge-runtime/primitives"
-import ProfilePicture from "./profile-picture"
 
 interface AlbumReviewsProps {
     reviews: ReviewsWithAuthors
@@ -35,9 +23,7 @@ const AlbumReviews: React.FC<AlbumReviewsProps> = ({ reviews }) => {
                 <Card maxW={"80ch"} bgColor="whiteAlpha.200">
                     <CardHeader>
                         <Flex flex="1" gap="4" alignItems="center" flexWrap="wrap">
-                            <ProfilePicture
-                                userId={review.authorId}
-                            />
+                            <Avatar src={review.author.image}></Avatar>
 
                             <Box>
                                 <Heading size="md">
