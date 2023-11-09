@@ -27,8 +27,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     switch (req.method) {
         case "GET":
-            get(spotifyId, req, res)
-            return
+            try {
+                let reviews = await get(spotifyId, req, res)
+                return res.status(200).json({
+                    "status": "success",
+                    "data": {
+                        "reviews": reviews
+                    }
+                })
+            } catch {
+                return res.status(HttpStatusCode.InternalServerError).end()
+            }
         case "POST":
             post(spotifyId, req, res)
             return
@@ -48,20 +57,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
  * @param spotifyId The Spotify ID of the album, e.g. 5Z9iiGl2FcIfa3BMiv6OIw.
  */
 async function get(spotifyId: string, req: NextApiRequest, res: NextApiResponse) {
-    let reviews = await prisma.review.findMany({
+    return await prisma.review.findMany({
         where: {
             albumId: spotifyId
+        },
+        include: {
+            author: true
         }
     })
-
-    res.status(200).json({
-        "status": "success",
-        "data": {
-            "reviews": reviews
-        }
-    })
-    return
 }
+
+export type ReviewsWithAuthors = Prisma.PromiseReturnType<typeof get>
 
 /**
  * Adds a review for this album to the database. If the album hasn't been added yet, add it.
