@@ -67,7 +67,11 @@ async function get(spotifyId: string, req: NextApiRequest, res: NextApiResponse)
     })
 }
 
-export type ReviewsWithAuthors = Prisma.PromiseReturnType<typeof get>
+// https://www.prisma.io/docs/concepts/components/prisma-client/advanced-type-safety/operating-against-partial-structures-of-model-types#problem-using-variations-of-the-generated-model-type
+const reviewWithAuthor = Prisma.validator<Prisma.ReviewDefaultArgs>()({
+    include: {author: true}
+})
+export type ReviewWithAuthor = Prisma.ReviewGetPayload<typeof reviewWithAuthor>
 
 /**
  * Adds a review for this album to the database. If the album hasn't been added yet, add it.

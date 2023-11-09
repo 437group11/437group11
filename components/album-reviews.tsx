@@ -10,20 +10,16 @@ import {
     VStack
 } from "@chakra-ui/react"
 import React from "react"
-import { ReviewsWithAuthors } from "../pages/api/v2/albums/[spotifyId]/reviews"
+import { ReviewWithAuthor } from "../pages/api/v2/albums/[spotifyId]/reviews"
 
-interface AlbumReviewsProps {
-    reviews: ReviewsWithAuthors
-}
-
-const AlbumReviews: React.FC<AlbumReviewsProps> = ({ reviews }) => {
+function AlbumReviews({reviews}: {reviews: ReviewWithAuthor[]}) {
     return (
         <VStack align="stretch">
             {reviews.map((review) => (
                 <Card maxW={"80ch"} bgColor="whiteAlpha.200">
                     <CardHeader>
                         <Flex flex="1" gap="4" alignItems="center" flexWrap="wrap">
-                            <Avatar src={review.author.image}></Avatar>
+                            <Avatar src={review.author.image ?? undefined}></Avatar>
 
                             <Box>
                                 <Heading size="md">
