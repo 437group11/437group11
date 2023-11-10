@@ -59,6 +59,17 @@ export default function AlbumPage({sessionProp}: InferGetServerSidePropsType<typ
     }
   }, [spotifyId, sessionProp.spotifyToken]);
 
+  const updateReviews = async () => {
+    const response = await axios.get(`/api/v2/albums/${spotifyId}/reviews`);
+    setReviews([...response.data.data.reviews]);
+    
+    // In theory, setReviews should cause the AlbumReviews component to reload.
+    // But it doesn't. So, we reload the whole page.
+    // If we have time, we should probably fix this.
+    // https://stackoverflow.com/a/68015879
+    router.replace(router.asPath)
+  }
+
   return (
     <RootLayout>
         <Box m={10}>
@@ -66,7 +77,7 @@ export default function AlbumPage({sessionProp}: InferGetServerSidePropsType<typ
                 <Box minW={300}>
                     <AlbumDetails album={album} />
                     <Heading size={"md"} mt={10}>Review this album</Heading>
-                    <ReviewForm spotifyId={album?.id ?? null} />
+                    <ReviewForm spotifyId={album?.id ?? null} onReviewSubmit={updateReviews}/>
                 </Box>
                 <Box minW={"50vw"}>
                     <Heading size={"md"}>Reviews</Heading>

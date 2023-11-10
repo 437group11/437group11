@@ -2,7 +2,7 @@ import { Button, FormControl, FormLabel, NumberDecrementStepper, NumberIncrement
 import axios from "axios"
 import React, { FormEvent } from "react"
 
-export default function ReviewForm({spotifyId}: {spotifyId: string | null}) {
+export default function ReviewForm({spotifyId, onReviewSubmit }: { spotifyId: string | null; onReviewSubmit: () => void }) {
     async function handleSubmitReview(event: FormEvent<HTMLFormElement>) {
         console.log("submitting review")
         event.preventDefault()
@@ -18,6 +18,9 @@ export default function ReviewForm({spotifyId}: {spotifyId: string | null}) {
             }
         )
         console.log(response)
+
+        // After successful submission, call the callback to update reviews
+        onReviewSubmit()
     }
 
     return (
