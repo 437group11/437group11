@@ -76,7 +76,7 @@ export default function AlbumPage({sessionProp}: InferGetServerSidePropsType<typ
             <Flex mt={5} gap={10}>
                 <Box minW={300}>
                     <AlbumDetails album={album} />
-                    <Heading size={"md"} mt={10}>Review this album</Heading>
+                    <Heading size={"md"} mt={10}>Your review</Heading>
                     <ReviewForm spotifyId={album?.id ?? null} onReviewSubmit={updateReviews}/>
                 </Box>
                 <Box minW={"50vw"}>
