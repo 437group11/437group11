@@ -11,6 +11,7 @@ import {
 } from "@chakra-ui/react"
 import React from "react"
 import { ReviewWithAuthor } from "../pages/api/v2/albums/[spotifyId]/reviews"
+import ReviewComments from "./review-comments"
 
 function AlbumReviews({reviews}: {reviews: ReviewWithAuthor[]}) {
     return (
@@ -39,9 +40,7 @@ function AlbumReviews({reviews}: {reviews: ReviewWithAuthor[]}) {
                         {review.content.length !== 0 && (
                             <Text>{review.content}</Text>
                         )}
-                        <details>
-                            <summary>Comments</summary>
-                        </details>
+                        <ReviewComments reviewId={review.id} />
                     </CardBody>
                 </Card>
             ))}
