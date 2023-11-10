@@ -1,8 +1,8 @@
-import { Button, FormControl, FormLabel, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, Textarea } from "@chakra-ui/react"
+import { Button, FormControl, FormLabel, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, Skeleton, Textarea } from "@chakra-ui/react"
 import axios from "axios"
 import React, { FormEvent } from "react"
 
-export default function ReviewForm({spotifyId}: {spotifyId: string}) {
+export default function ReviewForm({spotifyId}: {spotifyId: string | null}) {
     async function handleSubmitReview(event: FormEvent<HTMLFormElement>) {
         console.log("submitting review")
         event.preventDefault()
@@ -21,24 +21,26 @@ export default function ReviewForm({spotifyId}: {spotifyId: string}) {
     }
 
     return (
-        <form onSubmit={handleSubmitReview}>
-            <FormControl>
-                <FormLabel>Rating 1-10</FormLabel>
-                <NumberInput max={10} min={0} step={0.1} name={"rating"}>
-                    <NumberInputField />
-                    <NumberInputStepper>
-                        <NumberIncrementStepper />
-                        <NumberDecrementStepper />
-                    </NumberInputStepper>
-                </NumberInput>
-            </FormControl>
+        <Skeleton isLoaded={!!spotifyId}>
+            <form onSubmit={handleSubmitReview}>
+                <FormControl>
+                    <FormLabel>Rating 1-10</FormLabel>
+                    <NumberInput max={10} min={0} step={0.1} name={"rating"}>
+                        <NumberInputField />
+                        <NumberInputStepper>
+                            <NumberIncrementStepper />
+                            <NumberDecrementStepper />
+                        </NumberInputStepper>
+                    </NumberInput>
+                </FormControl>
 
-            <FormControl>
-                <FormLabel>Review text</FormLabel>
-                <Textarea maxLength={191} name={"content"}></Textarea>
-            </FormControl>
+                <FormControl>
+                    <FormLabel>Review text</FormLabel>
+                    <Textarea maxLength={191} name={"content"}></Textarea>
+                </FormControl>
 
-            <Button type="submit">Submit</Button>
-        </form>
+                <Button type="submit">Submit</Button>
+            </form>
+        </Skeleton>
     )
 }

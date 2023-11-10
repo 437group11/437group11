@@ -59,22 +59,18 @@ export default function AlbumPage({sessionProp}: InferGetServerSidePropsType<typ
     }
   }, [spotifyId, sessionProp.spotifyToken]);
 
-  if (album == null) {
-    return <RootLayout><Text>Invalid album.</Text></RootLayout>
-  }
-
   return (
     <RootLayout>
         <Box m={10}>
             <Flex mt={5} gap={10}>
                 <Box minW={300}>
-                    {album && <AlbumDetails album={album} />}
+                    <AlbumDetails album={album} />
                     <Heading size={"md"} mt={10}>Review this album</Heading>
-                    <ReviewForm spotifyId={album.id} />
+                    <ReviewForm spotifyId={album?.id ?? null} />
                 </Box>
                 <Box minW={"50vw"}>
                     <Heading size={"md"}>Reviews</Heading>
-                    {reviews.length > 0 && <AlbumReviews reviews={reviews} />}
+                    <AlbumReviews reviews={reviews} />
                 </Box>
 
             </Flex>
