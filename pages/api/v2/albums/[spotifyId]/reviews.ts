@@ -5,8 +5,8 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { Prisma, Album } from "@prisma/client"
 import prisma from "utils/db"
 import axios, { HttpStatusCode } from 'axios'
-import { jsendError } from 'utils/api'
-import { getServerSession } from "next-auth"
+import { ErrorWithStatusCode, SpotifyError, UnauthorizedError, jsendError, methodNotAllowedError } from 'utils/api'
+import { Session, getServerSession } from "next-auth"
 import { authOptions } from "pages/api/auth/[...nextauth]"
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -27,19 +27,34 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     switch (req.method) {
         case "GET":
-            get(spotifyId, req, res)
-            return
+            try {
+                let reviews = await get(spotifyId)
+                return res.status(200).json({
+                    "status": "success",
+                    "data": {
+                        "reviews": reviews
+                    }
+                })
+            } catch {
+                return res.status(HttpStatusCode.InternalServerError).end()
+            }
         case "POST":
-            post(spotifyId, req, res)
-            return
-        default:
-            res.status(405).json({
-                "status": "fail",
-                "data": {
-                    "title": "This route only supports GET and POST"
+            try {
+                post(spotifyId, req, res)
+                return res.status(HttpStatusCode.Ok).json({
+                    "status": "success"
+                })
+            } catch (error) {
+                if (error instanceof UnauthorizedError) {
+                    return res.status(error.statusCode).json({
+                        "status": "fail",
+                        "message": `Could not create post: ${error}`
+                    })
                 }
-            })
-            return
+                return jsendError(res, HttpStatusCode.InternalServerError, `Could not create post: ${error}`)
+            }
+        default:
+            return methodNotAllowedError(res, ["GET", "POST"])
     }
 }
 
@@ -47,21 +62,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
  * Gets reviews for the requested Album.
  * @param spotifyId The Spotify ID of the album, e.g. 5Z9iiGl2FcIfa3BMiv6OIw.
  */
-async function get(spotifyId: string, req: NextApiRequest, res: NextApiResponse) {
-    let reviews = await prisma.review.findMany({
+async function get(spotifyId: string) {
+    return await prisma.review.findMany({
         where: {
             albumId: spotifyId
+        },
+        include: {
+            author: true
         }
     })
-
-    res.status(200).json({
-        "status": "success",
-        "data": {
-            "reviews": reviews
-        }
-    })
-    return
 }
+
+// https://www.prisma.io/docs/concepts/components/prisma-client/advanced-type-safety/operating-against-partial-structures-of-model-types#problem-using-variations-of-the-generated-model-type
+const reviewWithAuthor = Prisma.validator<Prisma.ReviewDefaultArgs>()({
+    include: {author: true}
+})
+export type ReviewWithAuthor = Prisma.ReviewGetPayload<typeof reviewWithAuthor>
 
 /**
  * Adds a review for this album to the database. If the album hasn't been added yet, add it.
@@ -69,15 +85,8 @@ async function get(spotifyId: string, req: NextApiRequest, res: NextApiResponse)
  */
 async function post(spotifyId: string, req: NextApiRequest, res: NextApiResponse) {
     const session = await getServerSession(req, res, authOptions)
-
     if (!session) {
-        res.status(HttpStatusCode.Unauthorized).json({
-            "status": "fail",
-            "data": {
-                "title": "You must be logged in to post a review"
-            }
-        })
-        return
+        throw new UnauthorizedError()
     }
 
     let album = await prisma.album.findUnique({
@@ -100,8 +109,7 @@ async function post(spotifyId: string, req: NextApiRequest, res: NextApiResponse
                 }
             })
         } catch {
-            jsendError(res, HttpStatusCode.InternalServerError, "Could not query Spotify API")
-            return
+            throw new SpotifyError()
         }
 
         let data = await response.data
@@ -120,7 +128,7 @@ async function post(spotifyId: string, req: NextApiRequest, res: NextApiResponse
     const existingReview = await prisma.review.findFirst({
         where: {
             albumId: spotifyId,
-            authorId: session.user.id,
+            authorId: session!.user!.id,
         },
     })
 
@@ -144,9 +152,4 @@ async function post(spotifyId: string, req: NextApiRequest, res: NextApiResponse
             },
         })
     }
-      
-
-    res.status(HttpStatusCode.Created).json({
-        "status": "success"
-    })
 }
