@@ -53,3 +53,12 @@ export class UnauthorizedError extends ErrorWithStatusCode {
 
     statusCode = HttpStatusCode.Unauthorized
 }
+
+export class SpotifyError extends ErrorWithStatusCode {
+    constructor() {
+        super("There was an error fetching the Spotify API")
+        Object.setPrototypeOf(this, SpotifyError.prototype)
+    }
+
+    statusCode: HttpStatusCode = HttpStatusCode.BadGateway
+}

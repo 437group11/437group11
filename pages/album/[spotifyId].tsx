@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { Album } from "../../types/Album";
 import { ReviewWithAuthor } from "../api/v2/albums/[spotifyId]/reviews";
@@ -11,7 +11,7 @@ import { InferGetServerSidePropsType } from "next";
 import { GetServerSidePropsContext } from "next";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]"
-import { Flex, Box, Heading, Button } from "@chakra-ui/react"
+import { Flex, Box, Heading, Button, Text } from "@chakra-ui/react"
 import ReviewForm from "../../components/review-form";
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
@@ -59,6 +59,10 @@ export default function AlbumPage({sessionProp}: InferGetServerSidePropsType<typ
     }
   }, [spotifyId, sessionProp.spotifyToken]);
 
+  if (album == null) {
+    return <RootLayout><Text>Invalid album.</Text></RootLayout>
+  }
+
   return (
     <RootLayout>
         <Box m={10}>
@@ -66,7 +70,7 @@ export default function AlbumPage({sessionProp}: InferGetServerSidePropsType<typ
                 <Box minW={300}>
                     {album && <AlbumDetails album={album} />}
                     <Heading size={"md"} mt={10}>Review this album</Heading>
-                    <ReviewForm />
+                    <ReviewForm spotifyId={album.id} />
                 </Box>
                 <Box minW={"50vw"}>
                     <Heading size={"md"}>Reviews</Heading>
@@ -77,5 +81,5 @@ export default function AlbumPage({sessionProp}: InferGetServerSidePropsType<typ
         </Box>
 
     </RootLayout>
-  );
-};
+  )
+}

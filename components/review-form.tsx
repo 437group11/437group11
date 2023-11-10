@@ -1,12 +1,30 @@
 import { Button, FormControl, FormLabel, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, Textarea } from "@chakra-ui/react"
-import React from "react"
+import axios from "axios"
+import React, { FormEvent } from "react"
 
-export default function ReviewForm() {
+export default function ReviewForm({spotifyId}: {spotifyId: string}) {
+    async function handleSubmitReview(event: FormEvent<HTMLFormElement>) {
+        console.log("submitting review")
+        event.preventDefault()
+        const formData = new FormData(event.currentTarget)
+
+        const rating = Number(formData.get("rating")!)
+        const intRating: number = Math.round(rating * 10);
+        const response = await axios.post(
+            `/api/v2/albums/${spotifyId}/reviews`,
+            {
+                rating: intRating,
+                content: formData.get("content")
+            }
+        )
+        console.log(response)
+    }
+
     return (
-        <form>
+        <form onSubmit={handleSubmitReview}>
             <FormControl>
                 <FormLabel>Rating 1-10</FormLabel>
-                <NumberInput max={10} min={0} step={0.1}>
+                <NumberInput max={10} min={0} step={0.1} name={"rating"}>
                     <NumberInputField />
                     <NumberInputStepper>
                         <NumberIncrementStepper />
@@ -17,10 +35,10 @@ export default function ReviewForm() {
 
             <FormControl>
                 <FormLabel>Review text</FormLabel>
-                <Textarea maxLength={191}></Textarea>
+                <Textarea maxLength={191} name={"content"}></Textarea>
             </FormControl>
 
-            <Button>Add a review</Button>
+            <Button type="submit">Submit</Button>
         </form>
     )
 }
