@@ -56,16 +56,11 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
 export default function Feed({sessionProp}: InferGetServerSidePropsType<typeof getServerSideProps>) {
     console.log(sessionProp)
-    const [formData, setFormData] = useState({
-        albumId: '',
-        content: '',
-        rating: DEFAULT_RATING,
-        authorId: 0,
-    });
+
+    const router = useRouter()
 
     const [followers, setFollowers] = useState<string[]>();
     const [reviews, setReviews] = useState<UserReviews>([]);
-    const [isModalOpen, setIsModalOpen] = useState(false);
     const [usernames, setUsernames] = useState(new Map<string, string>());
     const [followerImages, setFollowerImages] = useState(new Map<string, string>());
 
@@ -107,71 +102,6 @@ export default function Feed({sessionProp}: InferGetServerSidePropsType<typeof g
             console.error('Error searching', error);
         }) 
         
-    };
-
-    // const handleSubmitReview = async (e: any) => {
-    //     e.preventDefault();
-    //     const intRating : number = Math.round(formData.rating * 10);
-    //     try {
-    //         const response = await fetch(`/api/v2/albums/${formData.albumId}/reviews`, {
-    //             method: 'POST',
-    //             headers: {
-    //                 'Content-Type' : 'application/json',
-    //             },
-    //             body: JSON.stringify({
-    //                 content: formData.content, 
-    //                 rating: intRating 
-    //             }),
-    //         });
-    //         if (response.ok){
-    //             setFormData({ ...formData, content: "", rating : DEFAULT_RATING});
-    //         }
-    //     } catch (error) {
-    //         console.error('Error submitting review: ', error);
-    //     }
-    //     setIsModalOpen(false);
-    // };
-
-    const handleSubmitReview = async (e: any) : Promise<any> => {
-        e.preventDefault();
-        const intRating: number = Math.round(formData.rating * 10);
-      
-        return new Promise(async (resolve, reject) => {
-          try {
-            const response = await fetch(`/api/v2/albums/${formData.albumId}/reviews`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                content: formData.content,
-                rating: intRating,
-              }),
-            });
-      
-            if (response.ok) {
-              setFormData({ ...formData, content: '', rating: DEFAULT_RATING });
-              resolve(undefined);
-            } else {
-              reject(new Error('Failed to submit review')); 
-            }
-          } catch (error) {
-            console.error('Error submitting review: ', error);
-            reject(error);
-          } finally {
-            setIsModalOpen(false);
-          }
-        });
-      };
-
-    function reviewModule(id: string){
-        setFormData({ ...formData, albumId: id});
-        setIsModalOpen(true);
-    }
-
-    const handleModalClose = () => {
-        // Close the modal when clicking away from the review
-        setIsModalOpen(false);
     };
 
     const getFollowers = async () => {
@@ -228,19 +158,6 @@ export default function Feed({sessionProp}: InferGetServerSidePropsType<typeof g
         }
         return reviews;
     };
-   
-    const handleButtonClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
-        try {
-          await toast.promise(handleSubmitReview(e), {
-            success: { title: 'Review Submitted', description: 'You can view your review on your profile!' },
-            error: { title: 'Error', description: 'Failed to submit review. Please try again later.' },
-            loading: { title: 'Submitting...', description: 'Please wait while your review is being submitted.' },
-          });
-        } catch (error) {
-          console.error('Error submitting review: ', error);
-        }
-      };
 
     useEffect(() => {
         getFeed()
@@ -329,7 +246,7 @@ export default function Feed({sessionProp}: InferGetServerSidePropsType<typeof g
                         alignItems="center"
                         cursor="pointer" 
                         textDecoration="none"
-                        onClick={() => reviewModule(id)}>
+                        onClick={() => {router.push(`/album/${id}`)}}>
                             <Img id="albumArt" flex="1" borderRadius="5px" maxW="60px" src={searchImages.get(id)}/>
                             <Text fontSize="l" fontWeight="bold" flex="2" borderRadius="0" ml={5} justifyContent="center">
                                 {name}
@@ -339,62 +256,6 @@ export default function Feed({sessionProp}: InferGetServerSidePropsType<typeof g
                 </UnorderedList>
               </Box>
             </Container>
-            <Modal isOpen={isModalOpen} onClose={handleModalClose} isCentered>
-        <ModalOverlay />
-        <ModalContent m={5}>
-          <ModalHeader>{}</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <Text id="albumName" textAlign={"center"} flexWrap={"wrap"} fontWeight="bold" fontSize="xl" mb={2}>{searchReturn.get(formData.albumId)}</Text>
-            <Center>
-              <Img id="albumArt" borderRadius="10px" maxW="95%" mb={2} src={searchImages.get(formData.albumId)}/>
-            </Center>
-            <Text id="artistName" fontSize="lg" mb={4} />
-            <form id="reviewForm" onSubmit={handleSubmitReview}>
-              <input type="hidden" id="albumId" />
-              <Slider
-                id="score"
-                aria-label="Rating"
-                defaultValue={DEFAULT_RATING}
-                min={MIN_RATING}
-                max={MAX_RATING}
-                onChange={(value) => setFormData({ ...formData, rating: value })}
-                step={0.1}
-                mb={4}
-              >
-                <SliderTrack>
-                  <SliderFilledTrack/>
-                </SliderTrack>
-                <SliderThumb fontSize="sm" boxSize={6} color={"black"}>
-                  {formData.rating}
-                </SliderThumb>
-              </Slider>
-              <Textarea
-                id="review"
-                placeholder="Enter your review..."
-                mb={4}
-                value={formData.content}
-                maxLength={191}
-                onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-              />
-              <Center>
-                <Button type="submit"
-                onClick={handleButtonClick}/*() =>
-                    toast({
-                      title: 'Review Submitted.',
-                      description: "Your reviews are stored in your profile.",
-                      status: 'success',
-                      duration: 900,
-                      isClosable: true,
-                    })
-                  }*/>
-                    Submit
-                </Button>
-              </Center>
-            </form>
-          </ModalBody>
-        </ModalContent>
-      </Modal>
         <Box className="container mx-auto" bgColor={"whiteAlpha.100"} mt={"50px"} borderRadius="15px">
             <Heading p={5} color="white">Feed</Heading>
             {feedContent}
