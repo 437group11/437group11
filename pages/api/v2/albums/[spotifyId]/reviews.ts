@@ -1,5 +1,11 @@
 /**
  * This route allows accessing or adding reviews for a specific album.
+ * Supported routes:
+ * - GET: get the reviews for this album.
+ *   Pass URL parameter authorId to get a user's review. Use like so: ?authorId=cloow33je000560aluav2m6ac
+ *   Can be repeated to get reviews for multiple users: ?authorId=id1&authorId=id2&authorId=id3
+ * 
+ * - POST: post a review for this album.
  */
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { Prisma, Album } from "@prisma/client"
@@ -28,7 +34,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     switch (req.method) {
         case "GET":
             try {
-                let reviews = await get(spotifyId)
+                let { authorId } = req.query
+                if (isString(authorId)) {
+                    authorId = [authorId]
+                }
+                const reviews = await get(spotifyId, authorId)
                 return res.status(200).json({
                     "status": "success",
                     "data": {
@@ -61,11 +71,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 /**
  * Gets reviews for the requested Album.
  * @param spotifyId The Spotify ID of the album, e.g. 5Z9iiGl2FcIfa3BMiv6OIw.
+ * @param authorIds The authorIds to filter on, or undefined to get all all reviews.
  */
-async function get(spotifyId: string) {
+async function get(spotifyId: string, authorIds: string[] | undefined) {
     return await prisma.review.findMany({
         where: {
-            albumId: spotifyId
+            albumId: spotifyId,
+            ...(authorIds && {
+                authorId: {
+                    in: authorIds
+                }
+            }),
         },
         include: {
             author: true
