@@ -12,7 +12,7 @@ import { error } from "console";
 import { NextApiRequest, NextApiResponse } from "next";
 import { Session, getServerSession } from "next-auth";
 import { authOptions } from "pages/api/auth/[...nextauth]";
-import { ForbiddenError, UnauthorizedError, isClientError, isRecordNotFoundError, jsendError, jsendFailWithMessage, jsendSuccess, methodNotAllowedError } from "utils/api";
+import { ForbiddenError, UnauthorizedError, isClientError, isNotFoundError, jsendError, jsendFailWithMessage, jsendSuccess, methodNotAllowedError } from "utils/api";
 import prisma from "utils/db";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -27,7 +27,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     review: review
                 })
             } catch (error) {
-                if (isRecordNotFoundError(error)) {
+                if (isNotFoundError(error)) {
                     return jsendFailWithMessage(res, HttpStatusCode.NotFound, "Could not find that review")
                 }
                 return jsendError(res, HttpStatusCode.InternalServerError, "Could not get that review")
@@ -45,7 +45,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     review: review
                 })
             } catch (error) {
-                if (isRecordNotFoundError(error)) {
+                if (isNotFoundError(error)) {
                     return jsendFailWithMessage(res, HttpStatusCode.NotFound, "Could not find that review")
                 }
                 return jsendError(res, HttpStatusCode.InternalServerError, "Could not replace that review")
@@ -56,7 +56,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 await deleteReview(id, session)
                 return jsendSuccess(res, HttpStatusCode.Ok, null)
             } catch (error) {
-                if (isRecordNotFoundError(error)) {
+                if (isNotFoundError(error)) {
                     return jsendFailWithMessage(res, HttpStatusCode.NotFound, "Could not find that review")
                 }
                 if (error instanceof UnauthorizedError || error instanceof ForbiddenError) {

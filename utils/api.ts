@@ -94,10 +94,10 @@ export class SpotifyError extends ErrorWithStatusCode {
     statusCode: HttpStatusCode = HttpStatusCode.BadGateway
 }
 
-export function isRecordNotFoundError(error: any): boolean {
+export function isNotFoundError(error: any): boolean {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
         // The .code property can be accessed in a type-safe manner
-        if (error.code === "P2002") {
+        if (error.code === "P2025") {
             return true
         }
     }
