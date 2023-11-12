@@ -1,23 +1,54 @@
+import { Prisma } from "@prisma/client"
 import { HttpStatusCode } from "axios"
-import type { NextApiResponse } from 'next'
+import type { NextApiResponse } from "next"
 
-export function jsendError(res: NextApiResponse, status: number, message: string) {
+export function isString(s: string | string[] | undefined): s is string {
+    return typeof s === "string"
+}
+
+export function jsendSuccess(res: NextApiResponse, status: number, data: any) {
     return res.status(status).json({
-        "status": "error",
-        "message": message
+        status: "success",
+        data: data,
+    })
+}
+
+export function jsendError(
+    res: NextApiResponse,
+    status: number,
+    message: string
+) {
+    return res.status(status).json({
+        status: "error",
+        message: message,
+    })
+}
+
+export function jsendFailWithMessage(res: NextApiResponse, status: number, message: string) {
+    return res.status(status).json({
+        status: "fail",
+        message: message
+    })
+}
+
+export function jsendFailWithData(res: NextApiResponse, status: number, data: any) {
+    return res.status(status).json({
+        status: "fail",
+        data: data
     })
 }
 
 export function methodNotAllowedError(res: NextApiResponse, allow: String[]) {
     let allowString = allow.join(", ")
 
-    return res.status(HttpStatusCode.MethodNotAllowed)
+    return res
+        .status(HttpStatusCode.MethodNotAllowed)
         .setHeader("Allow", allowString)
         .json({
-            "status": "fail",
-            "data": {
-                "title": `This route supports the following methods: ${allowString}`
-            }
+            status: "fail",
+            data: {
+                title: `This route supports the following methods: ${allowString}`,
+            },
         })
 }
 
@@ -61,4 +92,14 @@ export class SpotifyError extends ErrorWithStatusCode {
     }
 
     statusCode: HttpStatusCode = HttpStatusCode.BadGateway
+}
+
+export function isRecordNotFoundError(error: any): boolean {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        // The .code property can be accessed in a type-safe manner
+        if (error.code === "P2002") {
+            return true
+        }
+    }
+    return false
 }
