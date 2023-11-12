@@ -103,3 +103,7 @@ export function isRecordNotFoundError(error: any): boolean {
     }
     return false
 }
+
+export function isClientError(error: any): boolean {
+    return error instanceof ErrorWithStatusCode && Math.floor(error.statusCode / 100) === 4
+}

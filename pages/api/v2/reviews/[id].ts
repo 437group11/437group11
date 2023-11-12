@@ -3,14 +3,16 @@
  * 
  * GET: get a review at this ID.
  * 
- * DELETE: delete the review at this ID.
+ * DELETE: delete the review at this ID. The user must be signed in as the author of the review.
  */
 
 import { Review } from "@prisma/client";
 import { HttpStatusCode } from "axios";
 import { error } from "console";
 import { NextApiRequest, NextApiResponse } from "next";
-import { isRecordNotFoundError, jsendError, jsendFailWithMessage, jsendSuccess, methodNotAllowedError } from "utils/api";
+import { Session, getServerSession } from "next-auth";
+import { authOptions } from "pages/api/auth/[...nextauth]";
+import { ForbiddenError, UnauthorizedError, isClientError, isRecordNotFoundError, jsendError, jsendFailWithMessage, jsendSuccess, methodNotAllowedError } from "utils/api";
 import prisma from "utils/db";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -50,11 +52,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             }
         case "DELETE":
             try {
-                await deleteReview(id)
+                let session = await getServerSession(req, res, authOptions)
+                await deleteReview(id, session)
                 return jsendSuccess(res, HttpStatusCode.Ok, null)
             } catch (error) {
                 if (isRecordNotFoundError(error)) {
                     return jsendFailWithMessage(res, HttpStatusCode.NotFound, "Could not find that review")
+                }
+                if (error instanceof UnauthorizedError || error instanceof ForbiddenError) {
+                    return jsendFailWithMessage(res, error.statusCode, error.message)
                 }
                 return jsendError(res, HttpStatusCode.InternalServerError, "Could not delete that review")
             }
@@ -88,7 +94,16 @@ async function replaceReview(id: string, review: ReviewReplacementData) {
     })
 }
 
-async function deleteReview(id: string) {
+async function deleteReview(id: string, session: Session | null) {
+    if (!session) {
+        throw new UnauthorizedError()
+    }
+
+    const review = await getReview(id)
+    if (session?.user?.id !== review.authorId) {
+        throw new ForbiddenError()
+    }
+
     return prisma.review.delete({
         where: {
             id: Number(id)
