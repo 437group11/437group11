@@ -16,17 +16,7 @@ import { Session, getServerSession } from "next-auth"
 import { authOptions } from "pages/api/auth/[...nextauth]"
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    const { spotifyId } = req.query
-
-    if (!isString(spotifyId)) {
-        res.status(HttpStatusCode.BadRequest).json({
-            "status": "fail",
-            "data": {
-                "title": "Spotify ID must be a string"
-            }
-        })
-        return
-    }
+    const { spotifyId } = req.query as { spotifyId: string }
 
     switch (req.method) {
         case "GET":

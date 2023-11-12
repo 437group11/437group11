@@ -11,17 +11,7 @@ import { HttpStatusCode } from 'axios'
 import { isString, jsendError, methodNotAllowedError } from 'utils/api'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    const { id } = req.query
-
-    if (!isString(id)) {
-        res.status(HttpStatusCode.BadRequest).json({
-            "status": "fail",
-            "data": {
-                "title": "ID must be a string"
-            }
-        })
-        return
-    }
+    const { id } = req.query as { id: string }
 
     switch (req.method) {
         case "GET":

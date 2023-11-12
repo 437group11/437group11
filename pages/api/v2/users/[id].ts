@@ -26,17 +26,7 @@ async function getUserPublicData(id: string) {
 export type UserPublicData = Prisma.PromiseReturnType<typeof getUserPublicData>
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    const { id } = req.query
-
-    if (!isString(id)) {
-        res.status(HttpStatusCode.BadRequest).json({
-            "status": "fail",
-            "data": {
-                "title": "ID must be a string"
-            }
-        })
-        return
-    }
+    const { id } = req.query as { id: string }
 
     const user = await getUserPublicData(id)
         .catch((error) => {

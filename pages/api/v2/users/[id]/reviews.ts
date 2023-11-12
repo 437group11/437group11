@@ -24,17 +24,7 @@ async function getUserReviews(id: string) {
 export type UserReviews = Prisma.PromiseReturnType<typeof getUserReviews>
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    const { id } = req.query //note
-    
-    if (!isString(id)) {
-        res.status(HttpStatusCode.BadRequest).json({
-            "status": "fail",
-            "data": {
-                "title": "ID must be a string"
-            }
-        })
-        return
-    }
+    const { id } = req.query as { id: string }
 
     const reviews = await getUserReviews(id)
         .catch((error) => {

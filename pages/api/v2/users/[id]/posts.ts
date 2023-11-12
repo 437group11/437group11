@@ -14,16 +14,7 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "pages/api/auth/[...nextauth]"
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    const { id } = req.query
-
-    if (!isString(id)) {
-        return res.status(HttpStatusCode.BadRequest).json({
-            "status": "fail",
-            "data": {
-                "title": "ID must be a string"
-            }
-        })
-    }
+    const { id } = req.query as { id: string }
 
     switch (req.method) {
         case "GET":

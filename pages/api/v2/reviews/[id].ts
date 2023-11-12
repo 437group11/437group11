@@ -15,8 +15,7 @@ import { ForbiddenError, UnauthorizedError, isNotFoundError, jsendError, jsendFa
 import prisma from "utils/db";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    let { id } = req.query
-    id = id as string
+    const { id } = req.query as { id: string }
     
     switch (req.method) {
         case "GET":
