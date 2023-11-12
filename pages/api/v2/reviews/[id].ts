@@ -8,11 +8,10 @@
 
 import { Review } from "@prisma/client";
 import { HttpStatusCode } from "axios";
-import { error } from "console";
 import { NextApiRequest, NextApiResponse } from "next";
 import { Session, getServerSession } from "next-auth";
 import { authOptions } from "pages/api/auth/[...nextauth]";
-import { ForbiddenError, UnauthorizedError, isClientError, isNotFoundError, jsendError, jsendFailWithMessage, jsendSuccess, methodNotAllowedError } from "utils/api";
+import { ForbiddenError, UnauthorizedError, isNotFoundError, jsendError, jsendFailWithMessage, jsendSuccess, methodNotAllowedError } from "utils/api";
 import prisma from "utils/db";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
