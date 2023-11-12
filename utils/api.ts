@@ -1,3 +1,6 @@
+/**
+ * Helper methods and types that should only be used by the backend.
+ */
 import { Prisma } from "@prisma/client"
 import { HttpStatusCode } from "axios"
 import type { NextApiResponse } from "next"
