@@ -8,7 +8,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from "utils/db"
 import { HttpStatusCode } from 'axios'
-import { ForbiddenError, UnauthorizedError, jsendError, methodNotAllowedError } from 'utils/api'
+import { ForbiddenError, UnauthorizedError, isString, jsendError, methodNotAllowedError } from 'utils/api'
 import { Prisma } from "@prisma/client"
 import { getServerSession } from "next-auth"
 import { authOptions } from "pages/api/auth/[...nextauth]"
@@ -16,9 +16,6 @@ import { authOptions } from "pages/api/auth/[...nextauth]"
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { id } = req.query
 
-    function isString(s: string | string[] | undefined): s is string {
-        return typeof s === "string";
-    }
     if (!isString(id)) {
         return res.status(HttpStatusCode.BadRequest).json({
             "status": "fail",

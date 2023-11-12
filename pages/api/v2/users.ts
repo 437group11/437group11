@@ -5,6 +5,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { Prisma } from "@prisma/client"
 import prisma from "utils/db"
 import { HttpStatusCode } from 'axios'
+import { isString } from "utils/api"
 
 async function searchUserPublicData(name: string) {
     return await prisma.user.findMany({
@@ -30,9 +31,6 @@ export type UserPublicDataArray = Prisma.PromiseReturnType<typeof searchUserPubl
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { name } = req.query
 
-    function isString(s: string | string[] | undefined): s is string {
-        return typeof s === "string";
-    }
     if (!isString(name)) {
         res.status(400).json({
             "status": "fail",

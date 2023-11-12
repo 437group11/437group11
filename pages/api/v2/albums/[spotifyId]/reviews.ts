@@ -11,16 +11,13 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { Prisma, Album } from "@prisma/client"
 import prisma from "utils/db"
 import axios, { HttpStatusCode } from 'axios'
-import { ErrorWithStatusCode, SpotifyError, UnauthorizedError, jsendError, methodNotAllowedError } from 'utils/api'
+import { ErrorWithStatusCode, SpotifyError, UnauthorizedError, isString, jsendError, methodNotAllowedError } from 'utils/api'
 import { Session, getServerSession } from "next-auth"
 import { authOptions } from "pages/api/auth/[...nextauth]"
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { spotifyId } = req.query
 
-    function isString(s: string | string[] | undefined): s is string {
-        return typeof s === "string";
-    }
     if (!isString(spotifyId)) {
         res.status(HttpStatusCode.BadRequest).json({
             "status": "fail",

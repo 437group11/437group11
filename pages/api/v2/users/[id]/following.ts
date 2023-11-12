@@ -8,14 +8,11 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from "utils/db"
 import { HttpStatusCode } from 'axios'
-import { jsendError, methodNotAllowedError } from 'utils/api'
+import { isString, jsendError, methodNotAllowedError } from 'utils/api'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { id } = req.query
 
-    function isString(s: string | string[] | undefined): s is string {
-        return typeof s === "string";
-    }
     if (!isString(id)) {
         res.status(HttpStatusCode.BadRequest).json({
             "status": "fail",
