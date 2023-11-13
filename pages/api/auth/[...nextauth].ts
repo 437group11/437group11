@@ -1,4 +1,4 @@
-import NextAuth from "next-auth"
+import NextAuth, { Account, Profile, Session, User } from "next-auth"
 import GoogleProvider from "next-auth/providers/google"
 import GithubProvider from "next-auth/providers/github"
 import SpotifyProvider from "next-auth/providers/spotify"
@@ -30,11 +30,19 @@ export const authOptions = {
         })
     ],
     callbacks: {
+        async signIn({ user }: {user: User | undefined}) {
+            // When the user is undefined, don't allow sign in.
+            // This ensures that in the rest of the app, we can access session.user.
+            if (!user) {
+                return false
+            }
+            return true
+        },
         // https://github.com/t3-oss/create-t3-app/issues/176
-        async session({ session, user }: {session: any, user: any}) {
-          session.user.id = user.id;
-          session.spotifyToken = await requestSpotifyAccessToken()
-          return Promise.resolve(session);
+        async session({ session, user }: {session: Session, user: User}) {
+            session.user.id = user.id;
+            session.spotifyToken = await requestSpotifyAccessToken()
+            return session
         },
       }
 }
