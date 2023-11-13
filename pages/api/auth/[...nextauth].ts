@@ -50,12 +50,12 @@ export const authOptions = {
 export default NextAuth(authOptions)
 
 async function requestSpotifyAccessToken(): Promise<string> {
-    const tokenEndpoint = 'https://accounts.spotify.com/api/token';
+    const tokenEndpoint = 'https://accounts.spotify.com/api/token'
 
-    const data = new URLSearchParams();
-    data.append('grant_type', 'client_credentials');
-    data.append('client_id', process.env.SPOTIFY_CLIENT_ID!);
-    data.append('client_secret', process.env.SPOTIFY_CLIENT_SECRET!);
+    const data = new URLSearchParams()
+    data.append('grant_type', 'client_credentials')
+    data.append('client_id', process.env.SPOTIFY_CLIENT_ID!)
+    data.append('client_secret', process.env.SPOTIFY_CLIENT_SECRET!)
     
     const response = await fetch(tokenEndpoint, {
         method: 'POST',
@@ -63,17 +63,16 @@ async function requestSpotifyAccessToken(): Promise<string> {
         headers: {
             'Content-Type' : 'application/x-www-form-urlencoded',
         },
-    });
-    if (response.ok) {
-        const json = await response.json();
-        const token = json.access_token;
-        if (token){
-            return token;
-        } else {
-            console.error('token not received');
-        }
-    } else {
-        console.error('request invalid');
+    })
+    if (!response.ok) {
+        throw new Error("Failed to get Spotify Token")
     }
-    return Promise.reject();
+    
+    const json = await response.json()
+    const token = json.access_token
+    if (!token) {
+        throw new Error("Spotify Token missing")
+    }
+
+    return token
 }
