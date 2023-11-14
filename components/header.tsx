@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useSession, signIn, signOut } from "next-auth/react";
-import { Button, Heading } from "@chakra-ui/react";
+import { Button, Heading, Avatar } from "@chakra-ui/react";
 
 export default function Header() {
     const { data: session, status } = useSession();
@@ -26,7 +26,7 @@ export default function Header() {
             return <></>
         }
 
-        if (pathname === `/profile/[id]`) {
+        if (router.query.id === `${session.user?.id}`) {
             // Signed in and profile page: add button to sign out
             return (
                 <Button onClick={handleSignOut}>
@@ -36,7 +36,7 @@ export default function Header() {
         }
         
         // Otherwise, add link to profile
-        return <Button onClick={() => router.push(`/profile/${session.user?.id}`)}>Profile</Button>
+        return <Avatar name={session.user?.name} size="lg" src={session.user?.image ?? "default-user-icon.png"} cursor="pointer" alt="Profile" onClick={() => router.push(`/profile/${session.user?.id}`)}></Avatar>
     }
     
     let contents = headerContents()

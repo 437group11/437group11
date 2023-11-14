@@ -6,7 +6,7 @@ import { User } from "@prisma/client";
 import { useRouter } from "next/router";
 import { Box, Button, Card, Container, GridItem, Heading, Input, Progress, SimpleGrid, Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton,
   ModalFooter, Img, Text, Center, Slider, SliderTrack, SliderFilledTrack,
-  SliderThumb, ModalHeader, Textarea, UnorderedList, ListItem} from "@chakra-ui/react";
+  SliderThumb, ModalHeader, Textarea, UnorderedList, ListItem, Avatar} from "@chakra-ui/react";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { UserPublicData } from "../api/v2/users/[id]";
 
@@ -162,7 +162,10 @@ const ProfilePage: React.FC = () => {
       if (searchData) {
         const currResults: User[] = [];
         for (let i = 0; i < data.data.users.length; i++) {
+          if(data.data.users[i].id!=session.user?.id)
+          {
           currResults.push(data.data.users[i]);
+          }
         }
         setUsersReturned(currResults);
       }
@@ -249,6 +252,27 @@ const ProfilePage: React.FC = () => {
     }
   }
 
+  let shelfContent = albums.length == 0
+        ? (
+            <Text p={5} fontSize={"lg"}>
+                This shelf is looking a little empty...
+                Review some albums, and those reviews will show up here.
+            </Text>
+        )
+        : (<SimpleGrid color={"white"} spacing='20px' columns = {[1, 2, 3, 4]} p={5}>
+        {albums.map((review, index) => (
+          <Box key={index}>
+          <AlbumCard
+            key={index}
+            image={review.album.imageUrl}
+            title={review.album.name}
+            description={review.content}
+            rating={review.rating}
+          />
+          </Box>
+        ))}
+      </SimpleGrid>
+      )
 
   return (
     <RootLayout>
@@ -302,8 +326,9 @@ const ProfilePage: React.FC = () => {
             </Container>
       </Container>
       <Box display="flex" flexDirection={{base: "column", sm: "column", md: "row", lg: "row"}} top={0}>
-        <Box flex={{base: "3", md: "3", sm: "1"}}>
-          <Heading flexWrap={"wrap"} my={4}>{user.name}</Heading>
+        <Box display="flex" alignItems="center" flex={{base: "3", md: "3", sm: "1"}}>
+          <Avatar name={user.name} size="lg" src={user.image ?? "default-user-icon.png"}/>
+          <Heading flexWrap={"wrap"} m={4}>{user.name}</Heading>
         </Box>
         <Button minHeight={38} my={5} onClick={() => followingModal()} alignSelf={"flex-start"}>View followed users</Button>
       </Box>
@@ -315,7 +340,7 @@ const ProfilePage: React.FC = () => {
           <ModalCloseButton />
           <ModalBody>
           <UnorderedList
-                    id="results" 
+                    id="results"
                     width="full"
                     listStyleType={"none"}
                     ml={0}
@@ -343,19 +368,7 @@ const ProfilePage: React.FC = () => {
       </Modal>
       <Box bg="#2A2525" borderRadius="10px">
       <Heading p={5} color="white">Shelf</Heading>
-      <SimpleGrid color={"white"} spacing='20px' columns = {[1, 2, 3, 4]} p={5}>
-        {albums.map((review, index) => (
-          <Box key={index}>
-          <AlbumCard
-            key={index}
-            image={review.album.imageUrl}
-            title={review.album.name}
-            description={review.content}
-            rating={review.rating}
-          />
-          </Box>
-        ))}
-      </SimpleGrid>
+      {shelfContent}
     </Box>
     </Box>
     </Box>
@@ -363,5 +376,6 @@ const ProfilePage: React.FC = () => {
     </RootLayout>
   );
 };
+
 
 export default ProfilePage;
