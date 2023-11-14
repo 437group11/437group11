@@ -186,7 +186,8 @@ export default function Feed({sessionProp}: InferGetServerSidePropsType<typeof g
         : (
             <SimpleGrid spacing='20px' columns = {[1, 2, 3, 4]} p={5} mx={5}>
                 {reviews.map((review, index) => (
-                <Box key={index}>
+                <Box key={index} 
+                    onClick={() => {router.push(`/album/${review.album.spotifyId}`)}}>
                     <AlbumCard
                         key={index}
                         authorImage={followerImages.get(review.authorId)}
