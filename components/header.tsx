@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useSession, signIn, signOut } from "next-auth/react";
-import { Button, Heading } from "@chakra-ui/react";
+import { Button, Flex, Heading } from "@chakra-ui/react";
 import ProfilePicture from "components/profile-picture"
 
 export default function Header() {
@@ -49,7 +49,10 @@ export default function Header() {
                     Beatbuff
                 </Link>
             </Heading>
-            {contents}
+            <Flex gap={5}>
+                <Button onClick={() => {window.scrollTo({top: 0, behavior: 'smooth'})}}>↑</Button>
+                {contents}
+            </Flex>
         </header>
     )
 }
