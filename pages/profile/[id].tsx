@@ -6,9 +6,10 @@ import { User } from "@prisma/client";
 import { useRouter } from "next/router";
 import { Box, Button, Card, Container, GridItem, Heading, Input, Progress, SimpleGrid, Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton,
   ModalFooter, Img, Text, Center, Slider, SliderTrack, SliderFilledTrack,
-  SliderThumb, ModalHeader, Textarea, UnorderedList, ListItem, Avatar} from "@chakra-ui/react";
+  SliderThumb, ModalHeader, Textarea, UnorderedList, ListItem} from "@chakra-ui/react";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { UserPublicData } from "../api/v2/users/[id]";
+import ProfilePicture from "../../components/profile-picture";
 
 const ProfilePage: React.FC = () => {
     const { data: session, status } = useSession();
@@ -327,7 +328,7 @@ const ProfilePage: React.FC = () => {
       </Container>
       <Box display="flex" flexDirection={{base: "column", sm: "column", md: "row", lg: "row"}} top={0}>
         <Box display="flex" alignItems="center" flex={{base: "3", md: "3", sm: "1"}}>
-          <Avatar name={user.name} size="lg" src={user.image ?? "default-user-icon.png"}/>
+          <ProfilePicture user={user} size={"lg"}/>
           <Heading flexWrap={"wrap"} m={4}>{user.name}</Heading>
         </Box>
         <Button minHeight={38} my={5} onClick={() => followingModal()} alignSelf={"flex-start"}>View followed users</Button>

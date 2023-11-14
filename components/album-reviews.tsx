@@ -1,5 +1,4 @@
 import {
-    Avatar,
     Box,
     Button,
     Card,
@@ -12,6 +11,7 @@ import {
 } from "@chakra-ui/react"
 import React, { useEffect, useState } from "react"
 import { ReviewWithAuthor } from "../pages/api/v2/albums/[spotifyId]/reviews"
+import ProfilePicture from "./profile-picture"
 import ReviewComments from "./review-comments"
 import { useSession } from "next-auth/react"
 import axios from "axios"
@@ -42,7 +42,8 @@ function AlbumReviews({reviews : initialReviews}: {reviews: ReviewWithAuthor[]})
                 <Card key={review.id} maxW={"80ch"} bgColor="whiteAlpha.200">
                     <CardHeader>
                         <Flex flex="1" gap="4" alignItems="center" flexWrap="wrap">
-                            <Avatar src={review.author.image ?? undefined}></Avatar>
+                            <ProfilePicture user={review.author}/>
+
                             <Box>
                                 <Heading size="md">
                                     {review.author.name} rated it{" "}

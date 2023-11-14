@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useSession, signIn, signOut } from "next-auth/react";
-import { Button, Heading, Avatar } from "@chakra-ui/react";
+import { Button, Heading } from "@chakra-ui/react";
+import ProfilePicture from "components/profile-picture"
 
 export default function Header() {
     const { data: session, status } = useSession();
@@ -36,7 +37,7 @@ export default function Header() {
         }
         
         // Otherwise, add link to profile
-        return <Avatar name={session.user?.name} size="lg" src={session.user?.image ?? "default-user-icon.png"} cursor="pointer" alt="Profile" onClick={() => router.push(`/profile/${session.user?.id}`)}></Avatar>
+        return <ProfilePicture user={session.user} size="md" />
     }
     
     let contents = headerContents()

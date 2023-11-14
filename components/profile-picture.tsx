@@ -1,43 +1,18 @@
-import React, { useState, useEffect } from "react"
-import { Avatar, Image, Skeleton } from "@chakra-ui/react"
+import React from "react"
+import { Avatar, AvatarProps, ResponsiveValue, ThemingProps } from "@chakra-ui/react"
+import { Prisma } from "@prisma/client"
+import Link from "next/link"
+import { User } from "next-auth"
 
-interface ProfilePictureProps {
-    userId: string
+interface ProfilePictureProps extends AvatarProps {
+    user: User
 }
 
-const ProfilePicture: React.FC<ProfilePictureProps> = ({ userId }) => {
-    const [profilePictureUrl, setProfilePictureUrl] = useState<string | null>(
-        null
-    )
-
-    useEffect(() => {
-        const fetchProfilePicture = async () => {
-            try {
-                const response = await fetch(`/api/v2/users/${userId}`)
-                const data = await response.json()
-
-                if (
-                    data.status === "success" &&
-                    data.data &&
-                    data.data.user &&
-                    data.data.user.image
-                ) {
-                    setProfilePictureUrl(data.data.user.image)
-                } else {
-                    console.error("Error fetching profile picture data:", data)
-                }
-            } catch (error) {
-                console.error("Error fetching profile picture:", error)
-            }
-        }
-
-        fetchProfilePicture()
-    }, [userId])
-
+const ProfilePicture: React.FC<ProfilePictureProps> = ({ user, ...avatarProps }) => {
     return (
-        <Skeleton isLoaded={profilePictureUrl !== null}>
-            <Avatar src={profilePictureUrl ?? undefined}/>
-        </Skeleton>
+        <Link href={`/profile/${user.id}`}>
+            <Avatar src={user.image ?? undefined} name={user.name || undefined} {...avatarProps}/>
+        </Link>
     )
 }
 
