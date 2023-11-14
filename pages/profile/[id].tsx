@@ -28,6 +28,21 @@ const ProfilePage: React.FC = () => {
     const [followingUsernames, setFollowingUsernames] = useState(new Map<string, string>());
     const [followingImages, setFollowingImages] = useState(new Map<string, string>());
 
+    const [isSearchFocused, setSearchFocused] = useState(false);
+
+
+    const handleSearchMouseDown = () => {
+      setSearchFocused(true);
+    };
+
+
+   const handleSearchBlur = () => {
+     setTimeout(() => {
+       setSearchFocused(false);
+     }, 300);
+   };
+
+
     useEffect(() => {
       if (id) {
           fetch(`/api/v2/users/${id}`)
@@ -293,6 +308,8 @@ const ProfilePage: React.FC = () => {
               left={0}
               pt={0}
               borderRadius="10px"
+              onMouseDown={handleSearchMouseDown}
+              onBlur={handleSearchBlur}
               boxShadow="0px 0px 10px rgba(0, 0, 0, 0.5)">
                 <Input
                 p={5}
@@ -309,6 +326,9 @@ const ProfilePage: React.FC = () => {
                     listStyleType={"none"}
                     ml={0}
                     borderRadius="10px"
+                    style={{
+                      display: isSearchFocused ? "block" : "none"
+                    }}
                     bgColor={"#555050"}>
                     {usersReturned.map((user: User) => (
                         <ListItem 
