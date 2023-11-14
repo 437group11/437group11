@@ -259,20 +259,24 @@ const ProfilePage: React.FC = () => {
                 This shelf is looking a little empty...
                 Review some albums, and those reviews will show up here.
             </Text>
-        )
-        : (<SimpleGrid color={"white"} spacing='20px' columns = {[1, 2, 3, 4]} p={5}>
-        {albums.map((review, index) => (
-          <Box key={index}>
-          <AlbumCard
-            key={index}
-            image={review.album.imageUrl}
-            title={review.album.name}
-            description={review.content}
-            rating={review.rating}
-          />
-          </Box>
-        ))}
-      </SimpleGrid>
+        ) : (
+        <Box height="700px" overflowY="auto">
+          <SimpleGrid color={"white"} spacing='20px' columns = {[1, 2, 3, 4]} p={5}>
+          {albums.map((review, index) => (
+            <Box key={index} onClick={() => {router.push(`/album/${review.album.spotifyId}`)}}>
+              <Box _hover={{ boxShadow: 'dark-lg'}}>
+                <AlbumCard
+                key={index}
+                image={review.album.imageUrl}
+                title={review.album.name}
+                description={review.content}
+                rating={review.rating}
+                />
+              </Box>
+            </Box>
+          ))}
+          </SimpleGrid>
+        </Box>
       )
 
   return (

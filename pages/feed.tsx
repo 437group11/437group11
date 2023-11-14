@@ -16,7 +16,7 @@ import {
     Input, Box, UnorderedList, ListItem, Link, Container, SimpleGrid,
     Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton,
     ModalFooter, Img, Text, Center, Slider, SliderTrack, SliderFilledTrack,
-    SliderThumb, ModalHeader, Textarea, Button, GridItem, Heading, useToast
+    SliderThumb, ModalHeader, Textarea, Button, GridItem, Heading, useToast, border
 } from "@chakra-ui/react";
 import { getServerSession } from "next-auth"
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next"
@@ -184,22 +184,26 @@ export default function Feed({sessionProp}: InferGetServerSidePropsType<typeof g
             </Text>
         )
         : (
-            <SimpleGrid spacing='20px' columns = {[1, 2, 3, 4]} p={5} mx={5}>
-                {reviews.map((review, index) => (
-                <Box key={index} 
-                    onClick={() => {router.push(`/album/${review.album.spotifyId}`)}}>
-                    <AlbumCard
-                        key={index}
-                        authorImage={followerImages.get(review.authorId)}
-                        author={usernames.get(review.authorId)}
-                        image={review.album.imageUrl}
-                        title={review.album.name}
-                        description={review.content}
-                        rating={review.rating}
-                    />
-                </Box>
-                ))}
-            </SimpleGrid>
+            <Box height="700px" overflowY="auto">
+                <SimpleGrid spacing='20px' columns = {[1, 2, 3, 4]} p={5} mx={5}>
+                    {reviews.map((review, index) => (
+                    <Box key={index} 
+                        onClick={() => {router.push(`/album/${review.album.spotifyId}`)}}>
+                            <Box key={index} _hover={{ boxShadow: 'dark-lg'}}>
+                                <AlbumCard
+                                key={index}
+                                authorImage={followerImages.get(review.authorId)}
+                                author={usernames.get(review.authorId)}
+                                image={review.album.imageUrl}
+                                title={review.album.name}
+                                description={review.content}
+                                rating={review.rating}
+                                />
+                            </Box>
+                    </Box>
+                    ))}
+                </SimpleGrid>
+            </Box>
         )
     const toast = useToast()
     return (

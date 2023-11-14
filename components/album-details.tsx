@@ -18,6 +18,7 @@ const AlbumDetails: React.FC<AlbumDetailsProps> = ({ album }) => {
                     boxSize="200px"
                     objectFit="cover"
                     boxShadow="lg"
+                    rounded="md"
                 />
 
                 <Text fontSize="xl" fontWeight="bold">
