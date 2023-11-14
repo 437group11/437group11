@@ -27,7 +27,6 @@ export default function ReviewComments({reviewId}: {reviewId: number}) {
             console.log("Error: ", error);
         }
     }
-
     const handleDeleteComment = async (commentId) => {
         try {
             await axios.delete(`/api/v2/reviews/${reviewId}/comments/${commentId}`);

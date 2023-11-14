@@ -83,7 +83,7 @@ export default function AlbumPage({sessionProp}: InferGetServerSidePropsType<typ
                     <Heading size={"md"}>Reviews</Heading>
                     <AlbumReviews reviews={reviews} />
                 </Box>
-
+                
             </Flex>
         </Box>
 
