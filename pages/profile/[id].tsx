@@ -275,23 +275,21 @@ const ProfilePage: React.FC = () => {
                 Review some albums, and those reviews will show up here.
             </Text>
         ) : (
-        <Box height="700px" overflowY="auto">
-          <SimpleGrid color={"white"} spacing='20px' columns = {[1, 2, 3, 4]} p={5}>
-          {albums.map((review, index) => (
-            <Box key={index} onClick={() => {router.push(`/album/${review.album.spotifyId}`)}}>
-              <Box _hover={{ boxShadow: 'dark-lg'}}>
-                <AlbumCard
-                key={index}
-                image={review.album.imageUrl}
-                title={review.album.name}
-                description={review.content}
-                rating={review.rating}
-                />
-              </Box>
+        <SimpleGrid color={"white"} spacing='20px' columns = {[1, 2, 3, 4]} p={5}>
+        {albums.map((review, index) => (
+          <Box key={index} onClick={() => {router.push(`/album/${review.album.spotifyId}`)}}>
+            <Box _hover={{ boxShadow: 'dark-lg'}}>
+              <AlbumCard
+              key={index}
+              image={review.album.imageUrl}
+              title={review.album.name}
+              description={review.content}
+              rating={review.rating}
+              />
             </Box>
-          ))}
-          </SimpleGrid>
-        </Box>
+          </Box>
+        ))}
+        </SimpleGrid>
       )
 
   return (
@@ -302,7 +300,7 @@ const ProfilePage: React.FC = () => {
           <Container centerContent mt={0} p={5} position="relative">
             <Box 
               width="full"
-              zIndex="99"
+              zIndex="20"
               position="absolute"
               top={0}
               left={0}
@@ -370,7 +368,7 @@ const ProfilePage: React.FC = () => {
                     listStyleType={"none"}
                     ml={0}
                     borderRadius="10px"
-                    zIndex="99">
+                    zIndex="50">
                     {Array.from(followingUsernames).map(([id, name]) => (
                         <ListItem 
                         _hover={{bg: "blue", color: "white"}} 

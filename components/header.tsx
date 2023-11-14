@@ -43,7 +43,7 @@ export default function Header() {
     let contents = headerContents()
 
     return (
-        <header className="bg-header p-8 flex justify-between">
+        <header className="bg-header p-8 flex justify-between sticky top-0 z-40">
             <Heading>
                 <Link href="/">
                     Beatbuff

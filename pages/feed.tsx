@@ -184,9 +184,8 @@ export default function Feed({sessionProp}: InferGetServerSidePropsType<typeof g
             </Text>
         )
         : (
-            <Box height="700px" overflowY="auto">
-                <SimpleGrid spacing='20px' columns = {[1, 2, 3, 4]} p={5} mx={5}>
-                    {reviews.map((review, index) => (
+            <SimpleGrid spacing='20px' columns = {[1, 2, 3, 4]} p={5} mx={5}>
+                {reviews.map((review, index) => (
                     <Box key={index} 
                         onClick={() => {router.push(`/album/${review.album.spotifyId}`)}}>
                             <Box key={index} _hover={{ boxShadow: 'dark-lg'}}>
@@ -201,9 +200,8 @@ export default function Feed({sessionProp}: InferGetServerSidePropsType<typeof g
                                 />
                             </Box>
                     </Box>
-                    ))}
-                </SimpleGrid>
-            </Box>
+                ))}
+            </SimpleGrid>
         )
     const toast = useToast()
     return (
@@ -211,7 +209,7 @@ export default function Feed({sessionProp}: InferGetServerSidePropsType<typeof g
             <Container centerContent my={5} p={5} position="relative">
               <Box 
                 width="full"
-                zIndex="99"
+                zIndex="20"
                 position="absolute"
                 top={0}
                 mx={5}
