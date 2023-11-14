@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useSession, signIn, signOut } from "next-auth/react";
-import { Button, Heading, Avatar } from "@chakra-ui/react";
+import { Button, Heading } from "@chakra-ui/react";
 import ProfilePicture from "components/profile-picture"
 
 export default function Header() {

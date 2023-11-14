@@ -1,5 +1,4 @@
 import {
-    Avatar,
     Box,
     Card,
     CardBody,
@@ -11,6 +10,7 @@ import {
 } from "@chakra-ui/react"
 import React from "react"
 import { ReviewWithAuthor } from "../pages/api/v2/albums/[spotifyId]/reviews"
+import ProfilePicture from "./profile-picture"
 import ReviewComments from "./review-comments"
 
 function AlbumReviews({reviews}: {reviews: ReviewWithAuthor[]}) {
@@ -20,7 +20,7 @@ function AlbumReviews({reviews}: {reviews: ReviewWithAuthor[]}) {
                 <Card maxW={"80ch"} bgColor="whiteAlpha.200">
                     <CardHeader>
                         <Flex flex="1" gap="4" alignItems="center" flexWrap="wrap">
-                            <Avatar src={review.author.image ?? undefined}></Avatar>
+                            <ProfilePicture user={review.author}/>
 
                             <Box>
                                 <Heading size="md">
