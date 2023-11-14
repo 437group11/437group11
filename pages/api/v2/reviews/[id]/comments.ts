@@ -6,6 +6,7 @@
  * POST
  */
 
+import { Prisma } from "@prisma/client";
 import { HttpStatusCode } from "axios";
 import { NextApiRequest, NextApiResponse } from "next";
 import { Session, getServerSession } from "next-auth";
@@ -51,10 +52,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 }
 
-async function getComments(reviewId: string) {
+const commentWithAuthor = Prisma.validator<Prisma.ReviewCommentDefaultArgs>()({
+    include: {
+        author: true
+    }
+})
+export type CommentWithAuthor = Prisma.ReviewCommentGetPayload<typeof commentWithAuthor>
+
+async function getComments(reviewId: string): Promise<CommentWithAuthor[]> {
     return prisma.reviewComment.findMany({
         where: {
             reviewId: Number(reviewId)
+        },
+        include: {
+            author: true
         }
     }) 
 }
