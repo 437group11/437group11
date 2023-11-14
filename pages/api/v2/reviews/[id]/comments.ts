@@ -1,9 +1,11 @@
 /**
  * Endpoints for comments on a review.
  * 
- * GET: Get the comments for the review.
+ * GET: get the comments for the review.
+ * You can use an array of the exported type CommentWithAuthor to store the data returned.
  * 
- * POST
+ * POST: post a comment to the review. Must be signed in.
+ * Expects a `content` field in the JSON request body that contains the contents of the review.
  */
 
 import { Prisma } from "@prisma/client";
