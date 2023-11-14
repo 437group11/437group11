@@ -2,7 +2,7 @@
  * Endpoints for comments on a review.
  * 
  * GET: get the comments for the review.
- * You can use an array of the exported type CommentWithAuthor to store the data returned.
+ * You can use an array of the exported type ReviewCommentWithAuthor to store the data returned.
  * 
  * POST: post a comment to the review. Must be signed in.
  * Expects a `content` field in the JSON request body that contains the contents of the review.
@@ -54,14 +54,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 }
 
-const commentWithAuthor = Prisma.validator<Prisma.ReviewCommentDefaultArgs>()({
+const reviewCommentWithAuthor = Prisma.validator<Prisma.ReviewCommentDefaultArgs>()({
     include: {
         author: true
     }
 })
-export type CommentWithAuthor = Prisma.ReviewCommentGetPayload<typeof commentWithAuthor>
+export type ReviewCommentWithAuthor = Prisma.ReviewCommentGetPayload<typeof reviewCommentWithAuthor>
 
-async function getComments(reviewId: string): Promise<CommentWithAuthor[]> {
+async function getComments(reviewId: string): Promise<ReviewCommentWithAuthor[]> {
     return prisma.reviewComment.findMany({
         where: {
             reviewId: Number(reviewId)
