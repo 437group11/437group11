@@ -6,7 +6,15 @@ import {
     CardHeader,
     Flex,
     Heading,
+    Modal,
+    ModalBody,
+    ModalCloseButton,
+    ModalContent,
+    ModalFooter,
+    ModalHeader,
+    ModalOverlay,
     Text,
+    Textarea,
     VStack
 } from "@chakra-ui/react"
 import React, { useEffect, useState } from "react"
@@ -18,13 +26,14 @@ import axios from "axios"
 
 function AlbumReviews({reviews : initialReviews}: {reviews: ReviewWithAuthor[]}) {
 
+    const [reviews, setReviews] = useState(initialReviews);
+    const { data: session, status} = useSession();
+    const [editingReview, setEditingReview] = useState<ReviewWithAuthor | null>(null);
+    const [isEditingModalOpen, setIsEditingModalOpen] = useState(false);
+   
     useEffect(() => {
         setReviews(initialReviews);
     }, [initialReviews]); 
-
-    const [reviews, setReviews] = useState(initialReviews);
-
-    const { data: session, status} = useSession();
 
     const handleDeleteReview = async (reviewId: number) => {
         try {
@@ -35,6 +44,40 @@ function AlbumReviews({reviews : initialReviews}: {reviews: ReviewWithAuthor[]})
             console.log("Error deleting: ", error);
         }
     }
+
+    const handleEditReview = (review: ReviewWithAuthor) => {
+        setEditingReview(review);
+        setIsEditingModalOpen(true);
+    };
+
+    const handleEditButton = (review: ReviewWithAuthor) => {
+        setEditingReview(review);
+        setIsEditingModalOpen(true);
+    }
+
+    const handleSubmitReview = async () => {
+        try {
+            const response = axios.post(`/api/v2/albums/${editingReview?.albumId}/reviews`, {
+                rating: editingReview?.rating,
+                content: editingReview?.content
+            })
+            console.log(response);
+            setReviews((prevReviews) =>
+            prevReviews.map((review) =>
+                review.id === editingReview?.id
+                    ? {
+                        ...review,
+                        rating: editingReview?.rating,
+                        content: editingReview?.content,
+                    }
+                    : review
+                )
+            );
+            setIsEditingModalOpen(false);
+            setEditingReview(null);
+        } catch (error) {
+        }
+    };
 
     return (
         <VStack align="stretch">
@@ -56,9 +99,16 @@ function AlbumReviews({reviews : initialReviews}: {reviews: ReviewWithAuthor[]})
                                     ).toDateString()}
                                 </Text>
                             </Box>
-                            {session?.user?.name == review.author.name && (<Button size="sm" colorScheme="red" onClick={() => handleDeleteReview(review.id)}>
-                                Delete
-                            </Button>)}
+                            {session?.user?.name == review.author.name && (
+                            <>
+                                <Button size="sm" colorScheme="blue" onClick={() => handleEditButton(review)}>
+                                    Edit
+                                </Button>
+                                <Button size="sm" colorScheme="red" onClick={() => handleDeleteReview(review.id)}>
+                                    Delete
+                                </Button>
+                            </>
+                            )}
                         </Flex>
                     </CardHeader>
                     <CardBody>
@@ -69,6 +119,38 @@ function AlbumReviews({reviews : initialReviews}: {reviews: ReviewWithAuthor[]})
                     </CardBody>
                 </Card>
             ))}
+            <Modal isOpen={isEditingModalOpen} onClose={() => setIsEditingModalOpen(false)}>
+                <ModalOverlay />
+                <ModalContent>
+                    <ModalHeader>Edit Review</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                        <Textarea
+                            value={editingReview?.content}
+                            onChange={(e) => setEditingReview((prevReview) => ({
+                                ...prevReview!,
+                                content: e.target.value,
+                            }))}
+                            placeholder="Edit your review content"
+                        />
+                        <input
+                            type="number"
+                            value={editingReview?.rating}
+                            onChange={(e) => setEditingReview((prevReview) => ({
+                                ...prevReview!,
+                                rating: Number(e.target.value),
+                            }))}
+                            placeholder="Edit your rating"
+                        />
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button colorScheme="blue" mr={3} onClick={handleSubmitReview}>
+                            Submit
+                        </Button>
+                        <Button onClick={() => setIsEditingModalOpen(false)}>Cancel</Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
         </VStack>
     )
 }
