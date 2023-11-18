@@ -55,6 +55,12 @@ export function methodNotAllowedError(res: NextApiResponse, allow: String[]) {
         })
 }
 
+// A Rust-like result type.
+// https://imhoff.blog/posts/using-results-in-typescript
+export type Result<T, E = Error> =
+  | { ok: true; value: T }
+  | { ok: false; error: E }
+
 /**
  * An error with a corresponding HTTP status code.
  */
