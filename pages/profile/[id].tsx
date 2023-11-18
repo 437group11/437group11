@@ -5,8 +5,8 @@ import {UserReviews} from "../api/v2/users/[id]/reviews";
 import { User } from "@prisma/client";
 import { useRouter } from "next/router";
 import { Box, Button, Card, Container, GridItem, Heading, Input, Progress, SimpleGrid, Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton,
-  ModalFooter, Img, Text, Center, Slider, SliderTrack, SliderFilledTrack,
-  SliderThumb, ModalHeader, Textarea, UnorderedList, ListItem} from "@chakra-ui/react";
+  ModalFooter, Img, Text, Center, Select, Slider, SliderTrack, SliderFilledTrack,
+  SliderThumb, ModalHeader, Flex, Textarea, UnorderedList, ListItem} from "@chakra-ui/react";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { UserPublicData } from "../api/v2/users/[id]";
 import ProfilePicture from "../../components/profile-picture";
@@ -29,6 +29,8 @@ const ProfilePage: React.FC = () => {
     const [followingImages, setFollowingImages] = useState(new Map<string, string>());
 
     const [isSearchFocused, setSearchFocused] = useState(false);
+    let [followedUsersCount, setFollowedUsersCount] = useState(0);
+    let [selectedSortOption, setSelectedSortOption] = useState('0'); 
 
 
     const handleSearchMouseDown = () => {
@@ -71,12 +73,21 @@ const ProfilePage: React.FC = () => {
           if(id)
           {
             try {
-            const response = await fetch(`/api/v2/users/${id}/reviews`);
+              let sortParam = 'rating:desc';
+              if (selectedSortOption === '0') {
+                sortParam = 'rating:desc';
+              } else if (selectedSortOption === '1') {
+                sortParam = 'rating:asc';
+              } else if (selectedSortOption === '2') {
+                sortParam = 'datePublished:desc';
+              } else if (selectedSortOption === '3') {
+                sortParam = 'datePublished:asc';
+              }
+              const response = await fetch(`/api/v2/users/${id}/reviews?sort=${sortParam}`);      
             if (response.ok){
               const data = await response.json();
               console.log(data);
               if (data.status === 'success') {
-                console.log("here");
                 setAlbums(data.data.reviews);
               }
             } else {
@@ -88,7 +99,7 @@ const ProfilePage: React.FC = () => {
         }
       }
       fetchAlbumData();
-    }, [id]);
+    }, [id, selectedSortOption]);
 
   const sessionFollowing = async () => {
     if (!session) {
@@ -139,6 +150,7 @@ const ProfilePage: React.FC = () => {
         const data = await response.json();
         console.log("a");
         console.log(data.data.following);
+        setFollowedUsersCount(data.data.following.length);
         for (let i = 0; i < data.data.following.length; i++){
           currUsernames.set(data.data.following[i].id, data.data.following[i].name);
           currImages.set(data.data.following[i].id, data.data.following[i].image);
@@ -227,7 +239,30 @@ const ProfilePage: React.FC = () => {
       }
   }
 
+  const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedValue = event.target.value;
+    setSelectedSortOption(selectedValue);
+  };
+
   const isUser = session?.user?.id === id;
+
+  useEffect(() => {
+    switch (selectedSortOption) {
+      case '0':
+        break;
+      case '1':
+        // Logic for case 1
+        break;
+      case '2':
+        // Logic for case 2
+        break;
+      case '3':
+        // Logic for case 3
+        break;
+      default:
+        break;
+    }
+  }, [selectedSortOption]);
 
   useEffect(() => { //after save works but doesnt update properly
     sessionFollowing();
@@ -353,14 +388,14 @@ const ProfilePage: React.FC = () => {
           <ProfilePicture user={user} size={"lg"}/>
           <Heading flexWrap={"wrap"} m={4}>{user.name}</Heading>
         </Box>
-        <Button minHeight={38} my={5} onClick={() => followingModal()} alignSelf={"flex-start"}>View followed users</Button>
+        <Button minHeight={38} my={5} onClick={() => followingModal()} alignSelf={"flex-start"}>{`Following: ${followedUsersCount}`}</Button>
       </Box>
       {followButton}
       <Modal isOpen={isModalOpen} onClose={handleModalClose} isCentered>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>{}</ModalHeader>
-          <ModalCloseButton />
+          <ModalCloseButton/>
           <ModalBody>
           <UnorderedList
                     id="results"
@@ -390,7 +425,15 @@ const ProfilePage: React.FC = () => {
         </ModalContent>
       </Modal>
       <Box bg="#2A2525" borderRadius="10px">
+      <Flex justify="space-between" align="center">
       <Heading p={5} color="white">Shelf</Heading>
+      <Select value={selectedSortOption} m={5} onChange={handleSortChange} maxW="fit-content">
+        <option value='0'>Sort By Highest Rating</option>
+        <option value='1'>Sort By Lowest Rating</option>
+        <option value='2'>Sort By Newest Review</option>
+        <option value='3'>Sort By Oldest Review</option>
+      </Select>
+      </Flex>
       {shelfContent}
     </Box>
     </Box>
