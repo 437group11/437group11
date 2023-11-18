@@ -1,12 +1,14 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useSession, signIn, signOut } from "next-auth/react";
-import { Button, Flex, Heading } from "@chakra-ui/react";
+import { Button, Flex, Heading, IconButton, useToast } from "@chakra-ui/react";
 import ProfilePicture from "components/profile-picture"
+import { ArrowUpIcon } from "@chakra-ui/icons";
 
 export default function Header() {
     const { data: session, status } = useSession();
     const router = useRouter();
+    const toast = useToast()
     const { pathname } = router;
 
     const handleSignOut = () => {
@@ -40,6 +42,11 @@ export default function Header() {
         return <ProfilePicture user={session.user} size="md" />
     }
     
+    function scrollToTop() {
+        toast({title: "Scrolled to top"})
+        window.scrollTo({top: 0, behavior: 'smooth'})
+    }
+
     let contents = headerContents()
 
     return (
@@ -50,7 +57,7 @@ export default function Header() {
                 </Link>
             </Heading>
             <Flex gap={5}>
-                <Button onClick={() => {window.scrollTo({top: 0, behavior: 'smooth'})}}>↑</Button>
+                <IconButton aria-label={"Scroll to top"} icon={<ArrowUpIcon />} onClick={scrollToTop}/>
                 {contents}
             </Flex>
         </header>
