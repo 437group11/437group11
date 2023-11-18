@@ -1,6 +1,6 @@
 import RootLayout from "../../components/root-layout";
 import React, { useEffect, useState } from "react";
-import AlbumCard from "../../components/album-card";
+import ProfileAlbumCard from "../../components/profile-album-card";
 import {UserReviews} from "../api/v2/users/[id]/reviews";
 import { User } from "@prisma/client";
 import { useRouter } from "next/router";
@@ -279,11 +279,11 @@ const ProfilePage: React.FC = () => {
         {albums.map((review, index) => (
           <Box key={index} onClick={() => {router.push(`/album/${review.album.spotifyId}`)}}>
             <Box _hover={{ boxShadow: 'dark-lg'}}>
-              <AlbumCard
+              <ProfileAlbumCard
               key={index}
               image={review.album.imageUrl}
               title={review.album.name}
-              description={review.content}
+              artist={review.album?.artists.map((artist) => artist.name).join(", ")}
               rating={review.rating}
               />
             </Box>

@@ -195,6 +195,7 @@ export default function Feed({sessionProp}: InferGetServerSidePropsType<typeof g
                                 author={usernames.get(review.authorId)}
                                 image={review.album.imageUrl}
                                 title={review.album.name}
+                                artist={review.album?.artists.map((artist) => artist.name).join(", ")}
                                 description={review.content}
                                 rating={review.rating}
                                 />
