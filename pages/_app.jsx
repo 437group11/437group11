@@ -15,11 +15,18 @@ const config = {
 
 const theme = extendTheme({ config })
 
+const toastOptions = {
+    defaultOptions: {
+        isClosable: true,
+        duration: 2500
+    }
+}
+
 // This default export is required in a new `pages/_app.js` file.
 export default function MyApp({ Component, pageProps: { session, ...pageProps } }) {
     return (
         <SessionProvider session={session}>
-            <ChakraProvider theme={theme}>
+            <ChakraProvider theme={theme} toastOptions={toastOptions}>
                 <Component {...pageProps} />
             </ChakraProvider>
         </SessionProvider>
