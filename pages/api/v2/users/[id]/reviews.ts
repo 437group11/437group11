@@ -42,7 +42,7 @@ function convertToOrderBy(query: string | string[] | undefined): Result<OrderBy>
     if (Array.isArray(query)) {
         return {
             ok: false,
-            error: new Error("sort must be passed only once")
+            error: new Error("`sort` must be passed only once")
         }
     } else if (query === undefined) {
         // Default orderby
@@ -58,10 +58,16 @@ function convertToOrderBy(query: string | string[] | undefined): Result<OrderBy>
         const sortSplit = query.split(":")
         const sortVariable = sortSplit[0]
         const sortDirection = sortSplit[1]
+        if (sortDirection === undefined) {
+            return {
+                ok: false,
+                error: new Error("Expected `:direction` after sort variable, where direction is `asc` or `desc`")
+            }
+        }
         if (sortDirection !== "asc" && sortDirection !== "desc") {
             return {
                 ok: false,
-                error: new Error("sort direction must be `asc` or `desc`")
+                error: new Error("Sort direction must be `asc` or `desc`")
             }
         }
 
@@ -87,7 +93,7 @@ function convertToOrderBy(query: string | string[] | undefined): Result<OrderBy>
             default:
                 return {
                     ok: false,
-                    error: new Error(`sort variable "${sortVariable} is not supported"`)
+                    error: new Error(`Sort variable "${sortVariable}" is not supported`)
                 }
         }
     }
