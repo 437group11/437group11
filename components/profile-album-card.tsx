@@ -22,7 +22,7 @@ const ProfileAlbumCard: React.FC<ProfileAlbumCardProps> = ({ author, authorImage
         <h2 className="text-lg text-center font-bold">{title}</h2>
         <h2 className="text-lg text-center">{artist}</h2>
         <p className=" mt-2 text-lg font-semibold text-center">Rating</p>
-        <p className="text-lg font-semibold text-center">{(rating/10)}</p>
+        <p className="text-lg font-semibold text-center">{rating}/10</p>
       </div>
     </div>
   );

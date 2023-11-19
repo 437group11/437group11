@@ -90,7 +90,7 @@ function AlbumReviews({reviews : initialReviews}: {reviews: ReviewWithAuthor[]})
                             <Box>
                                 <Heading size="md">
                                     {review.author.name} rated it{" "}
-                                    {review.rating / 10}/10
+                                    {review.rating}/10
                                 </Heading>
                                 <Text>
                                     Date published:{" "}

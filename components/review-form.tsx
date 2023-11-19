@@ -10,12 +10,10 @@ export default function ReviewForm({spotifyId, onReviewSubmit }: { spotifyId: st
         event.preventDefault()
         const formData = new FormData(event.currentTarget)
 
-        const rating = Number(formData.get("rating")!)
-        const intRating: number = Math.round(rating * 10);
         const promise = axios.post(
             `/api/v2/albums/${spotifyId}/reviews`,
             {
-                rating: intRating,
+                rating: formData.get("rating"),
                 content: formData.get("content")
             }
         ).then(onReviewSubmit)
@@ -32,7 +30,7 @@ export default function ReviewForm({spotifyId, onReviewSubmit }: { spotifyId: st
             <form onSubmit={handleSubmitReview}>
                 <FormControl>
                     <FormLabel>Rating 1-10</FormLabel>
-                    <NumberInput max={10} min={0} step={0.1} name={"rating"}>
+                    <NumberInput max={10} min={1} name={"rating"}>
                         <NumberInputField />
                         <NumberInputStepper>
                             <NumberIncrementStepper />

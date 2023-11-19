@@ -24,7 +24,7 @@ const AlbumCard: React.FC<AlbumCardProps> = ({ author, authorImage, image, title
         <p className="text-lg text-center font-bold">{artist}</p>
         <p className="text-center">{description}</p>
         <p className=" mt-2 text-lg font-semibold text-center">Rating</p>
-        <p className="text-lg font-semibold text-center">{(rating/10)}</p>
+        <p className="text-lg font-semibold text-center">{rating}/10</p>
       </div>
     </div>
   );
