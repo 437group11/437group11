@@ -3,7 +3,7 @@
  */
 import { Prisma } from "@prisma/client"
 import { HttpStatusCode } from "axios"
-import type { NextApiResponse } from "next"
+import type { NextApiRequest, NextApiResponse } from "next"
 
 export function isString(s: string | string[] | undefined): s is string {
     return typeof s === "string"
@@ -53,6 +53,24 @@ export function methodNotAllowedError(res: NextApiResponse, allow: String[]) {
                 title: `This route supports the following methods: ${allowString}`,
             },
         })
+}
+
+// handle() and its associated types form an abstraction
+// to avoid writing boilerplate switch statements for every API route.
+type HandlerFunction = (req: NextApiRequest, res: NextApiResponse) => Promise<void>
+interface Route {
+    GET?: HandlerFunction
+    POST?: HandlerFunction
+    DELETE?: HandlerFunction
+    PUT?: HandlerFunction
+    PATCH?: HandlerFunction
+}
+export function handle(req: NextApiRequest, res: NextApiResponse, route: Route) {
+    if (!req.method || !(req.method in route)) {
+        return methodNotAllowedError(res, Object.keys(route))
+    }
+    let handlerFunction = route[req.method as keyof Route]!
+    return handlerFunction(req, res)
 }
 
 // A Rust-like result type.
