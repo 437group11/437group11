@@ -14,10 +14,10 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
 }
 
 async function handleDelete(req: NextApiRequest, res: NextApiResponse) {
-    const { id } = req.query as { id: string }
+    const { commentId } = req.query as { commentId: string }
 
     try {
-        await deleteComment(id, await getServerSession(req, res, authOptions))
+        await deleteComment(commentId, await getServerSession(req, res, authOptions))
         return jsendSuccess(res, HttpStatusCode.Ok, {})
     } catch (error) {
         if (error instanceof UnauthorizedError || error instanceof ForbiddenError) {
