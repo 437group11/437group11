@@ -13,6 +13,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]"
 import { Flex, Box, Heading, Button, Text } from "@chakra-ui/react"
 import ReviewForm from "../../components/review-form";
+import ReviewModal from "../../components/review-modal";
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
     const session = await getServerSession(
@@ -46,6 +47,7 @@ export default function AlbumPage({sessionProp}: InferGetServerSidePropsType<typ
   const { spotifyId } = router.query;
   const [album, setAlbum] = useState<Album | null>(null);
   const [reviews, setReviews] = useState<ReviewWithAuthor[]>([]);
+  const [isReviewModalOpen, setReviewModalOpen] = useState(false);
 
   useEffect(() => {
     if (spotifyId) {
@@ -76,17 +78,20 @@ export default function AlbumPage({sessionProp}: InferGetServerSidePropsType<typ
             <Flex mt={5} gap={10}>
                 <Box minW={300}>
                     <AlbumDetails album={album} />
-                    <Heading size={"md"} mt={10}>Your review</Heading>
-                    <ReviewForm spotifyId={album?.id ?? null} onReviewSubmit={updateReviews}/>
+                    <Button my={5} onClick={() => setReviewModalOpen(true)}>Leave a Review</Button>
                 </Box>
                 <Box minW={"50vw"}>
                     <Heading size={"md"}>Reviews</Heading>
                     <AlbumReviews reviews={reviews} />
                 </Box>
-                
             </Flex>
         </Box>
-
+      <ReviewModal
+        isOpen={isReviewModalOpen}
+        onClose={() => setReviewModalOpen(false)}
+        onReviewSubmit={updateReviews}
+        album={album}
+      />
     </RootLayout>
   )
 }
