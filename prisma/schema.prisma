@@ -97,7 +97,7 @@ model Review {
   id            Int             @id @default(autoincrement())
   albumId       String
   album         Album           @relation(fields: [albumId], references: [spotifyId])
-  content       String
+  content       String          @db.Text
   rating        Int
   authorId      String
   author        User            @relation(fields: [authorId], references: [id])
