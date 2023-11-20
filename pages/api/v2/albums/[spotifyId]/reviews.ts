@@ -141,7 +141,7 @@ async function post(spotifyId: string, req: NextApiRequest, res: NextApiResponse
             where: { id: existingReview.id },
             data: {
                 content: req.body["content"],
-                rating: req.body["rating"],
+                rating: Number(req.body["rating"]),
             },
         })
     } else {
@@ -151,7 +151,7 @@ async function post(spotifyId: string, req: NextApiRequest, res: NextApiResponse
                 authorId: session.user.id,
                 albumId: spotifyId,
                 content: req.body["content"],
-                rating: req.body["rating"],
+                rating: Number(req.body["rating"]),
             },
         })
     }
