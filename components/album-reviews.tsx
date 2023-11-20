@@ -131,6 +131,7 @@ function AlbumReviews({reviews : initialReviews}: {reviews: ReviewWithAuthor[]})
                                 ...prevReview!,
                                 content: e.target.value,
                             }))}
+                            maxLength={8000}
                             placeholder="Edit your review content"
                         />
                         <input

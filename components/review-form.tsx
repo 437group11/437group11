@@ -41,7 +41,7 @@ export default function ReviewForm({spotifyId, onReviewSubmit }: { spotifyId: st
 
                 <FormControl>
                     <FormLabel>Review text</FormLabel>
-                    <Textarea maxLength={191} name={"content"}></Textarea>
+                    <Textarea maxLength={8000} name={"content"}></Textarea>
                 </FormControl>
 
                 <Button type="submit">Submit</Button>
