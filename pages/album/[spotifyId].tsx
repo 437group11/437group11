@@ -56,15 +56,19 @@ export default function AlbumPage({sessionProp}: InferGetServerSidePropsType<typ
         setAlbum(albumData);
       });
 
-      axios.get(`/api/v2/albums/${spotifyId}/reviews`).then((response) => {
-        const updatedReviews = response.data.data.reviews;
-        setReviews(updatedReviews);
-        getAverageRating(updatedReviews);
-      });
+      getReviews();
     }
   }, [spotifyId, sessionProp.spotifyToken]);
 
-  
+  const getReviews = async () => {
+    try {
+      const response = await axios.get(`/api/v2/albums/${spotifyId}/reviews`);
+      setReviews(response.data.data.reviews);
+      getAverageRating(response.data.data.reviews);
+    } catch (error) {
+      console.log("Error getting reviews: ", error);
+    }
+  }
 
   const updateReviews = async () => {
     const response = await axios.get(`/api/v2/albums/${spotifyId}/reviews`);
