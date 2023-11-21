@@ -101,7 +101,7 @@ export default function AlbumPage({sessionProp}: InferGetServerSidePropsType<typ
     <RootLayout>
         <Box m={10} display="flex">
             <Flex mt={5} gap={10} flexDirection={{base: "column", sm: "column", md: "row", lg: "row"}}>
-                <Box minW={300}>
+                <Box maxW={300}>
                     <AlbumDetails album={album} />
                     {averageRating !== 0 ? (
                     <Text mt={5} fontSize="xl" fontWeight="bold">
