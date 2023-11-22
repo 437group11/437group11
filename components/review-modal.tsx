@@ -20,7 +20,7 @@ import {
   MenuItem
 } from "@chakra-ui/react";
 import axios from "axios";
-import { Album } from "@prisma/client";
+import { Album } from "../types/Album"
 import { ChevronDownIcon } from "@chakra-ui/icons";
 
 interface ReviewModalProps {
