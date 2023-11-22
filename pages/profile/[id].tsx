@@ -1,9 +1,12 @@
+import { AddIcon, CloseIcon } from "@chakra-ui/icons";
 import {
     Box,
     Button,
     Container,
     Flex,
     Heading,
+    HStack,
+    IconButton,
     Img,
     Input,
     ListItem,
@@ -16,14 +19,21 @@ import {
     Progress,
     Select,
     SimpleGrid,
+    Tag,
+    TagLabel,
+    TagRightIcon,
     Text,
-    UnorderedList
+    Textarea,
+    UnorderedList,
+    VStack
 } from "@chakra-ui/react";
 import { User } from "@prisma/client";
+import axios from "axios";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import ProfileAlbumCard from "../../components/profile-album-card";
+import ProfileDetails from "../../components/profile-details";
 import ProfilePicture from "../../components/profile-picture";
 import RootLayout from "../../components/root-layout";
 import { UserPublicData } from "../api/v2/users/[id]";
@@ -45,6 +55,11 @@ const ProfilePage: React.FC = () => {
     const [usersReturned, setUsersReturned] = useState<User[]>([]);
     const [followingUsernames, setFollowingUsernames] = useState(new Map<string, string>());
     const [followingImages, setFollowingImages] = useState(new Map<string, string>());
+    const [favoriteArtists, setFavoriteArtists] = useState<string[]>(['Radiohead']);
+    const [favoriteGenres, setFavoriteGenres] = useState<string[]>(['indie-pop']);
+    const [bio, setBio] = useState<string>("");
+    const [addingBio, setAddingBio] = useState(false);
+    const [newBio, setNewBio] = useState("");
 
     const [isSearchFocused, setSearchFocused] = useState(false);
     let [followedUsersCount, setFollowedUsersCount] = useState(0);
@@ -371,7 +386,6 @@ const ProfilePage: React.FC = () => {
                                     type="text"
                                     placeholder="Search for a user..."
                                 />
-                                {/* <ul id="results"></ul> */}
                                 <UnorderedList
                                     id="results"
                                     width="full"
@@ -407,13 +421,17 @@ const ProfilePage: React.FC = () => {
                             </Box>
                         </Container>
                     </Container>
-                    <Box display="flex" flexDirection={{base: "column", sm: "column", md: "row", lg: "row"}} top={0}>
-                        <Box display="flex" alignItems="center" flex={{base: "3", md: "3", sm: "1"}}>
-                            <ProfilePicture user={user} size={"lg"}/>
-                            <Heading flexWrap={"wrap"} m={4}>{user.name}</Heading>
+                    <Box>
+                        <Box display="flex" flexDirection={{base: "column", sm: "column", md: "row", lg: "row"}} top={0}>
+                            <Box display="flex" alignItems="center" flex={{base: "3", md: "3", sm: "1"}}>
+                                <ProfilePicture user={user} size={"lg"}/>
+                                <Heading flexWrap={"wrap"} m={4}>{user.name}</Heading>
+                            </Box>
+                            <Button minHeight={38} my={5} onClick={() => followingModal()}
+                                alignSelf={"flex-start"}>{`Following: ${followedUsersCount}`}
+                            </Button>
                         </Box>
-                        <Button minHeight={38} my={5} onClick={() => followingModal()}
-                                alignSelf={"flex-start"}>{`Following: ${followedUsersCount}`}</Button>
+                        <ProfileDetails profileId={id}/>
                     </Box>
                     {followButton}
                     <Modal isOpen={isModalOpen} onClose={handleModalClose} isCentered>
