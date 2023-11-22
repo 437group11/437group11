@@ -37,7 +37,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             }
         case "POST":
             try {
-                post(spotifyId, req, res)
+                await post(spotifyId, req, res)
                 return res.status(HttpStatusCode.Ok).json({
                     "status": "success"
                 })

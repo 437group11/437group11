@@ -46,7 +46,7 @@ const ReviewModal: React.FC<ReviewModalProps> = ({
         console.log(`album: ${album?.id}`)
         console.log(`rating: ${rating}`)
         console.log(`rating: ${reviewText}`)
-        const promise = axios.post(
+        await axios.post(
             `/api/v2/albums/${album?.id}/reviews`,
             {
                 rating: (rating ?? ""),

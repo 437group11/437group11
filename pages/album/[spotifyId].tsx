@@ -74,11 +74,6 @@ export default function AlbumPage({sessionProp}: InferGetServerSidePropsType<typ
     const response = await axios.get(`/api/v2/albums/${spotifyId}/reviews`);
     setReviews([...response.data.data.reviews]);
     getAverageRating(response.data.data.reviews);
-    // In theory, setReviews should cause the AlbumReviews component to reload.
-    // But it doesn't. So, we reload the whole page.
-    // If we have time, we should probably fix this.
-    // https://stackoverflow.com/a/68015879
-    router.replace(router.asPath)
   }
 
   const getAverageRating = (reviews: ReviewWithAuthor[]) => {
