@@ -62,7 +62,6 @@ export default function AlbumPage({sessionProp}: InferGetServerSidePropsType<typ
         try {
             const response = await axios.get(`/api/v2/albums/${spotifyId}/reviews`);
             setReviews(response.data.data.reviews);
-            getAverageRating(response.data.data.reviews);
         } catch (error) {
             console.log("Error getting reviews: ", error);
         }
@@ -71,23 +70,6 @@ export default function AlbumPage({sessionProp}: InferGetServerSidePropsType<typ
     const updateReviews = async () => {
         const response = await axios.get(`/api/v2/albums/${spotifyId}/reviews`);
         setReviews([...response.data.data.reviews]);
-        getAverageRating(response.data.data.reviews);
-    }
-
-    const getAverageRating = (reviews: ReviewWithAuthor[]) => {
-        let sum = 0;
-        if (reviews.length == 0) {
-            setAverageRating(0);
-            return;
-        }
-        for (let review of reviews) {
-            sum += review.rating;
-        }
-        console.log(sum);
-        console.log(reviews.length);
-        const average = sum / reviews.length;
-        const roundedAverage = Math.round(average * 10) / 10;
-        setAverageRating(roundedAverage);
     }
 
     return (
@@ -96,13 +78,6 @@ export default function AlbumPage({sessionProp}: InferGetServerSidePropsType<typ
                 <Flex mt={5} gap={10} flexDirection={{base: "column", sm: "column", md: "row", lg: "row"}}>
                     <Box maxW={300}>
                         <AlbumDetails album={album}/>
-                        {averageRating !== 0 ? (
-                            <Text mt={5} fontSize="xl" fontWeight="bold">
-                                Average Rating: {averageRating}
-                            </Text>) : (
-                            <Text mt={5} fontSize="xl" fontWeight="bold">
-                                No Ratings Yet
-                            </Text>)}
                         <Button my={5} onClick={() => setReviewModalOpen(true)}>Leave a Review</Button>
                     </Box>
                     <Box minW={"50vw"}>

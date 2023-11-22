@@ -79,80 +79,97 @@ function AlbumReviews({reviews : initialReviews}: {reviews: ReviewWithAuthor[]})
         }
     };
 
-    return (
-        <VStack align="stretch">
-            {reviews.map((review) => (
-                <Card key={review.id} maxW={"80ch"} bgColor="whiteAlpha.200">
-                    <CardHeader>
-                        <Flex flex="1" gap="4" alignItems="center" flexWrap="wrap">
-                            <ProfilePicture user={review.author}/>
+    const reviewCards = (<>
+        {reviews.map((review) => (
+            <Card key={review.id} maxW={"80ch"} bgColor="whiteAlpha.200">
+                <CardHeader>
+                    <Flex flex="1" gap="4" alignItems="center" flexWrap="wrap">
+                        <ProfilePicture user={review.author}/>
 
-                            <Box>
-                                <Heading size="md">
-                                    {review.author.name} rated it{" "}
-                                    {review.rating}/10
-                                </Heading>
-                                <Text>
-                                    Date published:{" "}
-                                    {new Date(
-                                        review.datePublished
-                                    ).toDateString()}
-                                </Text>
-                            </Box>
-                            {session?.user?.name == review.author.name && (
-                            <>
-                                <Button size="sm" colorScheme="blue" onClick={() => handleEditButton(review)}>
-                                    Edit
-                                </Button>
-                                <Button size="sm" colorScheme="red" onClick={() => handleDeleteReview(review.id)}>
-                                    Delete
-                                </Button>
-                            </>
-                            )}
-                        </Flex>
-                    </CardHeader>
-                    <CardBody>
-                        {review.content.length !== 0 && (
-                            <Text>{review.content}</Text>
+                        <Box>
+                            <Heading size="md">
+                                {review.author.name} rated it{" "}
+                                {review.rating}/10
+                            </Heading>
+                            <Text>
+                                Date published:{" "}
+                                {new Date(
+                                    review.datePublished
+                                ).toDateString()}
+                            </Text>
+                        </Box>
+                        {session?.user?.name == review.author.name && (
+                        <>
+                            <Button size="sm" colorScheme="blue" onClick={() => handleEditButton(review)}>
+                                Edit
+                            </Button>
+                            <Button size="sm" colorScheme="red" onClick={() => handleDeleteReview(review.id)}>
+                                Delete
+                            </Button>
+                        </>
                         )}
-                        <ReviewComments reviewId={review.id} />
-                    </CardBody>
-                </Card>
-            ))}
-            <Modal isOpen={isEditingModalOpen} onClose={() => setIsEditingModalOpen(false)}>
-                <ModalOverlay />
-                <ModalContent>
-                    <ModalHeader>Edit Review</ModalHeader>
-                    <ModalCloseButton />
-                    <ModalBody>
-                        <Textarea
-                            value={editingReview?.content}
-                            onChange={(e) => setEditingReview((prevReview) => ({
-                                ...prevReview!,
-                                content: e.target.value,
-                            }))}
-                            maxLength={8000}
-                            placeholder="Edit your review content"
-                        />
-                        <input
-                            type="number"
-                            value={editingReview?.rating}
-                            onChange={(e) => setEditingReview((prevReview) => ({
-                                ...prevReview!,
-                                rating: Number(e.target.value),
-                            }))}
-                            placeholder="Edit your rating"
-                        />
-                    </ModalBody>
-                    <ModalFooter>
-                        <Button colorScheme="blue" mr={3} onClick={handleSubmitReview}>
-                            Submit
-                        </Button>
-                        <Button onClick={() => setIsEditingModalOpen(false)}>Cancel</Button>
-                    </ModalFooter>
-                </ModalContent>
-            </Modal>
-        </VStack>
+                    </Flex>
+                </CardHeader>
+                <CardBody>
+                    {review.content.length !== 0 && (
+                        <Text>{review.content}</Text>
+                    )}
+                    <ReviewComments reviewId={review.id} />
+                </CardBody>
+            </Card>
+        ))}
+    </>)
+
+    const editReviewModal = (
+        <Modal isOpen={isEditingModalOpen} onClose={() => setIsEditingModalOpen(false)}>
+            <ModalOverlay />
+            <ModalContent>
+                <ModalHeader>Edit Review</ModalHeader>
+                <ModalCloseButton />
+                <ModalBody>
+                    <Textarea
+                        value={editingReview?.content}
+                        onChange={(e) => setEditingReview((prevReview) => ({
+                            ...prevReview!,
+                            content: e.target.value,
+                        }))}
+                        maxLength={8000}
+                        placeholder="Edit your review content"
+                    />
+                    <input
+                        type="number"
+                        value={editingReview?.rating}
+                        onChange={(e) => setEditingReview((prevReview) => ({
+                            ...prevReview!,
+                            rating: Number(e.target.value),
+                        }))}
+                        placeholder="Edit your rating"
+                    />
+                </ModalBody>
+                <ModalFooter>
+                    <Button colorScheme="blue" mr={3} onClick={handleSubmitReview}>
+                        Submit
+                    </Button>
+                    <Button onClick={() => setIsEditingModalOpen(false)}>Cancel</Button>
+                </ModalFooter>
+            </ModalContent>
+        </Modal>
+    )
+
+    return (
+        <Flex flexDir={"column"} gap={5}>
+            <Heading size={"lg"}>
+                {
+                    reviews.length === 0
+                    ? "No ratings yet"
+                    : `Average rating: ${reviews.map((review) => review.rating).reduce((a, b) => a + b) / reviews.length}/10`
+                }    
+            </Heading>
+            <VStack align="stretch">
+                {reviewCards}
+            </VStack>
+            {editReviewModal}
+        </Flex>
     )
 }
 
