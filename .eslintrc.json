@@ -1,3 +1,7 @@
 {
-  "extends": "next/core-web-vitals"
+  "extends": "next/core-web-vitals",
+  "plugins": ["no-floating-promise"],
+  "rules": {
+    "no-floating-promise/no-floating-promise": 2
+  }
 }

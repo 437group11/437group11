@@ -35,6 +35,7 @@
     "autoprefixer": "latest",
     "eslint": "latest",
     "eslint-config-next": "latest",
+    "eslint-plugin-no-floating-promise": "^1.0.2",
     "postcss": "latest",
     "prisma": "^5.3.1",
     "tailwindcss": "latest",
