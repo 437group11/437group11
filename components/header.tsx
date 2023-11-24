@@ -4,12 +4,32 @@ import { useSession, signIn, signOut } from "next-auth/react";
 import { Button, Flex, Heading, IconButton, useToast } from "@chakra-ui/react";
 import ProfilePicture from "components/profile-picture"
 import { ArrowUpIcon } from "@chakra-ui/icons";
+import { useEffect, useState } from "react";
+
 
 export default function Header() {
     const { data: session, status } = useSession();
     const router = useRouter();
     const toast = useToast()
     const { pathname } = router;
+    const [showScrollButton, setShowScrollButton] = useState(false);
+
+    
+    useEffect(() => {
+        const handleScroll = () => {
+            if (window.scrollY > 100) {
+                setShowScrollButton(true);
+            } else {
+                setShowScrollButton(false);
+            }
+        };
+
+        window.addEventListener("scroll", handleScroll);
+
+        return () => {
+            window.removeEventListener("scroll", handleScroll);
+        };
+    }, []);
 
     const handleSignOut = () => {
         console.log("g");
@@ -57,7 +77,9 @@ export default function Header() {
                 </Link>
             </Heading>
             <Flex gap={5}>
-                <IconButton aria-label={"Scroll to top"} icon={<ArrowUpIcon />} onClick={scrollToTop}/>
+                {showScrollButton && (
+                    <IconButton aria-label={"Scroll to top"} icon={<ArrowUpIcon />} onClick={scrollToTop} />
+                )}
                 {contents}
             </Flex>
         </header>
