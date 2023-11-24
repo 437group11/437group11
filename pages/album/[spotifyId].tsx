@@ -8,6 +8,7 @@ import AlbumDetails from "../../components/album-details";
 import AlbumReviews from "../../components/album-reviews";
 import ReviewModal from "../../components/review-modal";
 import RootLayout from "../../components/root-layout";
+import { useSession } from "next-auth/react";
 import { Album } from "../../types/Album";
 import { authOptions } from "../api/auth/[...nextauth]";
 import { requestAlbum } from "../api/request-album";
@@ -40,6 +41,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     }
 }
 
+
 export default function AlbumPage({sessionProp}: InferGetServerSidePropsType<typeof getServerSideProps>) {
     const router = useRouter();
     const {spotifyId} = router.query;
@@ -47,6 +49,8 @@ export default function AlbumPage({sessionProp}: InferGetServerSidePropsType<typ
     const [reviews, setReviews] = useState<ReviewWithAuthor[]>([]);
     const [isReviewModalOpen, setReviewModalOpen] = useState(false);
     const [averageRating, setAverageRating] = useState<number>(0);
+    const { data: session } = useSession(); 
+
 
     useEffect(() => {
         if (spotifyId) {
@@ -65,7 +69,7 @@ export default function AlbumPage({sessionProp}: InferGetServerSidePropsType<typ
         } catch (error) {
             console.log("Error getting reviews: ", error);
         }
-    }
+    };
 
     const updateReviews = async () => {
         const response = await axios.get(`/api/v2/albums/${spotifyId}/reviews`);
@@ -81,7 +85,7 @@ export default function AlbumPage({sessionProp}: InferGetServerSidePropsType<typ
                         <Button my={5} onClick={() => setReviewModalOpen(true)}>Leave a Review</Button>
                     </Box>
                     <Box minW={"50vw"}>
-                        <Heading size={"md"}>Reviews</Heading>
+                        <Heading size={"lg"}>Reviews</Heading>
                         <AlbumReviews reviews={reviews}/>
                     </Box>
                 </Flex>

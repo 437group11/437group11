@@ -30,8 +30,40 @@ function AlbumReviews({reviews : initialReviews}: {reviews: ReviewWithAuthor[]})
     const { data: session, status} = useSession();
     const [editingReview, setEditingReview] = useState<ReviewWithAuthor | null>(null);
     const [isEditingModalOpen, setIsEditingModalOpen] = useState(false);
-   
+    const [followingUsers, setFollowingUsers] = useState<string[]>([]);
+
+
+    const sessionFollowing = async () => {
+        if (!session) {
+            return;
+        }
+    
+        try {
+            const response = await fetch(`/api/v2/users/${session?.user?.id}/following`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            if (response.ok) {
+                const data = await response.json();
+                if (data && data.data && data.data.following) {
+                    const currUsers: string[] = data.data.following.map((item: any) => item.id);
+                    console.log(currUsers);
+                    setFollowingUsers(currUsers);
+                } else {
+                    console.error('Empty or unexpected response data');
+                }
+            } else {
+                console.error('Response not OK');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
+
     useEffect(() => {
+        sessionFollowing();
         setReviews(initialReviews);
     }, [initialReviews]); 
 
@@ -79,8 +111,23 @@ function AlbumReviews({reviews : initialReviews}: {reviews: ReviewWithAuthor[]})
         }
     };
 
-    const reviewCards = (<>
-        {reviews.map((review) => (
+    const reviewCards = (
+        <>
+            {reviews
+                .sort((a, b) => {
+                    const aIsSessionUser = a.author.name === session?.user?.name;
+                    const bIsSessionUser = b.author.name === session?.user?.name;
+                    const aIsFollowed = followingUsers.includes(a.author.id);
+                    const bIsFollowed = followingUsers.includes(b.author.id);
+    
+                    if (aIsSessionUser && !bIsSessionUser) return -1;
+                    if (!aIsSessionUser && bIsSessionUser) return 1;
+                    if (aIsSessionUser && bIsSessionUser) return 0;
+                    if (aIsFollowed && !bIsFollowed) return -1;
+                    if (!aIsFollowed && bIsFollowed) return 1;
+                    return 0;
+                })
+                .map((review) => (
             <Card key={review.id} maxW={"80ch"} bgColor="whiteAlpha.200">
                 <CardHeader>
                     <Flex flex="1" gap="4" alignItems="center" flexWrap="wrap">
@@ -161,7 +208,7 @@ function AlbumReviews({reviews : initialReviews}: {reviews: ReviewWithAuthor[]})
             <Heading size={"lg"}>
                 {
                     reviews.length === 0
-                    ? "No ratings yet"
+                    ? "No reviews yet"
                     : `Average rating: ${reviews.map((review) => review.rating).reduce((a, b) => a + b) / reviews.length}/10`
                 }    
             </Heading>
