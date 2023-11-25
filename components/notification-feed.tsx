@@ -17,7 +17,12 @@ export default function NotificationFeed({ session }: {session: Session}): JSX.E
     const notifButtonRef = useRef(null)
 
     return (
-        <KnockFeedProvider apiKey={process.env.KNOCK_PUBLIC_KEY!} userId={session.user.id} feedId={process.env.KNOCK_FEED_CHANNEL_ID!}>
+        <KnockFeedProvider
+            apiKey={process.env.KNOCK_PUBLIC_KEY!}
+            userId={session.user.id}
+            feedId={process.env.KNOCK_FEED_CHANNEL_ID!}
+            colorMode={"dark"}
+        >
             <>
                 <IconButton
                     ref={notifButtonRef}
