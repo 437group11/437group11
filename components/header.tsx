@@ -11,6 +11,7 @@ import {
     useKnockFeed,
   } from "@knocklabs/react-notification-feed";
 import { Session } from "next-auth";
+import NotificationFeed from "./notification-feed";
 
 export default function Header() {
     const { data: session, status } = useSession();
@@ -58,7 +59,7 @@ export default function Header() {
                 {showScrollButton && (
                     <IconButton aria-label={"Scroll to top"} icon={<ArrowUpIcon />} onClick={scrollToTop} />
                 )}
-                <KnockFeedProvider apiKey={process.env.KNOCK_PUBLIC_KEY!} userId={session.user.id} feedId={process.env.KNOCK_FEED_CHANNEL_ID!} />
+                <NotificationFeed session={session} />
                 {profileButtonOrSignOut(session)}
             </Flex>
         )
