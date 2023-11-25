@@ -83,7 +83,7 @@ async function patch(req: NextApiRequest, res: NextApiResponse) {
 async function addFavoriteGenre(userId: string, genreToAdd: string) {
     const genres = await getFavoriteGenres(userId)
 
-    return await prisma.user.update({
+    const user = await prisma.user.update({
         where: {
             id: userId
         },
@@ -91,6 +91,7 @@ async function addFavoriteGenre(userId: string, genreToAdd: string) {
             favoriteGenres: [...genres, genreToAdd]
         }
     })
+    return user.favoriteGenres
 }
 
 async function removeFavoriteGenre(userId: string, genreToRemove: string) {
@@ -98,7 +99,7 @@ async function removeFavoriteGenre(userId: string, genreToRemove: string) {
     
     const updatedGenres = genres.filter((genre) => genre !== genreToRemove)
 
-    return await prisma.user.update({
+    const user = await prisma.user.update({
         where: {
             id: userId
         },
@@ -106,4 +107,5 @@ async function removeFavoriteGenre(userId: string, genreToRemove: string) {
             favoriteGenres: updatedGenres
         }
     })
+    return user.favoriteGenres
 }

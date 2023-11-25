@@ -83,7 +83,7 @@ async function patch(req: NextApiRequest, res: NextApiResponse) {
 async function addFavoriteArtist(userId: string, artistToAdd: string) {
     const artists = await getFavoriteArtists(userId)
 
-    return await prisma.user.update({
+    const user = await prisma.user.update({
         where: {
             id: userId
         },
@@ -91,6 +91,7 @@ async function addFavoriteArtist(userId: string, artistToAdd: string) {
             favoriteArtists: [...artists, artistToAdd]
         }
     })
+    return user.favoriteArtists
 }
 
 async function removeFavoriteArtist(userId: string, artistToRemove: string) {
@@ -98,7 +99,7 @@ async function removeFavoriteArtist(userId: string, artistToRemove: string) {
     
     const updatedArtists = artists.filter((artist) => artist !== artistToRemove)
 
-    return await prisma.user.update({
+    const user = await prisma.user.update({
         where: {
             id: userId
         },
@@ -106,4 +107,5 @@ async function removeFavoriteArtist(userId: string, artistToRemove: string) {
             favoriteArtists: updatedArtists
         }
     })
+    return user.favoriteArtists
 }
