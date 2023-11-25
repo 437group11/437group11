@@ -5,7 +5,12 @@ import { Button, Flex, Heading, IconButton, useToast } from "@chakra-ui/react";
 import ProfilePicture from "components/profile-picture"
 import { ArrowUpIcon } from "@chakra-ui/icons";
 import { useEffect, useState } from "react";
-
+import {
+    KnockFeedProvider,
+    NotificationFeedPopover,
+    useKnockFeed,
+  } from "@knocklabs/react-notification-feed";
+import { Session } from "next-auth";
 
 export default function Header() {
     const { data: session, status } = useSession();
@@ -40,8 +45,7 @@ export default function Header() {
           .catch((error) => {
             console.error('Sign out error:', error);
           });
-      };
-    
+    };
 
     function headerContents(): JSX.Element {
         if (!session) {
@@ -49,13 +53,25 @@ export default function Header() {
             return <></>
         }
 
+        return (
+            <Flex gap={5}>
+                {showScrollButton && (
+                    <IconButton aria-label={"Scroll to top"} icon={<ArrowUpIcon />} onClick={scrollToTop} />
+                )}
+                <KnockFeedProvider apiKey={process.env.KNOCK_PUBLIC_KEY!} userId={session.user.id} feedId={process.env.KNOCK_FEED_CHANNEL_ID!} />
+                {profileButtonOrSignOut(session)}
+            </Flex>
+        )
+    }
+
+    function profileButtonOrSignOut(session: Session): JSX.Element {
         if (router.query.id === `${session.user?.id}`) {
             // Signed in and profile page: add button to sign out
             return (
                 <Button onClick={handleSignOut}>
                   Sign out
                 </Button>
-              );
+            );
         }
         
         // Otherwise, add link to profile
@@ -76,12 +92,7 @@ export default function Header() {
                     Beatbuff
                 </Link>
             </Heading>
-            <Flex gap={5}>
-                {showScrollButton && (
-                    <IconButton aria-label={"Scroll to top"} icon={<ArrowUpIcon />} onClick={scrollToTop} />
-                )}
-                {contents}
-            </Flex>
+            {contents}
         </header>
     )
 }
