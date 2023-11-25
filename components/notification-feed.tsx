@@ -7,7 +7,7 @@ import {
 import React, { useRef, useState } from "react"
 import { Session } from "next-auth"
 
-// Required CSS import, unless you're overriding the styling
+// Required CSS import, unless we override the styling
 import "@knocklabs/react-notification-feed/dist/index.css"
 import { IconButton } from "@chakra-ui/react"
 import { BellIcon } from "@chakra-ui/icons"
