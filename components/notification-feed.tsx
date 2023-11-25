@@ -18,9 +18,9 @@ export default function NotificationFeed({ session }: {session: Session}): JSX.E
 
     return (
         <KnockFeedProvider
-            apiKey={process.env.KNOCK_PUBLIC_KEY!}
+            apiKey={process.env.NEXT_PUBLIC_KNOCK_PUBLIC_KEY!}
             userId={session.user.id}
-            feedId={process.env.KNOCK_FEED_CHANNEL_ID!}
+            feedId={process.env.NEXT_PUBLIC_KNOCK_FEED_CHANNEL_ID!}
             colorMode={"dark"}
         >
             <>
