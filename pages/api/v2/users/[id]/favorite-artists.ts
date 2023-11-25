@@ -10,7 +10,7 @@ import { HttpStatusCode } from "axios";
 import { NextApiRequest, NextApiResponse } from "next";
 import { Session, getServerSession } from "next-auth";
 import { authOptions } from "pages/api/auth/[...nextauth]";
-import { ErrorWithStatusCode, ForbiddenError, Result, UnauthorizedError, handle, isNotFoundError, jsendFailWithData, jsendFailWithMessage, jsendSuccess } from "utils/api";
+import { ErrorWithStatusCode, ForbiddenError, Result, UnauthorizedError, handle, isNotFoundError, jsendError, jsendFailWithData, jsendFailWithMessage, jsendSuccess } from "utils/api";
 import prisma from "utils/db";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -61,22 +61,28 @@ async function patch(req: NextApiRequest, res: NextApiResponse) {
         return jsendFailWithData(res, error.statusCode, error.message)
     }
 
-    const { op, value } = req.body
-    switch (op) {
-        case "add":
-            let artistsAfterAdd = await addFavoriteArtist(id, value)
-            return jsendSuccess(res, HttpStatusCode.Ok, {
-                favoriteArtists: artistsAfterAdd
-            })
-        case "remove":
-            let artistsAfterRemove = await removeFavoriteArtist(id, value)
-            return jsendSuccess(res, HttpStatusCode.Ok, {
-                favoriteArtists: artistsAfterRemove
-            })
-        default:
-            return jsendFailWithData(res, HttpStatusCode.BadRequest, {
-                op: "op must be `add` or `remove"
-            }) 
+    try {
+        const { op, value } = req.body
+        switch (op) {
+            case "add":
+                let artistsAfterAdd = await addFavoriteArtist(id, value)
+                return jsendSuccess(res, HttpStatusCode.Ok, {
+                    favoriteArtists: artistsAfterAdd
+                })
+            case "remove":
+                let artistsAfterRemove = await removeFavoriteArtist(id, value)
+                return jsendSuccess(res, HttpStatusCode.Ok, {
+                    favoriteArtists: artistsAfterRemove
+                })
+            default:
+                return jsendFailWithData(res, HttpStatusCode.BadRequest, {
+                    op: "op must be `add` or `remove"
+                }) 
+        }
+    } catch (error) {
+        return jsendError(res, HttpStatusCode.InternalServerError,
+            `Error occurred when modifying favorite artists: ${error}`
+        )
     }
 }
 
