@@ -52,64 +52,119 @@ export default function ProfileDetails({profileId}: {profileId: string[]}) {
         setAddingBio(false);
     };
 
+    useEffect(() => {
+        getBio();
+        getFavoriteArtists();
+        getFavoriteGenres();
+    }, []);
+
     const getFavoriteArtists = async () => {
-        const response = await axios.get(`/api/v2/users/${session?.user?.id}/favorite-artists`);
-        console.log(response);
+        const response = await fetch(`/api/v2/users/${session?.user?.id}/favorite-artists`);
+        if (response.ok){
+            const data = await response.json();
+            setFavoriteArtists(data.data.favoriteArtists);
+        }
     }
 
     const addFavoriteArtist = async() => {
         try {
-            const response = await axios.post(`/api/v2/users/${session?.user?.id}/favorite-artists`, {
-                artist: newArtist
+            const response = await fetch(`/api/v2/users/${session?.user?.id}/favorite-artists`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type" : "application/json",
+                },
+                body: JSON.stringify({
+                    "op" : "add",
+                    "value": newArtist
+                })
             });
+            getFavoriteArtists();
             console.log(response);
         } catch (error) {
             console.error("Error adding new favorite artist: ", error);
         }
         setAddingFavoriteArtist(false);
     }
+
     const removeFavoriteArtist = async(artist: string) => {
-        try { //waiting for backend to see how to do this
-            const response = await axios.delete(`/api/v2/users/${session?.user?.id}/favorite-artists`);
-            console.log(response);
+        try {
+            const response = await fetch(`/api/v2/users/${session?.user?.id}/favorite-artists`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type" : "application/json",
+                },
+                body: JSON.stringify({
+                    "op" : "remove",
+                    "value": artist
+                })
+            });
+            getFavoriteArtists();
         } catch (error) {
             console.error("Error adding new favorite artist: ", error);
         }
     }
 
     const getFavoriteGenres = async () => {
-        const response = await axios.get(`/api/v2/users/${session?.user?.id}/favorite-genres`);
-        console.log(response);
+        const response = await fetch(`/api/v2/users/${session?.user?.id}/favorite-genres`);
+        if (response.ok){
+            const data = await response.json();
+            setFavoriteGenres(data.data.favoriteGenres);
+        }
     }
 
     const addFavoriteGenre = async() => {
         try {
-            const response = await axios.post(`/api/v2/users/${session?.user?.id}/favorite-genres`, {
-                genre: newGenre
+            const response = await fetch(`/api/v2/users/${session?.user?.id}/favorite-genres`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type" : "application/json",
+                },
+                body: JSON.stringify({
+                    "op" : "add",
+                    "value": newGenre
+                })
             });
+            console.log(newGenre);
             console.log(response);
+            getFavoriteGenres();
         } catch (error) {
             console.error("Error adding new favorite genre: ", error);
         }
         setAddingFavoriteGenre(false);
     }
 
-    const removeFavoriteGenre = async(artist: string) => {
-        try { //waiting for backend to see how to do this
-            const response = await axios.delete(`/api/v2/users/${session?.user?.id}/favorite-genres`);
+    const removeFavoriteGenre = async(genre: string) => {
+        try {
+            const response = await fetch(`/api/v2/users/${session?.user?.id}/favorite-genres`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type" : "application/json",
+                },
+                body: JSON.stringify({
+                    "op" : "remove",
+                    "value": genre
+                })
+            });
             console.log(response);
+            getFavoriteGenres();
         } catch (error) {
-            console.error("Error adding new favorite artist: ", error);
+            console.error("Error adding new favorite genre: ", error);
         }
     }
 
     const getBio = async() => {
-        const response = await axios.get(`/api/v2/users/${session?.user?.id}/bio`);
-        console.log(response);
+        const response = await fetch(`/api/v2/users/${session?.user?.id}/bio`);
+        //console.log(response);
     }
     const addBio = async(bio : string) => {
-        const response = await axios.post(`/api/v2/users/${session?.user?.id}/bio`, {
-            bio: bio
+        const response = await fetch(`/api/v2/users/${session?.user?.id}/bio`, {
+            method: "POST",
+            headers: {
+                "Content-Type" : "application/json",
+            },
+            body: JSON.stringify({
+                "value": newBio
+            })
         });
         console.log(response);
         setBio(bio);
