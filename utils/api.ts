@@ -55,10 +55,16 @@ export function methodNotAllowedError(res: NextApiResponse, allow: String[]) {
         })
 }
 
-// handle() and its associated types form an abstraction
-// to avoid writing boilerplate switch statements for every API route.
-// Example usage: return await handle(req, res, {GET: handleGet})
 type HandlerFunction = (req: NextApiRequest, res: NextApiResponse) => Promise<void>
+/**
+ * An abstraction to avoid having to write boilerplate switch statements for API routes.
+ * @example
+ * ```ts
+ * export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+ *     return await handle(req, res, { GET: handleGet, POST: handlePost })
+ * }
+ * ```
+ */
 export function handle(req: NextApiRequest, res: NextApiResponse, handlerFunctions: {
     GET?: HandlerFunction
     POST?: HandlerFunction
@@ -73,9 +79,11 @@ export function handle(req: NextApiRequest, res: NextApiResponse, handlerFunctio
     return handlerFunction(req, res)
 }
 
-// A Rust-like result type.
-// https://imhoff.blog/posts/using-results-in-typescript
-// Should be used in non-async contexts: async contexts can already return errors.
+/**
+ * A Rust-like result type.
+ * Should be used in non-async contexts: async contexts can already return errors.
+ * @see https://imhoff.blog/posts/using-results-in-typescript
+ */
 export type Result<T, E = Error> =
   | { ok: true; value: T }
   | { ok: false; error: E }
