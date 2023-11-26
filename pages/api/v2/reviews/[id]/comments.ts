@@ -15,6 +15,7 @@ import { Session, getServerSession } from "next-auth";
 import { authOptions } from "pages/api/auth/[...nextauth]";
 import { UnauthorizedError, isNotFoundError, jsendError, jsendFailWithMessage, jsendSuccess, methodNotAllowedError } from "utils/api";
 import prisma from "utils/db";
+import knock from "utils/knock";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { id } = req.query as { id: string }
@@ -37,6 +38,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 const content = req.body["content"]
                 const session = await getServerSession(req, res, authOptions)
                 const comment = await postComment(id, content, session)
+                
+                // We don't need the result of this, so don't await it.
+                notifyReviewAuthor(id, session as Session).then(() => {})
+
                 return jsendSuccess(res, HttpStatusCode.Ok, {
                     comment: comment
                 })
@@ -82,6 +87,33 @@ async function postComment(reviewId: string, content: string, session: Session |
             content: content,
             authorId: session.user.id,
             reviewId: Number(reviewId)
+        }
+    })
+}
+
+async function notifyReviewAuthor(reviewId: string, session: Session) {
+    let review = await prisma.review.findUniqueOrThrow({
+        where: {
+            id: Number(reviewId)
+        },
+        select: {
+            album: {
+                select: {
+                    name: true,
+                    spotifyId: true
+                }
+            },
+            authorId: true
+        }
+    })
+
+    knock.notify("new-comment-on-review", {
+        actor: session.user.id,
+        recipients: [review.authorId],
+        data: {
+            "albumName": review.album.name,
+            "albumId": review.album.spotifyId,
+            "reviewId": reviewId
         }
     })
 }
