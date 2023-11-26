@@ -56,6 +56,7 @@ export function methodNotAllowedError(res: NextApiResponse, allow: String[]) {
 }
 
 type HandlerFunction = (req: NextApiRequest, res: NextApiResponse) => Promise<void>
+
 /**
  * An abstraction to avoid having to write boilerplate switch statements for API routes.
  * @example
@@ -65,7 +66,7 @@ type HandlerFunction = (req: NextApiRequest, res: NextApiResponse) => Promise<vo
  * }
  * ```
  */
-export function handle(req: NextApiRequest, res: NextApiResponse, handlerFunctions: {
+export async function handle(req: NextApiRequest, res: NextApiResponse, handlerFunctions: {
     GET?: HandlerFunction
     POST?: HandlerFunction
     DELETE?: HandlerFunction
@@ -76,7 +77,7 @@ export function handle(req: NextApiRequest, res: NextApiResponse, handlerFunctio
         return methodNotAllowedError(res, Object.keys(handlerFunctions))
     }
     let handlerFunction = handlerFunctions[req.method as keyof typeof handlerFunctions]!
-    return handlerFunction(req, res)
+    return await handlerFunction(req, res)
 }
 
 /**
