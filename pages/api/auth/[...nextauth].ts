@@ -3,8 +3,8 @@ import GoogleProvider from "next-auth/providers/google"
 import GithubProvider from "next-auth/providers/github"
 import SpotifyProvider from "next-auth/providers/spotify"
 import { PrismaAdapter } from "@auth/prisma-adapter"
-import { Knock } from "@knocklabs/node"
 import prisma from "utils/db"
+import knock from "utils/knock"
 
 export const authOptions = {
     adapter: PrismaAdapter(prisma),
@@ -45,7 +45,6 @@ export const authOptions = {
             session.spotifyToken = await requestSpotifyAccessToken()
             
             // https://docs.knock.app/managing-recipients/identifying-recipients#explicitly-identifying-recipients
-            const knock = new Knock(process.env.KNOCK_SECRET_KEY!)
             knock.users.identify(user.id, {
                 name: user.name ?? undefined,
                 email: user.email ?? undefined
