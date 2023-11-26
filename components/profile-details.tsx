@@ -1,9 +1,13 @@
-import { AddIcon, CloseIcon } from "@chakra-ui/icons";
+import { AddIcon, CheckIcon, CloseIcon, EditIcon } from "@chakra-ui/icons";
 import {
     Box,
     Button,
+    ButtonGroup,
     Card,
     Container,
+    Editable,
+    EditableInput,
+    EditablePreview,
     Flex,
     Heading,
     HStack,
@@ -27,11 +31,41 @@ import {
     Text,
     Textarea,
     UnorderedList,
+    useEditableControls,
     VStack
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
+import EditableBio from "./editable-bio";
+
+function EditableControls ({onSave}) {
+    const [editing, setEditing] = useState(false);
+
+    const handleSaveClick = () => {
+        onSave(); // Call the function to save the bio
+        setEditing(false);
+    };
+
+    const handleEditClick = () => {
+        setEditing(true);
+    };
+
+    const handleCancelClick = () => {
+        setEditing(false);
+    };
+
+    return editing ? (
+    <ButtonGroup justifyContent='center' size='sm'>
+        <IconButton icon={<CheckIcon />} onClick={handleSaveClick} aria-label={""}/>
+        <IconButton icon={<CloseIcon />} onClick={handleSaveClick} aria-label={""}/>
+    </ButtonGroup>
+    ) : (
+    <Flex justifyContent='center'>
+        <IconButton aria-label={""} size='sm' icon={<EditIcon />} onClick={handleEditClick} />
+    </Flex>
+    )
+}
 
 export default function ProfileDetails({profileId}: {profileId: string[]}) {
     const {data: session, status} = useSession();
@@ -59,7 +93,7 @@ export default function ProfileDetails({profileId}: {profileId: string[]}) {
     }, []);
 
     const getFavoriteArtists = async () => {
-        const response = await fetch(`/api/v2/users/${session?.user?.id}/favorite-artists`);
+        const response = await fetch(`/api/v2/users/${profileId}/favorite-artists`);
         if (response.ok){
             const data = await response.json();
             setFavoriteArtists(data.data.favoriteArtists);
@@ -105,7 +139,7 @@ export default function ProfileDetails({profileId}: {profileId: string[]}) {
     }
 
     const getFavoriteGenres = async () => {
-        const response = await fetch(`/api/v2/users/${session?.user?.id}/favorite-genres`);
+        const response = await fetch(`/api/v2/users/${profileId}/favorite-genres`);
         if (response.ok){
             const data = await response.json();
             setFavoriteGenres(data.data.favoriteGenres);
@@ -153,18 +187,17 @@ export default function ProfileDetails({profileId}: {profileId: string[]}) {
     }
 
     const getBio = async() => {
-        const response = await fetch(`/api/v2/users/${session?.user?.id}/bio`);
-        //console.log(response);
+        const response = await fetch(`/api/v2/users/${profileId}/bio`);
+        if (response.ok){
+            const data = await response.json();
+            console.log(data);
+            setBio(data.data.bio);
+        }
     }
     const addBio = async(bio : string) => {
         const response = await fetch(`/api/v2/users/${session?.user?.id}/bio`, {
-            method: "POST",
-            headers: {
-                "Content-Type" : "application/json",
-            },
-            body: JSON.stringify({
-                "value": newBio
-            })
+            method: "PUT",
+            body: newBio
         });
         console.log(response);
         setBio(bio);
@@ -184,7 +217,10 @@ export default function ProfileDetails({profileId}: {profileId: string[]}) {
                                 onChange={(e) => setNewBio(e.target.value)}
                                 placeholder="Enter your bio..."
                             />
-                            <Button w={100} onClick={handleSubmitBio}>Submit</Button>
+                            <HStack>
+                                <Button w={100} onClick={handleSubmitBio}>Submit</Button>
+                                <Button w={100} colorScheme={"red"} onClick={() => {setAddingBio(false)}}>Cancel</Button>
+                            </HStack>
                         </VStack>
                     </Box>
                 ) : (
@@ -192,7 +228,11 @@ export default function ProfileDetails({profileId}: {profileId: string[]}) {
                 )}
             </Box>
         ) : (
-            <Text>{bio}</Text>
+            <Editable defaultValue={bio}>
+                <EditablePreview />
+                <Input onChange={(e) => setNewBio(e.target.value)} as={EditableInput}/>
+                <EditableControls onSave={handleSubmitBio}/>
+            </Editable>
         )}
         </Box>
         <HStack my={5} spacing={4}>
@@ -216,6 +256,7 @@ export default function ProfileDetails({profileId}: {profileId: string[]}) {
                         w={200}
                     />
                     <Button onClick={() => addFavoriteArtist()}>Add</Button>
+                    <Button w={100} colorScheme={"red"} onClick={() => {setAddingFavoriteArtist(false)}}>Cancel</Button>
                 </>
             ) : (
                 <>
@@ -246,6 +287,7 @@ export default function ProfileDetails({profileId}: {profileId: string[]}) {
                         w={200}
                     />
                     <Button onClick={() => addFavoriteGenre()}>Add</Button>
+                    <Button w={100} colorScheme={"red"} onClick={() => {setAddingFavoriteGenre(false)}}>Cancel</Button>
                 </>
             ) : (
                 <>
