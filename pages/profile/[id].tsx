@@ -48,7 +48,7 @@ const ProfilePage: React.FC = () => {
 
 
     const [isLoading, setIsLoading] = useState(true);
-    const [user, setUser] = useState<UserPublicData>(null);
+    const [user, setUser] = useState<UserPublicData | null>(null);
     const [albums, setAlbums] = useState<UserReviews>([]);
     const [followsUser, setFollowsUser] = useState<boolean>();
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -131,7 +131,7 @@ const ProfilePage: React.FC = () => {
             }
         }
 
-        fetchAlbumData();
+        fetchAlbumData().then();
     }, [id, selectedSortOption]);
 
     const sessionFollowing = async () => {
@@ -221,12 +221,9 @@ const ProfilePage: React.FC = () => {
             console.log(data.data);
             setUsersReturned([]);
             if (searchData) {
-                const currResults: User[] = [];
-                for (let i = 0; i < data.data.users.length; i++) {
-                    if (data.data.users[i].id != session.user?.id) {
-                        currResults.push(data.data.users[i]);
-                    }
-                }
+                const users = data.data.users as User[];
+                const currResults: User[] = session ? users.filter(user => user.id !== session.user?.id) : users;
+
                 setUsersReturned(currResults);
             }
         }
@@ -300,7 +297,7 @@ const ProfilePage: React.FC = () => {
         sessionFollowing();
     }, [id]); //probably down here
 
-    useEffect((id) => {
+    useEffect(() => {
         getFollowing();
     }, [id]);
 
@@ -352,7 +349,7 @@ const ProfilePage: React.FC = () => {
                                 key={index}
                                 image={review.album.imageUrl}
                                 title={review.album.name}
-                                artist={review.album?.artists.map((artist) => artist.name).join(", ")}
+                                artist={(review.album?.artists as {name: string}[]).map((artist) => artist.name).join(", ")}
                                 rating={review.rating}
                             />
                         </Box>
@@ -431,7 +428,7 @@ const ProfilePage: React.FC = () => {
                                 alignSelf={"flex-start"}>{`Following: ${followedUsersCount}`}
                             </Button>
                         </Box>
-                        <ProfileDetails profileId={id}/>
+                        <ProfileDetails profileId={id as string}/>
                     </Box>
                     {followButton}
                     <Modal isOpen={isModalOpen} onClose={handleModalClose} isCentered>

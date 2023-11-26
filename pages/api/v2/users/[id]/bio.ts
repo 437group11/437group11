@@ -14,7 +14,7 @@ import { ErrorWithStatusCode, ForbiddenError, UnauthorizedError, handle, isNotFo
 import prisma from "utils/db";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    handle(req, res, {
+    return await handle(req, res, {
         GET: handleGet,
         PUT: handlePut
     })
@@ -30,9 +30,9 @@ export async function handleGet(req: NextApiRequest, res: NextApiResponse) {
         })
     } catch (error) {
         if (isNotFoundError(error)) {
-            jsendFailWithMessage(res, HttpStatusCode.NotFound, "User not found for that ID")
+            return jsendFailWithMessage(res, HttpStatusCode.NotFound, "User not found for that ID")
         }
-        jsendError(res, HttpStatusCode.InternalServerError, "Could not get bio from database")
+        return jsendError(res, HttpStatusCode.InternalServerError, "Could not get bio from database")
     }
 }
 
@@ -60,7 +60,7 @@ export async function handlePut(req: NextApiRequest, res: NextApiResponse) {
         error = new ForbiddenError()
     }
     if (error) {
-        jsendFailWithMessage(res, error.statusCode, error.message)
+        return jsendFailWithMessage(res, error.statusCode, error.message)
     }
 
     const bio = req.body
@@ -71,9 +71,9 @@ export async function handlePut(req: NextApiRequest, res: NextApiResponse) {
         })
     } catch (error) {
         if (isNotFoundError(error)) {
-            jsendFailWithMessage(res, HttpStatusCode.NotFound, "User not found for that ID")
+            return jsendFailWithMessage(res, HttpStatusCode.NotFound, "User not found for that ID")
         }
-        jsendError(res, HttpStatusCode.InternalServerError, "Could not update bio in database")
+        return jsendError(res, HttpStatusCode.InternalServerError, "Could not update bio in database")
     }
 }
 

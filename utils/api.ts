@@ -55,26 +55,36 @@ export function methodNotAllowedError(res: NextApiResponse, allow: String[]) {
         })
 }
 
-// handle() and its associated types form an abstraction
-// to avoid writing boilerplate switch statements for every API route.
 type HandlerFunction = (req: NextApiRequest, res: NextApiResponse) => Promise<void>
-interface Route {
+
+/**
+ * An abstraction to avoid having to write boilerplate switch statements for API routes.
+ * @example
+ * ```ts
+ * export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+ *     return await handle(req, res, { GET: handleGet, POST: handlePost })
+ * }
+ * ```
+ */
+export async function handle(req: NextApiRequest, res: NextApiResponse, handlerFunctions: {
     GET?: HandlerFunction
     POST?: HandlerFunction
     DELETE?: HandlerFunction
     PUT?: HandlerFunction
     PATCH?: HandlerFunction
-}
-export function handle(req: NextApiRequest, res: NextApiResponse, route: Route) {
-    if (!req.method || !(req.method in route)) {
-        return methodNotAllowedError(res, Object.keys(route))
+}) {
+    if (!req.method || !(req.method in handlerFunctions)) {
+        return methodNotAllowedError(res, Object.keys(handlerFunctions))
     }
-    let handlerFunction = route[req.method as keyof Route]!
-    return handlerFunction(req, res)
+    let handlerFunction = handlerFunctions[req.method as keyof typeof handlerFunctions]!
+    return await handlerFunction(req, res)
 }
 
-// A Rust-like result type.
-// https://imhoff.blog/posts/using-results-in-typescript
+/**
+ * A Rust-like result type.
+ * Should be used in non-async contexts: async contexts can already return errors.
+ * @see https://imhoff.blog/posts/using-results-in-typescript
+ */
 export type Result<T, E = Error> =
   | { ok: true; value: T }
   | { ok: false; error: E }
@@ -121,6 +131,9 @@ export class SpotifyError extends ErrorWithStatusCode {
     statusCode: HttpStatusCode = HttpStatusCode.BadGateway
 }
 
+/**
+ * Checks if a thrown error is a Prisma "not found" error.
+ */
 export function isNotFoundError(error: any): boolean {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
         // The .code property can be accessed in a type-safe manner

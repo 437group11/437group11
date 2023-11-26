@@ -1,7 +1,7 @@
 import { Box } from "@chakra-ui/react";
 import React from "react";
 
-interface AlbumCardProps {
+interface ProfileAlbumCardProps {
   author?: string;
   authorImage?: string;
   image: string;
