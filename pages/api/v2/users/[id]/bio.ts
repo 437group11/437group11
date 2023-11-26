@@ -1,5 +1,9 @@
 /**
  * Endpoints for a user's bio.
+ * Supported endpoints:
+ * GET
+ * PUT
+ * - Takes the new bio as plain text. If successful, returns the new bio in JSON.
  */
 
 import { HttpStatusCode } from "axios";
