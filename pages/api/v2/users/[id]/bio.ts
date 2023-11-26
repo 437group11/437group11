@@ -14,7 +14,7 @@ import { ErrorWithStatusCode, ForbiddenError, UnauthorizedError, handle, isNotFo
 import prisma from "utils/db";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    handle(req, res, {
+    return await handle(req, res, {
         GET: handleGet,
         PUT: handlePut
     })
