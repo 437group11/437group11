@@ -9,7 +9,7 @@ import { Session } from "next-auth"
 
 // Required CSS import, unless we override the styling
 import "@knocklabs/react-notification-feed/dist/index.css"
-import { IconButton } from "@chakra-ui/react"
+import { Button } from "@chakra-ui/react"
 import { BellIcon } from "@chakra-ui/icons"
 
 export default function NotificationFeed({ session }: {session: Session}): JSX.Element {
@@ -24,12 +24,10 @@ export default function NotificationFeed({ session }: {session: Session}): JSX.E
             colorMode={"dark"}
         >
             <>
-                <IconButton
-                    ref={notifButtonRef}
-                    icon={<BellIcon />}
-                    aria-label="Show notifications feed"
-                    onClick={(e) => setIsVisible(!isVisible)}
-                />
+                <Button aria-label="Show notifications feed">
+                    <NotificationIconButton onClick={(e) => setIsVisible(!isVisible)} ref={notifButtonRef} />
+                </Button>
+
                 <NotificationFeedPopover
                     buttonRef={notifButtonRef}
                     isVisible={isVisible}
