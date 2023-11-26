@@ -58,18 +58,17 @@ export function methodNotAllowedError(res: NextApiResponse, allow: String[]) {
 // handle() and its associated types form an abstraction
 // to avoid writing boilerplate switch statements for every API route.
 type HandlerFunction = (req: NextApiRequest, res: NextApiResponse) => Promise<void>
-interface Route {
+export function handle(req: NextApiRequest, res: NextApiResponse, handlerFunctions: {
     GET?: HandlerFunction
     POST?: HandlerFunction
     DELETE?: HandlerFunction
     PUT?: HandlerFunction
     PATCH?: HandlerFunction
-}
-export function handle(req: NextApiRequest, res: NextApiResponse, route: Route) {
-    if (!req.method || !(req.method in route)) {
-        return methodNotAllowedError(res, Object.keys(route))
+}) {
+    if (!req.method || !(req.method in handlerFunctions)) {
+        return methodNotAllowedError(res, Object.keys(handlerFunctions))
     }
-    let handlerFunction = route[req.method as keyof Route]!
+    let handlerFunction = handlerFunctions[req.method as keyof typeof handlerFunctions]!
     return handlerFunction(req, res)
 }
 
