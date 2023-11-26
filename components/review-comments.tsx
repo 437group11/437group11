@@ -3,6 +3,7 @@ import { Button, Textarea, VStack, CloseButton, Box, Text, Divider } from "@chak
 import { useState } from "react";
 import axios from "axios";
 import { useSession} from "next-auth/react";
+import { ReviewCommentWithAuthor } from "pages/api/v2/reviews/[id]/comments";
 
 export default function ReviewComments({reviewId}: {reviewId: number}) {
     const { data: session, status} = useSession();
@@ -27,7 +28,7 @@ export default function ReviewComments({reviewId}: {reviewId: number}) {
             console.log("Error: ", error);
         }
     }
-    const handleDeleteComment = async (commentId) => {
+    const handleDeleteComment = async (commentId: string) => {
         try {
             await axios.delete(`/api/v2/reviews/${reviewId}/comments/${commentId}`);
         } catch (error) {
@@ -61,7 +62,7 @@ export default function ReviewComments({reviewId}: {reviewId: number}) {
             <summary>Comments</summary>
 
             <Box my={4} overflowY="auto" maxHeight="200px">
-                {comments.map((comment) => (
+                {comments.map((comment: ReviewCommentWithAuthor) => (
                     <Box key={comment.id} p={2} border="1px" rounded="md" borderColor="gray.200" m={5}>
                         <Text fontWeight="bold">{comment.author.name}</Text>
                         <Text>{comment.content}</Text>
@@ -69,7 +70,7 @@ export default function ReviewComments({reviewId}: {reviewId: number}) {
                         {new Date(comment.datePublished).toLocaleString()}
                         </Text>
                         <Divider my={2} />
-                        {session?.user?.name == comment.author.name && (<Button size="sm" colorScheme="red" onClick={() => handleDeleteComment(comment.id)}>
+                        {session?.user?.name == comment.author.name && (<Button size="sm" colorScheme="red" onClick={() => handleDeleteComment(String(comment.id))}>
                             Delete
                         </Button>)}
                     </Box>

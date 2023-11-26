@@ -33,7 +33,7 @@ import axios from "axios";
 import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
 
-export default function ProfileDetails({profileId}: {profileId: string[]}) {
+export default function ProfileDetails({profileId}: {profileId: string}) {
     const {data: session, status} = useSession();
     const [favoriteArtists, setFavoriteArtists] = useState<string[]>([]);
     const [favoriteGenres, setFavoriteGenres] = useState<string[]>([]);
@@ -201,7 +201,7 @@ export default function ProfileDetails({profileId}: {profileId: string[]}) {
             ) : null}
 
             {favoriteArtists.map((artist) => (
-                <Tag size={'lg'}>
+                <Tag size={'lg'} key={artist}>
                     <TagLabel>{artist}</TagLabel>
                     {isUser ? (
                         <TagCloseButton onClick={() => removeFavoriteArtist(artist)}/>
@@ -231,7 +231,7 @@ export default function ProfileDetails({profileId}: {profileId: string[]}) {
             ) : null}
 
             {favoriteGenres.map((genre) => (
-                <Tag size={'lg'}>
+                <Tag size={'lg'} key={genre}>
                     <TagLabel>{genre}</TagLabel>
                     {isUser ? (
                         <TagCloseButton onClick={() => removeFavoriteGenre(genre)}/>
