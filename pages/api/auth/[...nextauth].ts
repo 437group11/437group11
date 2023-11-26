@@ -47,7 +47,8 @@ export const authOptions = {
             // https://docs.knock.app/managing-recipients/identifying-recipients#explicitly-identifying-recipients
             knock.users.identify(user.id, {
                 name: user.name ?? undefined,
-                email: user.email ?? undefined
+                email: user.email ?? undefined,
+                avatar: user.image
             })
 
             return session
