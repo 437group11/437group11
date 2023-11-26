@@ -57,6 +57,7 @@ export function methodNotAllowedError(res: NextApiResponse, allow: String[]) {
 
 // handle() and its associated types form an abstraction
 // to avoid writing boilerplate switch statements for every API route.
+// Example usage: return await handle(req, res, {GET: handleGet})
 type HandlerFunction = (req: NextApiRequest, res: NextApiResponse) => Promise<void>
 export function handle(req: NextApiRequest, res: NextApiResponse, handlerFunctions: {
     GET?: HandlerFunction
@@ -74,6 +75,7 @@ export function handle(req: NextApiRequest, res: NextApiResponse, handlerFunctio
 
 // A Rust-like result type.
 // https://imhoff.blog/posts/using-results-in-typescript
+// Should be used in non-async contexts: async contexts can already return errors.
 export type Result<T, E = Error> =
   | { ok: true; value: T }
   | { ok: false; error: E }
@@ -120,6 +122,9 @@ export class SpotifyError extends ErrorWithStatusCode {
     statusCode: HttpStatusCode = HttpStatusCode.BadGateway
 }
 
+/**
+ * Checks if a thrown error is a Prisma "not found" error.
+ */
 export function isNotFoundError(error: any): boolean {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
         // The .code property can be accessed in a type-safe manner
