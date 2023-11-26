@@ -8,25 +8,36 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from "utils/db"
 import { HttpStatusCode } from 'axios'
-import { isString, jsendError, methodNotAllowedError } from 'utils/api'
+import { handle, isNotFoundError, isString, jsendError, jsendFailWithMessage, jsendSuccess, methodNotAllowedError } from 'utils/api'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+    return await handle(req, res, {
+        GET: handleGet,
+        PATCH: handlePatch
+    })
+}
+
+async function handleGet(req: NextApiRequest, res: NextApiResponse) {
     const { id } = req.query as { id: string }
 
-    switch (req.method) {
-        case "GET":
-            return getFollowing(req, res, id)
-        case "PATCH":
-            return patchFollowing(req, res, id, req.body)
-        default:
-            return methodNotAllowedError(res, ["GET", "PATCH"])
+    try {
+        const following = await getFollowing(id)
+        return jsendSuccess(res, HttpStatusCode.Ok, {
+            following: following
+        })
+    } catch (error) {
+        if (isNotFoundError(error)) {
+            return jsendFailWithMessage(res, HttpStatusCode.NotFound, "User not found with that ID")
+        } else {
+            return jsendError(res, HttpStatusCode.InternalServerError, `Could not get following: ${error}`)
+        }
     }
 }
 
-function getFollowing(req: NextApiRequest, res: NextApiResponse, id: string) {
-    prisma.user.findUniqueOrThrow({
+async function getFollowing(userId: string) {
+    const user = await prisma.user.findUniqueOrThrow({
         where: {
-            id: id
+            id: userId
         },
         select: {
             following: {
@@ -37,40 +48,21 @@ function getFollowing(req: NextApiRequest, res: NextApiResponse, id: string) {
                 }
             }
         },
-    }).then((user) => {
-        return res.status(HttpStatusCode.Ok).json({
-            "status": "success",
-            "data": {
-                "following": user.following
-            }
-        })
-    }).catch((error) => {
-        if (error.code === "P2025") {
-            // User not found
-            res.status(HttpStatusCode.NotFound).json({
-                "status": "fail",
-                "data": {
-                    "title": "User not found with that ID"
-                }
-            })
-            return
-        } else if ("message" in error) {
-            return jsendError(res, HttpStatusCode.InternalServerError, error.message)
-        } else {
-            return jsendError(res, HttpStatusCode.InternalServerError, "An unknown error occurred.")
-        }
     })
+    return user.following
 }
 
-async function patchFollowing(req: NextApiRequest, res: NextApiResponse, id: string, body: any) {
+async function handlePatch(req: NextApiRequest, res: NextApiResponse) {
+    const { id } = req.query as { id: string }
+
     // The data format expected is a bastardization of RFC 6902.
     // "op" must be "add" or "remove".
     // "value" is the id of the user to follow or unfollow.
-    let op = body["op"]
+    let op = req.body["op"]
 
     switch (op) {
         case "add":
-            let userToFollowId = body["value"]
+            let userToFollowId = req.body["value"]
             try {
                 await followUser(id, userToFollowId)
             } catch {
@@ -80,7 +72,7 @@ async function patchFollowing(req: NextApiRequest, res: NextApiResponse, id: str
                 "status": "success"
             })
         case "remove":
-            let userToUnfollowId = body["value"]
+            let userToUnfollowId = req.body["value"]
             try {
                 await unfollowUser(id, userToUnfollowId)
             } catch {
@@ -119,7 +111,7 @@ async function followUser(followerId: string, followingId: string) {
         return Promise.reject(new Error('Cannot follow self'));
     }
 
-    return prisma.user.update({
+    return await prisma.user.update({
         where: {
             id: followerId,
         },
