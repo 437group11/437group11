@@ -19,12 +19,12 @@ function EditableControls ({onSave}) {
   };
 
   return editing ? (
-  <ButtonGroup size='sm'>
+  <ButtonGroup size='sm' p={5}>
       <IconButton icon={<CheckIcon />} onClick={handleSaveClick} aria-label={""}/>
       <IconButton icon={<CloseIcon />} onClick={handleSaveClick} aria-label={""}/>
   </ButtonGroup>
   ) : (
-  <Flex justifyContent='center'>
+  <Flex>
       <IconButton aria-label={""} size='sm' icon={<EditIcon />} onClick={handleEditClick} />
   </Flex>
   )

@@ -201,7 +201,7 @@ export default function ProfileDetails({profileId}: {profileId: string}) {
             body: newBio
         });
         console.log(response);
-        setBio(bio);
+        setBio(newBio);
     }
 
     return (
