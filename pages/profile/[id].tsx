@@ -77,6 +77,8 @@ const ProfilePage: React.FC = () => {
         }, 300);
     };
 
+
+
     useEffect(() => {
         if (id) {
             fetch(`/api/v2/users/${id}`)

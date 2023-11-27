@@ -239,6 +239,10 @@ export default function ProfileDetails({profileId}: {profileId: string}) {
             )
         )}
         </Box>
+        <Box>
+            <Heading as="h2" size="sm">
+                Favorite Artists:
+            </Heading>
         <HStack my={5} spacing={4}>
             {favoriteArtists.length === 0 && !addingFavoriteArtist && isUser ? (
                 <Button onClick={() => setAddingFavoriteArtist(true)}>Add Favorite Artist</Button>
@@ -270,6 +274,11 @@ export default function ProfileDetails({profileId}: {profileId: string}) {
                 </>
             )}
         </HStack>
+        </Box>
+        <Box>
+            <Heading as="h2" size="sm">
+                Favorite Genres:
+            </Heading>
         <HStack my={5} spacing={4}>
             {favoriteGenres.length === 0 && !addingFavoriteGenre && isUser ? (
                 <Button onClick={() => setAddingFavoriteGenre(true)}>Add Favorite Genre</Button>
@@ -301,6 +310,7 @@ export default function ProfileDetails({profileId}: {profileId: string}) {
                 </>
             )}
         </HStack>
+        </Box>
         </>
     );
 }
