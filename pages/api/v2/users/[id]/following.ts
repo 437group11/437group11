@@ -9,6 +9,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from "utils/db"
 import { HttpStatusCode } from 'axios'
 import { handle, isNotFoundError, isString, jsendError, jsendFailWithMessage, jsendSuccess, methodNotAllowedError } from 'utils/api'
+import knock from "utils/knock"
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     return await handle(req, res, {
@@ -111,7 +112,7 @@ async function followUser(followerId: string, followingId: string) {
         return Promise.reject(new Error('Cannot follow self'));
     }
 
-    return await prisma.user.update({
+    const updatedUser = await prisma.user.update({
         where: {
             id: followerId,
         },
@@ -122,7 +123,15 @@ async function followUser(followerId: string, followingId: string) {
                 },
             },
         },
-    });
+    })
+
+    knock.notify("new-follower", {
+        actor: followerId,
+        recipients: [followingId],
+        data: {}
+    })
+
+    return updatedUser
 }
 
 async function unfollowUser(followerId: string, followingId: string) {
