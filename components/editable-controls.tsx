@@ -19,7 +19,7 @@ function EditableControls ({onSave}) {
   };
 
   return editing ? (
-  <ButtonGroup justifyContent='center' size='sm'>
+  <ButtonGroup size='sm'>
       <IconButton icon={<CheckIcon />} onClick={handleSaveClick} aria-label={""}/>
       <IconButton icon={<CloseIcon />} onClick={handleSaveClick} aria-label={""}/>
   </ButtonGroup>

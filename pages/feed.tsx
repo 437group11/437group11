@@ -57,7 +57,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 export default function Feed({sessionProp}: InferGetServerSidePropsType<typeof getServerSideProps>) {
     console.log(sessionProp)
 
-    const router = useRouter()
+    const router = useRouter();
 
     const [followers, setFollowers] = useState<string[]>();
     const [reviews, setReviews] = useState<UserReviews>([]);

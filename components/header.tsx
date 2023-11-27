@@ -48,6 +48,10 @@ export default function Header() {
           });
     };
 
+    const handleDiscovery = () => {
+            window.location.href = '/discover';
+    };
+
     function headerContents(): JSX.Element {
         if (!session) {
             // Not signed in: return basic header
@@ -60,6 +64,9 @@ export default function Header() {
                     <IconButton aria-label={"Scroll to top"} icon={<ArrowUpIcon />} onClick={scrollToTop} />
                 )}
                 <NotificationFeed session={session} />
+                <Button onClick={handleDiscovery}>
+                    Discovery
+                </Button>
                 {profileButtonOrSignOut(session)}
             </Flex>
         )

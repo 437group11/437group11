@@ -1,10 +1,9 @@
 import internal from "stream";
-import { Artist } from "./Artist";
 
 export interface Album {
     id: string;
     name: string;
-    artists: Artist[];
+    artists: string[];
     release_date?: string;
     type?: string;
     image : string;
