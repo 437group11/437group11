@@ -78,6 +78,34 @@ const ProfilePage: React.FC = () => {
     };
 
 
+    const updateFollowedUsersCount = (count: number) => {
+        localStorage.setItem('followedUsersCount', count.toString());
+        setFollowedUsersCount(count);
+    };
+
+    const updateFollowingDetails = (usernames: Map<string, string>, images: Map<string, string>) => {
+        const usernamesJSON = JSON.stringify(Array.from(usernames.entries()));
+        const imagesJSON = JSON.stringify(Array.from(images.entries()));
+        localStorage.setItem('followingUsernames', usernamesJSON);
+        localStorage.setItem('followingImages', imagesJSON);
+        setFollowingUsernames(usernames);
+        setFollowingImages(images);
+    };
+
+    useEffect(() => {
+        const storedFollowedUsersCount = localStorage.getItem('followedUsersCount');
+        const storedUsernames = localStorage.getItem('followingUsernames');
+        const storedImages = localStorage.getItem('followingImages');
+        if (storedFollowedUsersCount) {
+            setFollowedUsersCount(parseInt(storedFollowedUsersCount, 10));
+        }
+        if (storedUsernames && storedImages) {
+            const parsedUsernames = new Map<string, string>(JSON.parse(storedUsernames));
+            const parsedImages = new Map<string, string>(JSON.parse(storedImages));
+            setFollowingUsernames(parsedUsernames);
+            setFollowingImages(parsedImages);
+        }
+    }, []);
 
     useEffect(() => {
         if (id) {
@@ -182,15 +210,14 @@ const ProfilePage: React.FC = () => {
                 const currUsernames = new Map<string, string>();
                 const currImages = new Map<string, string>();
                 const data = await response.json();
-                console.log("a");
                 console.log(data.data.following);
-                setFollowedUsersCount(data.data.following.length);
+                const count = data.data.following.length;
+                updateFollowedUsersCount(count);
                 for (let i = 0; i < data.data.following.length; i++) {
                     currUsernames.set(data.data.following[i].id, data.data.following[i].name);
                     currImages.set(data.data.following[i].id, data.data.following[i].image);
                 }
-                setFollowingUsernames(currUsernames);
-                setFollowingImages(currImages);
+                updateFollowingDetails(currUsernames, currImages);
             }
         } catch (error) {
             console.error("Error: ", error);
