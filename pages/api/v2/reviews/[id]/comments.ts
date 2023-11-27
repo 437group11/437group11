@@ -107,6 +107,11 @@ async function notifyReviewAuthor(reviewId: string, session: Session) {
         }
     })
 
+    if (session.user.id === review.authorId) {
+        // Don't notify if it's user's own review
+        return
+    }
+
     knock.notify("new-comment-on-review", {
         actor: session.user.id,
         recipients: [review.authorId],
