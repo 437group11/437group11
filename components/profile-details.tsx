@@ -37,35 +37,36 @@ import {
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
-import EditableBio from "./editable-bio";
+import EditableControls from "./editable-controls";
+import EditableBio from "./editable-controls";
 
-function EditableControls ({onSave}) {
-    const [editing, setEditing] = useState(false);
+// function EditableControls ({onSave}) {
+//     const [editing, setEditing] = useState(false);
 
-    const handleSaveClick = () => {
-        onSave(); // Call the function to save the bio
-        setEditing(false);
-    };
+//     const handleSaveClick = () => {
+//         onSave(); // Call the function to save the bio
+//         setEditing(false);
+//     };
 
-    const handleEditClick = () => {
-        setEditing(true);
-    };
+//     const handleEditClick = () => {
+//         setEditing(true);
+//     };
 
-    const handleCancelClick = () => {
-        setEditing(false);
-    };
+//     const handleCancelClick = () => {
+//         setEditing(false);
+//     };
 
-    return editing ? (
-    <ButtonGroup justifyContent='center' size='sm'>
-        <IconButton icon={<CheckIcon />} onClick={handleSaveClick} aria-label={""}/>
-        <IconButton icon={<CloseIcon />} onClick={handleSaveClick} aria-label={""}/>
-    </ButtonGroup>
-    ) : (
-    <Flex justifyContent='center'>
-        <IconButton aria-label={""} size='sm' icon={<EditIcon />} onClick={handleEditClick} />
-    </Flex>
-    )
-}
+//     return editing ? (
+//     <ButtonGroup justifyContent='center' size='sm'>
+//         <IconButton icon={<CheckIcon />} onClick={handleSaveClick} aria-label={""}/>
+//         <IconButton icon={<CloseIcon />} onClick={handleSaveClick} aria-label={""}/>
+//     </ButtonGroup>
+//     ) : (
+//     <Flex justifyContent='center'>
+//         <IconButton aria-label={""} size='sm' icon={<EditIcon />} onClick={handleEditClick} />
+//     </Flex>
+//     )
+// }
 
 export default function ProfileDetails({profileId}: {profileId: string}) {
     const {data: session, status} = useSession();
