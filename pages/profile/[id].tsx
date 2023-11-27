@@ -77,7 +77,6 @@ const ProfilePage: React.FC = () => {
         }, 300);
     };
 
-
     useEffect(() => {
         if (id) {
             fetch(`/api/v2/users/${id}`)
@@ -298,7 +297,7 @@ const ProfilePage: React.FC = () => {
     }, [id]); //probably down here
 
     useEffect(() => {
-        getFollowing();
+            getFollowing();
     }, [id]);
 
     console.log(followsUser);
