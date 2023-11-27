@@ -80,11 +80,11 @@ export default function AlbumPage({sessionProp}: InferGetServerSidePropsType<typ
         <RootLayout>
             <Box m={10} display="flex">
                 <Flex mt={5} gap={10} flexDirection={{base: "column", sm: "column", md: "row", lg: "row"}}>
-                    <Box maxW={300}>
+                    <Box maxW={300} bg="#2A2525" borderRadius="10px" p={5} align="center">
                         <AlbumDetails album={album}/>
                         <Button my={5} onClick={() => setReviewModalOpen(true)}>Leave a Review</Button>
                     </Box>
-                    <Box minW={"50vw"}>
+                    <Box minW={"50vw"} bg="#2A2525" borderRadius="10px" p={5}>
                         <Heading size={"lg"}>Reviews</Heading>
                         <AlbumReviews reviews={reviews}/>
                     </Box>

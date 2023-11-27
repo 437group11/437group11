@@ -91,7 +91,7 @@ export default function ProfileDetails({profileId}: {profileId: string}) {
         getBio();
         getFavoriteArtists();
         getFavoriteGenres();
-    }, []);
+    }, [profileId]);
 
     const getFavoriteArtists = async () => {
         const response = await fetch(`/api/v2/users/${profileId}/favorite-artists`);
@@ -229,11 +229,15 @@ export default function ProfileDetails({profileId}: {profileId: string}) {
                 )}
             </Box>
         ) : (
-            <Editable defaultValue={bio}>
-                <EditablePreview />
-                <Input onChange={(e) => setNewBio(e.target.value)} as={EditableInput}/>
-                <EditableControls onSave={handleSubmitBio}/>
-            </Editable>
+            isUser ? (
+                <Editable defaultValue={bio}>
+                    <EditablePreview />
+                    <Input onChange={(e) => setNewBio(e.target.value)} as={EditableInput}/>
+                    <EditableControls onSave={handleSubmitBio}/>
+                </Editable>
+            ) : (
+                <Text>{bio}</Text>
+            )
         )}
         </Box>
         <HStack my={5} spacing={4}>

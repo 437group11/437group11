@@ -12,7 +12,7 @@ interface AlbumCardProps {
 }
 
 const AlbumCard: React.FC<AlbumCardProps> = ({ author, authorImage, image, title, artist, description, rating }) => {
-  const truncatedDescription = description.length > 100 ? `${description.slice(0, 80)}...` : description;
+  const truncatedDescription = description.length > 100 ? `${description.slice(0, 100)}...` : description;
   return (
     <div className="border border-gray-200 rounded-lg overflow-hidden shadow hover:shadow-xl hover:cursor-pointer">
       {author && <div className="flex items-center p-2 h-[90px]">
