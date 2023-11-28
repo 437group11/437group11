@@ -82,8 +82,8 @@ const Discover: React.FC = () => {
           catch{
             toast({
               title: 'Error Fetching Recommendations',
-              status: error,
-              description: 'Too many recomendation requests at the moment, please check discover again later',
+              status: "error",
+              description: 'Too many recommendation requests at the moment, please check discover again later',
             });
           }
           
