@@ -156,6 +156,7 @@ export default function Feed({sessionProp}: InferGetServerSidePropsType<typeof g
                 }
             }
         }
+        reviews.sort((a, b) => new Date(b.datePublished) - new Date(a.datePublished));
         return reviews;
     };
 
