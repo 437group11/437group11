@@ -193,6 +193,7 @@ export default function ProfileDetails({profileId}: {profileId: string}) {
             const data = await response.json();
             console.log(data);
             setBio(data.data.bio);
+            setNewBio(data.data.bio);
         }
     }
     const addBio = async(bio : string) => {
@@ -230,9 +231,9 @@ export default function ProfileDetails({profileId}: {profileId: string}) {
             </Box>
         ) : (
             isUser ? (
-                <Editable value={bio}>
+                <Editable value={newBio}>
                     <EditablePreview />
-                    <Input onChange={(e) => setNewBio(e.target.value)} as={EditableInput}/>
+                    <Input value={newBio} onChange={(e) => setNewBio(e.target.value)} as={EditableInput}/>
                     <EditableControls onSave={handleSubmitBio}/>
                 </Editable>
             ) : (
