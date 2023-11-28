@@ -6,6 +6,10 @@ import {
     CardHeader,
     Flex,
     Heading,
+    Menu,
+    MenuButton,
+    MenuItem,
+    MenuList,
     Modal,
     ModalBody,
     ModalCloseButton,
@@ -23,6 +27,7 @@ import ProfilePicture from "./profile-picture"
 import ReviewComments from "./review-comments"
 import { useSession } from "next-auth/react"
 import axios from "axios"
+import { ChevronDownIcon } from "@chakra-ui/icons"
 
 function AlbumReviews({reviews : initialReviews}: {reviews: ReviewWithAuthor[]}) {
 
@@ -183,15 +188,25 @@ function AlbumReviews({reviews : initialReviews}: {reviews: ReviewWithAuthor[]})
                         maxLength={8000}
                         placeholder="Edit your review content"
                     />
-                    <input
-                        type="number"
-                        value={editingReview?.rating}
-                        onChange={(e) => setEditingReview((prevReview) => ({
-                            ...prevReview!,
-                            rating: Number(e.target.value),
-                        }))}
-                        placeholder="Edit your rating"
-                    />
+                    <Menu>
+                        <MenuButton as={Button} rightIcon={<ChevronDownIcon />} mt={3}>
+                        {editingReview?.rating || "Select a rating (1-10)"}
+                        </MenuButton>
+                        <MenuList>
+                        {[...Array(10).keys()].map((i) => (
+                            <MenuItem
+                            key={i + 1}
+                            value={i + 1}
+                            onClick={() => setEditingReview((prevReview) => ({
+                                ...prevReview!,
+                                rating: (i + 1),
+                            }))}
+                            >
+                                {i + 1}
+                            </MenuItem>
+                        ))}
+                        </MenuList>
+                    </Menu>
                 </ModalBody>
                 <ModalFooter>
                     <Button colorScheme="blue" mr={3} onClick={handleSubmitReview}>
