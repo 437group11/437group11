@@ -209,7 +209,7 @@ function AlbumReviews({reviews : initialReviews}: {reviews: ReviewWithAuthor[]})
                 {
                     reviews.length === 0
                     ? "No reviews yet"
-                    : `Average rating: ${reviews.map((review) => review.rating).reduce((a, b) => a + b) / reviews.length}/10`
+                    : `Average rating: ${(reviews.map((review) => review.rating).reduce((a, b) => a + b) / reviews.length).toFixed(2)}/10`
                 }    
             </Heading>
             <VStack align="stretch">
