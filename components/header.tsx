@@ -1,24 +1,20 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useSession, signIn, signOut } from "next-auth/react";
-import { Button, Flex, Heading, IconButton, useToast } from "@chakra-ui/react";
+import { useSession, signOut } from "next-auth/react";
+import { Button, Flex, Heading, IconButton, useBreakpointValue, useToast } from "@chakra-ui/react";
 import ProfilePicture from "components/profile-picture"
 import { ArrowUpIcon } from "@chakra-ui/icons";
 import { useEffect, useState } from "react";
-import {
-    KnockFeedProvider,
-    NotificationFeedPopover,
-    useKnockFeed,
-  } from "@knocklabs/react-notification-feed";
 import { Session } from "next-auth";
 import NotificationFeed from "./notification-feed";
+import HamburgerMenu from "./hamburger-menu";
 
 export default function Header() {
     const { data: session, status } = useSession();
     const router = useRouter();
     const toast = useToast()
-    const { pathname } = router;
     const [showScrollButton, setShowScrollButton] = useState(false);
+    const isMobile = useBreakpointValue({ base: true, md: false })
 
     
     useEffect(() => {
@@ -54,18 +50,24 @@ export default function Header() {
             return <></>
         }
 
+        const collapsibleElements = (
+            <>
+                <Link href="/discover" key={"discover-link"}>
+                    <Button>
+                        Discovery
+                    </Button>
+                </Link>
+                <>{profileButtonOrSignOut(session)}</>
+            </>
+        )
+
         return (
             <Flex gap={5}>
                 {showScrollButton && (
                     <IconButton aria-label={"Scroll to top"} icon={<ArrowUpIcon />} onClick={scrollToTop} />
                 )}
-                <NotificationFeed session={session} />
-                    <Link href="/discover">
-                    <Button>
-                    Discovery
-                    </Button>
-                    </Link>
-                {profileButtonOrSignOut(session)}
+                <NotificationFeed session={session} key={"notification-feed"}/>
+                {isMobile ? <HamburgerMenu>{collapsibleElements}</HamburgerMenu> : collapsibleElements}
             </Flex>
         )
     }
@@ -74,14 +76,14 @@ export default function Header() {
         if (router.query.id === `${session.user?.id}`) {
             // Signed in and profile page: add button to sign out
             return (
-                <Button onClick={handleSignOut}>
+                <Button onClick={handleSignOut} key={"sign-out"}>
                   Sign out
                 </Button>
             );
         }
         
         // Otherwise, add link to profile
-        return <ProfilePicture user={session.user} size="md" />
+        return <ProfilePicture user={session.user} size="md" key={"my-profile"}/>
     }
     
     function scrollToTop() {
