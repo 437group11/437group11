@@ -26,8 +26,8 @@ const Discover: React.FC = () => {
           const reviews: UserReviews = data.data.reviews;
           console.log(reviews);
         try {
-          const albums = await requestNew(session?.spotifyToken);
-          const isAlbumReviewed = (albumId) => {
+          const albums = await requestNew(session?.spotifyToken!);
+          const isAlbumReviewed = (albumId: string) => {
             return reviews.some(review => review.albumId === albumId);
           };
           const albumsNotReviewed = albums.filter(album => !isAlbumReviewed(album.id));
@@ -77,8 +77,8 @@ const Discover: React.FC = () => {
   
           console.log(artistIdsList);
 
-          const albums = await requestRecommended(artistIdsList, session?.spotifyToken);
-          const isAlbumReviewed = (albumId) => {
+          const albums = await requestRecommended(artistIdsList, session?.spotifyToken!);
+          const isAlbumReviewed = (albumId: string) => {
             return reviews.some(review => review.albumId === albumId);
           };
           const albumsNotReviewed = albums.filter(album => !isAlbumReviewed(album.id));
