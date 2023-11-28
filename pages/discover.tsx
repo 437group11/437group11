@@ -83,7 +83,7 @@ const Discover: React.FC = () => {
             toast({
               title: 'Error Fetching Recommendations',
               status: error,
-              description: 'Too many recomendation requests please check discover again later',
+              description: 'Too many recomendation requests at the moment, please check discover again later',
             });
           }
           
@@ -141,8 +141,9 @@ const Discover: React.FC = () => {
                 ))
               ) : (
                 <Text p={5} fontSize={"lg"}>
-                  No recommendations at this moment. Please go review some albums and come back later.
-              </Text>
+                  Nothing to recommended yet...
+                  Leave some reviews and we&apos;ll give you suggestions
+                  </Text>
               )}
             </HStack>
           </Box>
