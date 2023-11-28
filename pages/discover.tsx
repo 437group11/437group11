@@ -18,11 +18,29 @@ const Discover: React.FC = () => {
 
   const getNewAlbums = async () => {
     try {
-      const albums = await requestNew(session?.spotifyToken);
-      setNewAlbums(albums);
-      console.log(newAlbums);
+      const response = await fetch(`/api/v2/users/${session?.user.id}/reviews?sort=${'rating:desc'}`);
+      if (response.ok) {
+        const data = await response.json();
+        const artistsIds = "";
+        if (data.status === 'success') {
+          const reviews: UserReviews = data.data.reviews;
+          console.log(reviews);
+        try {
+          const albums = await requestNew(session?.spotifyToken);
+          const isAlbumReviewed = (albumId) => {
+            return reviews.some(review => review.albumId === albumId);
+          };
+          const albumsNotReviewed = albums.filter(album => !isAlbumReviewed(album.id));
+          setNewAlbums(albumsNotReviewed);
+        } catch (error) {
+          console.error("Error: ", error);
+        }
+      }
+     } else {
+        console.log("data retrieval failed");
+    }
     } catch (error) {
-      console.error("Error: ", error);
+      console.error('Error fetching recommended albums:', error);
     }
   };
 
@@ -60,8 +78,11 @@ const Discover: React.FC = () => {
           console.log(artistIdsList);
 
           const albums = await requestRecommended(artistIdsList, session?.spotifyToken);
-          setRecommendedAlbums(albums); // Set the state with the fetched albums
-          console.log(recommendedAlbums);
+          const isAlbumReviewed = (albumId) => {
+            return reviews.some(review => review.albumId === albumId);
+          };
+          const albumsNotReviewed = albums.filter(album => !isAlbumReviewed(album.id));
+          setRecommendedAlbums(albumsNotReviewed);
         }
 
       } else {
