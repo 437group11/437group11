@@ -2,7 +2,7 @@ import { CheckIcon, CloseIcon, EditIcon } from "@chakra-ui/icons";
 import { ButtonGroup, Flex, IconButton } from "@chakra-ui/react";
 import { useState } from "react";
 
-function EditableControls ({onSave}) {
+function EditableControls ({onSave} : {onSave: Function}) {
   const [editing, setEditing] = useState(false);
 
   const handleSaveClick = () => {

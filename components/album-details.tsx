@@ -25,7 +25,7 @@ const AlbumDetails: React.FC<AlbumDetailsProps> = ({ album }) => {
                     {album?.name}
                 </Text>
                 <Text fontSize="lg">
-                    Artists: {album?.artists.map((artist) => artist.name).join(", ")}
+                    Artists: {album?.artists.map((artist: any) => artist.name).join(", ")}
                 </Text>
                 <Text>Release Date: {album?.release_date}</Text>
                 <Text>Type: {album?.type}</Text>

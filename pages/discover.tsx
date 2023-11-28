@@ -110,7 +110,7 @@ const Discover: React.FC = () => {
               whiteSpace="nowrap"
               p={5} mx={5}>
             {newAlbums.map((album) => (
-              <Box _hover={{ boxShadow: 'dark-lg' }} minW={300} onClick={() => router.push(`/album/${album.id}`)}>
+              <Box key={album.id} _hover={{ boxShadow: 'dark-lg' }} minW={300} onClick={() => router.push(`/album/${album.id}`)}>
                 <DiscoverAlbumCard 
                 image = {album.image} 
                 title = {album.name}
@@ -130,7 +130,7 @@ const Discover: React.FC = () => {
               p={5} mx={5}>
               {recommendedAlbums && Array.isArray(recommendedAlbums) && recommendedAlbums.length !== 0 ? (
                 recommendedAlbums.map((album) => (
-                  <Box _hover={{ boxShadow: 'dark-lg' }} minW={300} onClick={() => router.push(`/album/${album.id}`)}>
+                  <Box key={album.id} _hover={{ boxShadow: 'dark-lg' }} minW={300} onClick={() => router.push(`/album/${album.id}`)}>
                     <DiscoverAlbumCard 
                       image={album.image} 
                       title={album.name}
@@ -141,7 +141,7 @@ const Discover: React.FC = () => {
               ) : (
                 <Text p={5} fontSize={"lg"}>
                   Nothing to recommended yet...
-                  Leave some reviews and we'll try to recommend you something.
+                  Leave some reviews and we&apos;ll try to recommend you something.
               </Text>
               )}
             </HStack>
