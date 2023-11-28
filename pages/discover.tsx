@@ -81,9 +81,9 @@ const Discover: React.FC = () => {
           }
           catch{
             toast({
-              title: 'Error Fetching Recommendations',
+              title: 'Error fetching recommendations',
               status: "error",
-              description: 'Too many recommendation requests at the moment, please check discover again later',
+              description: 'The recommendations service is overloaded at the moment. Please try again later.',
             });
           }
           
@@ -142,7 +142,7 @@ const Discover: React.FC = () => {
               ) : (
                 <Text p={5} fontSize={"lg"}>
                   Nothing to recommended yet...
-                  Leave some reviews and we&apos;ll give you suggestions
+                  Leave some reviews and we&apos;ll give you suggestions based off of them here.
                   </Text>
               )}
             </HStack>
