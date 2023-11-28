@@ -1,15 +1,10 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useSession, signIn, signOut } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import { Button, Flex, Heading, IconButton, useToast } from "@chakra-ui/react";
 import ProfilePicture from "components/profile-picture"
 import { ArrowUpIcon } from "@chakra-ui/icons";
 import { useEffect, useState } from "react";
-import {
-    KnockFeedProvider,
-    NotificationFeedPopover,
-    useKnockFeed,
-  } from "@knocklabs/react-notification-feed";
 import { Session } from "next-auth";
 import NotificationFeed from "./notification-feed";
 
@@ -17,7 +12,6 @@ export default function Header() {
     const { data: session, status } = useSession();
     const router = useRouter();
     const toast = useToast()
-    const { pathname } = router;
     const [showScrollButton, setShowScrollButton] = useState(false);
 
     
@@ -60,11 +54,11 @@ export default function Header() {
                     <IconButton aria-label={"Scroll to top"} icon={<ArrowUpIcon />} onClick={scrollToTop} />
                 )}
                 <NotificationFeed session={session} />
-                    <Link href="/discover">
+                <Link href="/discover">
                     <Button>
-                    Discovery
+                        Discovery
                     </Button>
-                    </Link>
+                </Link>
                 {profileButtonOrSignOut(session)}
             </Flex>
         )
