@@ -230,7 +230,7 @@ export default function ProfileDetails({profileId}: {profileId: string}) {
             </Box>
         ) : (
             isUser ? (
-                <Editable defaultValue={bio}>
+                <Editable value={bio}>
                     <EditablePreview />
                     <Input onChange={(e) => setNewBio(e.target.value)} as={EditableInput}/>
                     <EditableControls onSave={handleSubmitBio}/>
