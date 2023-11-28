@@ -23,7 +23,6 @@ const Discover: React.FC = () => {
       const response = await fetch(`/api/v2/users/${session?.user.id}/reviews?sort=${'rating:desc'}`);
       if (response.ok) {
         const data = await response.json();
-        const artistsIds = "";
         if (data.status === 'success') {
           const reviews: UserReviews = data.data.reviews;
           console.log(reviews);
@@ -52,11 +51,11 @@ const Discover: React.FC = () => {
       const response = await fetch(`/api/v2/users/${session?.user.id}/reviews?sort=${'rating:desc'}`);
       if (response.ok) {
         const data = await response.json();
-        const artistsIds = "";
         console.log(session?.user.id);
   
         if (data.status === 'success') {
           const reviews: UserReviews = data.data.reviews;
+          
           const artistIdsList = reviews.slice(0, 5)
           .map((review) => {
             const artists = review.album.artists as JsonArray;
@@ -71,8 +70,9 @@ const Discover: React.FC = () => {
           .join(',');
   
           console.log(artistIdsList);
-
+          
           const albums = await requestRecommended(artistIdsList, session?.spotifyToken!);
+          console.log(albums);
           const isAlbumReviewed = (albumId: string) => {
             return reviews.some(review => review.albumId === albumId);
           };
@@ -91,7 +91,8 @@ const Discover: React.FC = () => {
   useEffect(() => {
     getNewAlbums();
     getRecommendedAlbums();
-  }, []);
+  }, [session?.spotifyToken]);
+
 
   return (
     <RootLayout>

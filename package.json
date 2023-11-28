@@ -26,6 +26,7 @@
     "framer-motion": "^10.16.4",
     "next": "latest",
     "next-auth": "^4.24.3",
+    "p-limit": "^5.0.0",
     "react": "latest",
     "react-dom": "latest"
   },

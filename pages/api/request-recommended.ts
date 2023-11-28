@@ -11,7 +11,7 @@ export async function requestRecommended(artistsIds: string, token: string): Pro
         Authorization: `Bearer ${token}`,
       },
     });
-
+    console.log(response.headers);
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
