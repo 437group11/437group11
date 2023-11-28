@@ -156,7 +156,18 @@ export default function Feed({sessionProp}: InferGetServerSidePropsType<typeof g
                 }
             }
         }
-        reviews.sort((a, b) => new Date(b.datePublished).getTime() - new Date(a.datePublished).getTime());
+        reviews.sort((a, b) => {
+            const dateA = new Date(a.datePublished);
+            const dateB = new Date(b.datePublished);
+
+            if (dateA.toISOString() > dateB.toISOString()) {
+                return -1;
+            } else if (dateA.toISOString() < dateB.toISOString()) {
+                return 1;
+            }
+
+            return dateA.getTime() - dateB.getTime();
+        });
         return reviews;
     };
 
