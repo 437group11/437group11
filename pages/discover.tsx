@@ -8,6 +8,8 @@ import { requestRecommended } from './api/request-recommended';
 import { requestNew } from './api/request-new';
 import RootLayout from 'components/root-layout';
 import { useRouter } from 'next/router';
+import { JsonArray } from "@prisma/client/runtime/library";
+import { JsonObject } from "next-auth/adapters";
 
 
 const Discover: React.FC = () => {
@@ -55,25 +57,18 @@ const Discover: React.FC = () => {
   
         if (data.status === 'success') {
           const reviews: UserReviews = data.data.reviews;
-          const currAlbums: Album[] = []
-          reviews.forEach((review) => {
-            currAlbums.push(review.album);
-          });
-          console.log(currAlbums);
-  
-          const artistIdsList = currAlbums
-            .slice(0, 5)
-            .map((album) => {
-              const artists = album.artists;
-  
-              if (artists && artists.length > 0) {
-                const firstArtistId = artists[0].id;
-                return firstArtistId;
-              }
-              return null;
-            })
-            .filter((id) => id !== null)
-            .join(',');
+          const artistIdsList = reviews.slice(0, 5)
+          .map((review) => {
+            const artists = review.album.artists as JsonArray;
+
+            if (artists[0]) {
+              const firstArtistId = (artists[0] as JsonObject).id;
+              return firstArtistId;
+            }
+            return null;
+          })
+          .filter((id) => id !== null)
+          .join(',');
   
           console.log(artistIdsList);
 
@@ -112,9 +107,7 @@ const Discover: React.FC = () => {
             {newAlbums.map((album) => (
               <Box key={album.id} _hover={{ boxShadow: 'dark-lg' }} minW={300} onClick={() => router.push(`/album/${album.id}`)}>
                 <DiscoverAlbumCard 
-                image = {album.image} 
-                title = {album.name}
-                artist = {album.artists[0]}/>
+                album={album}/>
               </Box>
             ))}
           </HStack>
@@ -132,9 +125,7 @@ const Discover: React.FC = () => {
                 recommendedAlbums.map((album) => (
                   <Box key={album.id} _hover={{ boxShadow: 'dark-lg' }} minW={300} onClick={() => router.push(`/album/${album.id}`)}>
                     <DiscoverAlbumCard 
-                      image={album.image} 
-                      title={album.name}
-                      artist={album.artists[0]}
+                      album={album}
                     />
                   </Box>
                 ))
