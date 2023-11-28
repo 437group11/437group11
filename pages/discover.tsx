@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Flex, Text, SimpleGrid, Heading, HStack } from '@chakra-ui/react';
+import { Box, Flex, Text, SimpleGrid, Heading, HStack, useToast } from '@chakra-ui/react';
 import DiscoverAlbumCard from '../components/discover-album-card';
 import { Album } from 'types/Album';
 import { useSession } from 'next-auth/react';
@@ -17,7 +17,7 @@ const Discover: React.FC = () => {
   const [newAlbums, setNewAlbums] = useState<Album[]>([]);
   const [recommendedAlbums, setRecommendedAlbums] = useState<Album[]>([]);
   const router = useRouter();
-
+  const toast = useToast(); 
   const getNewAlbums = async () => {
     try {
       const response = await fetch(`/api/v2/users/${session?.user.id}/reviews?sort=${'rating:desc'}`);
@@ -70,14 +70,23 @@ const Discover: React.FC = () => {
           .join(',');
   
           console.log(artistIdsList);
-          
-          const albums = await requestRecommended(artistIdsList, session?.spotifyToken!);
+          try{  
+            const albums = await requestRecommended(artistIdsList, session?.spotifyToken!);
           console.log(albums);
           const isAlbumReviewed = (albumId: string) => {
             return reviews.some(review => review.albumId === albumId);
           };
           const albumsNotReviewed = albums.filter(album => !isAlbumReviewed(album.id));
           setRecommendedAlbums(albumsNotReviewed);
+          }
+          catch{
+            toast({
+              title: 'Error Fetching Recommendations',
+              status: error,
+              description: 'Too many recomendation requests please check discover again later',
+            });
+          }
+          
         }
 
       } else {
@@ -132,8 +141,7 @@ const Discover: React.FC = () => {
                 ))
               ) : (
                 <Text p={5} fontSize={"lg"}>
-                  Nothing to recommended yet...
-                  Leave some reviews and we&apos;ll try to recommend you something.
+                  No recommendations at this moment. Please go review some albums and come back later.
               </Text>
               )}
             </HStack>
